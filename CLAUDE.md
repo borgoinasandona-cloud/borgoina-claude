@@ -48,6 +48,20 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`
 al momento del seed — da cambiare prima di condividere l'accesso).
 
+## Deploy
+
+- Progetto Vercel: `terotero-s-projects/borgoina-claude`, collegato via `vercel link` (CLI, non da
+  GitHub — il collegamento automatico GitHub→Vercel non è riuscito: la GitHub App di Vercel non ha
+  accesso a `borgoinasandona-cloud/borgoina-claude`; per ora i deploy sono manuali via `vercel deploy --prod`)
+- URL produzione: https://borgoina-claude-coral.vercel.app
+- Variabili d'ambiente impostate su Vercel **solo per Production** (Preview aveva un bug della CLI
+  su `git_branch_required` che non si è risolto nemmeno con la sintassi suggerita dall'errore stesso —
+  da riprovare con una versione più recente della CLI, o impostarle a mano dalla dashboard se servono
+  deploy di anteprima con dati reali)
+- `.vercelignore` esclude `.env` e `materiale/` dall'upload (il primo deploy aveva incluso `.env` per
+  errore nel bundle sorgente — nessuna nuova fuga di segreti, erano già gli stessi valori messi
+  volontariamente nell'env store di Vercel, ma va comunque evitato)
+
 (aggiornare questa checklist mano a mano, non lasciarla disallineata dal repo)
 
 ## Note per le sessioni future
