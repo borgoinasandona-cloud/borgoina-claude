@@ -23,28 +23,18 @@ Per le convenzioni di lavoro e lo stato corrente vedi **CLAUDE.md**.
 npm install
 cp .env.example .env
 # compilare le variabili (vedi sotto)
-npx prisma migrate dev
+npm run db:migrate
+npm run db:seed
 npm run dev
 ```
 
 ## Variabili d'ambiente
 
-```
-DATABASE_URL=
+Vedi `.env.example` per l'elenco completo. Dopo aver compilato `DATABASE_URL`:
 
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-
-RESEND_API_KEY=
-CONTACT_EMAIL_TO=borgoinasandona@gmail.com
-
-AUTH_SECRET=
-ADMIN_EMAIL=
-
-# Fase 2 (Google OAuth) — non ancora necessarie in MVP
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
+```bash
+npm run db:migrate   # crea le tabelle
+npm run db:seed      # crea l'utente admin (da ADMIN_EMAIL/ADMIN_PASSWORD) + categorie di base
 ```
 
 ## Deploy
@@ -56,6 +46,8 @@ GOOGLE_CLIENT_SECRET=
 ## Contenuti da migrare
 
 Cartella asset fornita da Dario:
-- `/loghi` — PNG trasparenti (+ SVG se disponibili)
-- Foto: recuperate dal sito attuale (vedi PLANNING.md per la nota sulla risoluzione)
+- `/materiale/loghi` — PNG trasparenti (+ SVG se disponibili)
+- `/materiale/Immagini-sito` - Foto recuperate dal sito attuale (`npm run cloudinary:import` le carica tutte
+  su Cloudinary e salva la mappatura path → public_id in `scripts/cloudinary-import-results.json`)
 - Testi pagine statiche (Il Borgo, Chi Siamo, Contatti) e tutti gli articoli della Bacheca, con categoria e data
+  — da fornire, non ancora presenti nel repo

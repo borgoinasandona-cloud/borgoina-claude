@@ -25,16 +25,28 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 
 ## Stato attuale
 
-- [ ] Repo inizializzato
-- [ ] Schema Prisma da PLANNING.md creato e migrato
-- [ ] Setup Cloudinary
-- [ ] Setup Resend + verifica dominio
-- [ ] Auth admin (Credentials) funzionante
-- [ ] Pagine statiche (Il Borgo, Chi Siamo, Contatti)
-- [ ] CRUD Bacheca (post + categorie + immagini)
-- [ ] Import contenuti dal sito attuale
-- [ ] Form contatti → Resend
+- [x] Repo inizializzato
+- [x] Schema Prisma da PLANNING.md creato (Account/Session/VerificationToken aggiunti per Auth.js),
+      **migrato su Neon** (`DATABASE_URL` in `.env`, migrazione `20260716153602_init` applicata)
+- [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
+      `api/upload/sign`) implementato; non ancora verificato un upload reale da UI
+- [x] Setup Resend — chiave reale in `.env`; invio email non ancora verificato end-to-end;
+      "from" usa ancora il dominio sandbox `onboarding@resend.dev` — **da verificare un dominio
+      proprio su Resend prima di andare live**, altrimenti le email rischiano lo spam
+- [x] Auth admin (Credentials) — verificato end-to-end (login con credenziali corrette → sessione
+      valida → accesso a `/admin`; credenziali sbagliate e utenti anonimi vengono respinti)
+- [x] Pagine statiche (Il Borgo, Chi Siamo, Contatti) — pubbliche + editor admin, contenuto vuoto finché
+      non arrivano i testi reali da Dario
+- [x] CRUD Bacheca (post + categorie + immagini) — codice completo, DB live ma non ancora popolato
+      da UI (nessun articolo di prova creato)
+- [ ] Import contenuti dal sito attuale — in `materiale/` ci sono solo immagini, non testi;
+      `npm run cloudinary:import` è pronto per caricare le immagini su Cloudinary quando servirà
+- [x] Form contatti → Resend — pagina `/contatti` con form (Server Action), salva anche su
+      `ContactMessage` come fallback se l'invio email fallisce; invio email reale non ancora testato
 - [ ] Fase 2: Google OAuth + area riservata
+
+Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`
+al momento del seed — da cambiare prima di condividere l'accesso).
 
 (aggiornare questa checklist mano a mano, non lasciarla disallineata dal repo)
 
