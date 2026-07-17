@@ -69,7 +69,7 @@ model Page {
   id        String   @id @default(cuid())
   slug      String   @unique // "il-borgo" | "chi-siamo" | "contatti"
   title     String
-  content   String   @db.Text // Markdown
+  content   String   @db.Text // HTML (editor WYSIWYG)
   updatedAt DateTime @updatedAt
 }
 
@@ -78,7 +78,7 @@ model Post {
   slug         String      @unique
   title        String
   excerpt      String?
-  content      String      @db.Text // Markdown
+  content      String      @db.Text // HTML (editor WYSIWYG)
   coverImage   String? // Cloudinary public_id
   externalLink String? // es. link galleria Google Photos
   publishedAt  DateTime?

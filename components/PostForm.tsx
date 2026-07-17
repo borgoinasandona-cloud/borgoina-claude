@@ -8,6 +8,7 @@ import {
   type PostFormState,
 } from "@/app/admin/(dashboard)/posts/actions";
 import { ImageUploader, type CloudinaryUploadResult } from "@/components/ImageUploader";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { cloudinaryPreviewUrl } from "@/lib/cloudinary-client";
 
 type PostWithRelations = Post & { categories: Category[]; images: PostImage[] };
@@ -99,17 +100,10 @@ export function PostForm({
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium text-neutral-700">
-          Contenuto (Markdown)
-        </label>
-        <textarea
-          id="content"
-          name="content"
-          defaultValue={post?.content}
-          rows={12}
-          required
-          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 font-mono text-sm"
-        />
+        <span className="block text-sm font-medium text-neutral-700">Contenuto</span>
+        <div className="mt-1">
+          <RichTextEditor name="content" defaultValue={post?.content ?? ""} />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

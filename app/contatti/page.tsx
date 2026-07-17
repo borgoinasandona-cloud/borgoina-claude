@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getPage, staticPageTitles } from "@/lib/pages";
-import { MarkdownContent } from "@/components/MarkdownContent";
+import { HtmlContent } from "@/components/HtmlContent";
 import { ContactForm } from "@/components/ContactForm";
 import { siteConfig } from "@/lib/site-config";
 
@@ -18,7 +18,7 @@ export default async function ContattiPage() {
       <h1 className="text-3xl font-semibold text-neutral-900">{staticPageTitles.contatti}</h1>
 
       {page?.content ? (
-        <MarkdownContent content={page.content} />
+        <HtmlContent content={page.content} />
       ) : (
         <p className="mt-6 text-neutral-600">
           Puoi scriverci a{" "}

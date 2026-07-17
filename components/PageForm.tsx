@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { savePageAction, type PageFormState } from "@/app/admin/(dashboard)/pages/actions";
 import type { StaticPageSlug } from "@/lib/pages";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
 const initialState: PageFormState = { status: "idle" };
 
@@ -34,17 +35,10 @@ export function PageForm({
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium text-neutral-700">
-          Contenuto (Markdown)
-        </label>
-        <textarea
-          id="content"
-          name="content"
-          defaultValue={content}
-          rows={16}
-          required
-          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 font-mono text-sm focus:border-green-600 focus:outline-none"
-        />
+        <span className="block text-sm font-medium text-neutral-700">Contenuto</span>
+        <div className="mt-1">
+          <RichTextEditor name="content" defaultValue={content} />
+        </div>
       </div>
 
       <button

@@ -22,6 +22,16 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 - Immagini: caricare sempre su Cloudinary, mai servire da `/public` per contenuti gestiti da CMS
 - Foto della Bacheca/gallerie: quelle fornite da Dario provengono dal sito attuale (spesso già ridimensionate) —
   se ci sono dubbi sulla risoluzione, segnalarlo invece di procedere assumendo che vadano bene
+- Contenuto di `Page`/`Post` è **HTML**, non Markdown: editor WYSIWYG (Tiptap) in admin
+  (`components/RichTextEditor.tsx`), reso in pubblico via `components/HtmlContent.tsx` che sanitizza
+  con `sanitize-html` prima di `dangerouslySetInnerHTML` — non renderizzare mai HTML da DB senza
+  passare da lì
+- **Niente `isomorphic-dompurify`/jsdom lato server**: ha rotto `/il-borgo`, `/chi-siamo`, `/contatti`
+  in produzione su Vercel (500) pur passando build/lint/tsc e `next start` locale — il bundling
+  serverless di Vercel non include correttamente le dipendenze dinamiche di jsdom. Sostituito con
+  `sanitize-html` (puro JS, nessuna dipendenza nativa/jsdom). Se serve sanitizzare HTML lato server,
+  usare `sanitize-html` o testare sempre con un deploy reale prima di considerarlo verificato —
+  `next build`/`next start` locali non bastano a intercettare questa classe di bug
 
 ## Stato attuale
 

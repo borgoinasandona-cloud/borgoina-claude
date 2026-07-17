@@ -7,12 +7,17 @@ export type CloudinaryUploadResult = {
   secureUrl: string;
 };
 
+const DEFAULT_LABEL_CLASS =
+  "inline-flex cursor-pointer items-center rounded-md border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50";
+
 export function ImageUploader({
   onUploaded,
   label = "Carica immagine",
+  labelClassName = DEFAULT_LABEL_CLASS,
 }: {
   onUploaded: (result: CloudinaryUploadResult) => void;
   label?: string;
+  labelClassName?: string;
 }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +69,7 @@ export function ImageUploader({
 
   return (
     <div>
-      <label className="inline-flex cursor-pointer items-center rounded-md border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50">
+      <label className={labelClassName}>
         {uploading ? "Caricamento…" : label}
         <input
           type="file"

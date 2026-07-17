@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPublishedPostBySlug } from "@/lib/posts";
-import { MarkdownContent } from "@/components/MarkdownContent";
+import { HtmlContent } from "@/components/HtmlContent";
 import { cloudinaryUrl } from "@/lib/cloudinary";
 
 export const dynamic = "force-dynamic";
@@ -62,7 +62,7 @@ export default async function NewsDetailPage({
         />
       )}
 
-      <MarkdownContent content={post.content} />
+      <HtmlContent content={post.content} />
 
       {post.externalLink && (
         <p className="mt-6">

@@ -1,4 +1,4 @@
-import { MarkdownContent } from "@/components/MarkdownContent";
+import { HtmlContent } from "@/components/HtmlContent";
 
 export function StaticPageView({
   title,
@@ -11,7 +11,7 @@ export function StaticPageView({
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-semibold text-neutral-900">{title}</h1>
       {content ? (
-        <MarkdownContent content={content} />
+        <HtmlContent content={content} />
       ) : (
         <p className="mt-6 text-neutral-500">
           Contenuto non ancora disponibile. Verrà pubblicato a breve dall&apos;amministrazione.

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 
@@ -7,7 +8,14 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-neutral-200 bg-neutral-50">
       <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-neutral-600">
-        <p className="font-medium text-neutral-800">Comitato {siteConfig.name}</p>
+        <Image
+          src="/logo/logo-vert.png"
+          alt={siteConfig.name}
+          width={295}
+          height={259}
+          className="h-16 w-auto"
+        />
+        <p className="mt-4 font-medium text-neutral-800">Comitato {siteConfig.name}</p>
         <p className="mt-1">
           <a href={`mailto:${siteConfig.contactEmail}`} className="hover:text-green-700">
             {siteConfig.contactEmail}
