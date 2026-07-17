@@ -45,3 +45,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# stato locale del tool Claude Code, non contenuto del progetto
+.claude/scheduled_tasks.lock

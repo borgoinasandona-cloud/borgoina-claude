@@ -29,7 +29,7 @@ export default async function IlBorgoPage() {
 
   return (
     <div>
-      <div className="relative flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 text-cream md:h-[460px]">
+      <div className="relative -mt-[76px] flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 pt-[76px] text-cream md:-mt-[88px] md:h-[460px] md:pt-[88px] wide:-mt-[96px] wide:pt-[96px]">
         {intro.image && (
           <div className="absolute inset-0 z-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
