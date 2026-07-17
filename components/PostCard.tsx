@@ -29,16 +29,18 @@ export function PostCard({ post }: { post: Post & { categories: Category[] } }) 
             </span>
           ))}
         </div>
-        <h2 className="font-display mt-3 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-brick line-clamp-2">
+        <h2 className="font-display mt-3 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-brick line-clamp-2 wide:text-2xl">
           {post.title}
         </h2>
         {post.publishedAt && (
-          <p className="font-mono mt-2 text-xs text-ink-soft">
+          <p className="font-mono mt-2 text-xs text-ink-soft wide:text-sm">
             {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
           </p>
         )}
         {post.excerpt && (
-          <p className="mt-3 text-base leading-relaxed text-ink-soft line-clamp-3">{post.excerpt}</p>
+          <p className="mt-3 text-base leading-relaxed text-ink-soft line-clamp-3 wide:text-lg">
+            {post.excerpt}
+          </p>
         )}
       </div>
     </Link>

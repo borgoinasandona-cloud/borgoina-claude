@@ -33,6 +33,8 @@
   --color-sage: var(--color-sage);
   --color-sage-dark: var(--color-sage-dark);
   --font-sans: var(--font-sans);
+  /* Breakpoint extra per monitor larghi: contenitori e testo crescono ancora oltre md/lg. */
+  --breakpoint-wide: 1570px;
 }
 
 body {
@@ -46,6 +48,24 @@ body {
 @media (min-width: 768px) {
   body {
     font-size: 1.125rem; /* 18px */
+  }
+}
+
+@media (min-width: 1570px) {
+  body {
+    font-size: 1.1875rem; /* 19px */
+  }
+
+  .prose-content h1 {
+    font-size: 2.75rem; /* 44px */
+  }
+
+  .prose-content h2 {
+    font-size: 2.125rem; /* 34px */
+  }
+
+  .prose-content h3 {
+    font-size: 1.65rem; /* 26px */
   }
 }
 

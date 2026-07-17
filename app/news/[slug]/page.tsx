@@ -32,7 +32,7 @@ export default async function NewsDetailPage({
   return (
     <article>
       <header className="border-b border-ink/10 bg-cream-deep px-4 py-16">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-3xl wide:max-w-4xl">
           <Link
             href="/news"
             className="mb-6 inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
@@ -51,7 +51,7 @@ export default async function NewsDetailPage({
             ))}
           </div>
 
-          <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
+          <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {post.title}
           </h1>
           {post.publishedAt && (
@@ -62,7 +62,7 @@ export default async function NewsDetailPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-4 py-12 text-lg leading-relaxed text-ink">
+      <div className="mx-auto max-w-3xl px-4 py-12 text-lg leading-relaxed text-ink wide:max-w-4xl wide:text-xl">
         {post.coverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img

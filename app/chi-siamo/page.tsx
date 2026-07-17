@@ -29,9 +29,9 @@ export default async function ChiSiamoPage() {
   return (
     <div>
       <div className="border-b border-ink/10 bg-cream-deep px-4 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow text-brick">Comitato civico di quartiere</p>
-          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
+        <div className="mx-auto max-w-5xl wide:max-w-6xl">
+          <p className="eyebrow text-brick wide:text-sm">Comitato civico di quartiere</p>
+          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {staticPageTitles["chi-siamo"]}
           </h1>
         </div>
@@ -48,14 +48,14 @@ export default async function ChiSiamoPage() {
 
         return (
           <div key={title} className={`${sectionBg} border-b border-ink/5 px-4 py-16 md:py-20`}>
-            <div className="mx-auto max-w-5xl">
+            <div className="mx-auto max-w-5xl wide:max-w-6xl">
               {isFullWidth ? (
-                <div className="mx-auto max-w-3xl text-center">
-                  <p className="eyebrow text-sky-dark">{EYEBROWS[index] ?? "Il comitato"}</p>
-                  <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
+                <div className="mx-auto max-w-3xl text-center wide:max-w-4xl">
+                  <p className="eyebrow text-sky-dark wide:text-sm">{EYEBROWS[index] ?? "Il comitato"}</p>
+                  <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl wide:text-5xl">
                     {title}
                   </h2>
-                  <div className="mt-4 text-ink-soft leading-relaxed">
+                  <div className="mt-4 text-ink-soft leading-relaxed wide:text-lg">
                     <HtmlContent content={textHtml} />
                   </div>
                   {images[0] && (
@@ -72,11 +72,11 @@ export default async function ChiSiamoPage() {
               ) : (
                 <div className={gridClass}>
                   <div className={textColClass}>
-                    <p className="eyebrow text-brick">{EYEBROWS[index] ?? "Il comitato"}</p>
-                    <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
+                    <p className="eyebrow text-brick wide:text-sm">{EYEBROWS[index] ?? "Il comitato"}</p>
+                    <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl wide:text-5xl">
                       {title}
                     </h2>
-                    <div className="mt-4 text-ink-soft leading-relaxed">
+                    <div className="mt-4 text-ink-soft leading-relaxed wide:text-lg">
                       <HtmlContent content={textHtml} />
                     </div>
                     {index === 0 && (

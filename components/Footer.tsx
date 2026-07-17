@@ -7,7 +7,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t border-cream/10 bg-ink text-cream/80">
-      <div className="mx-auto max-w-5xl px-4 py-14">
+      <div className="mx-auto max-w-5xl px-4 py-14 wide:max-w-6xl">
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           <div>
             <Image
@@ -15,11 +15,11 @@ export function Footer() {
               alt={siteConfig.name}
               width={295}
               height={259}
-              className="h-20 w-auto md:h-24"
+              className="h-20 w-auto md:h-24 wide:h-28"
             />
             <p className="eyebrow mt-5 text-cream/50">Comitato civico di quartiere</p>
           </div>
-          <div className="space-y-3 text-sm sm:text-right">
+          <div className="space-y-3 text-sm sm:text-right wide:text-base">
             <p className="eyebrow text-brick-light">Contatti</p>
             <p>
               <a href={`mailto:${siteConfig.contactEmail}`} className="transition-colors hover:text-white">

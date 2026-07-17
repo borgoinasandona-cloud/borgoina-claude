@@ -4,9 +4,9 @@ import type { Category, Post } from "@prisma/client";
 
 export function BachecaHighlight({ post }: { post: (Post & { categories: Category[] }) | null }) {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
-      <p className="eyebrow text-brick">In evidenza</p>
-      <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
+    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24 wide:max-w-6xl">
+      <p className="eyebrow text-brick wide:text-sm">In evidenza</p>
+      <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl wide:text-5xl">
         Il Borgo utile
       </h2>
       {post ? (
@@ -35,11 +35,11 @@ export function BachecaHighlight({ post }: { post: (Post & { categories: Categor
                 </span>
               ))}
             </div>
-            <h3 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-ink transition-colors duration-200 group-hover:text-brick">
+            <h3 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-ink transition-colors duration-200 group-hover:text-brick wide:text-3xl">
               {post.title}
             </h3>
             {post.excerpt && (
-              <p className="mt-3 text-base leading-relaxed text-ink-soft">{post.excerpt}</p>
+              <p className="mt-3 text-base leading-relaxed text-ink-soft wide:text-lg">{post.excerpt}</p>
             )}
           </div>
         </Link>

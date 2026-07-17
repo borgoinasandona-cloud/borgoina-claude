@@ -21,9 +21,9 @@ const blocks = [
 
 export function VerdePopolare() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
-      <p className="eyebrow text-sage-dark">Nel verde</p>
-      <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
+    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24 wide:max-w-6xl">
+      <p className="eyebrow text-sage-dark wide:text-sm">Nel verde</p>
+      <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl wide:text-5xl">
         Verde popolare
       </h2>
       <div className="mt-10 grid gap-10 sm:grid-cols-3">
@@ -38,10 +38,10 @@ export function VerdePopolare() {
               />
               <div className="absolute inset-x-0 bottom-0 h-1 bg-sage" />
             </div>
-            <h3 className="mt-4 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-sage-dark">
+            <h3 className="mt-4 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-sage-dark wide:text-2xl">
               {block.title}
             </h3>
-            <p className="mt-2 text-base leading-relaxed text-ink-soft">{block.text}</p>
+            <p className="mt-2 text-base leading-relaxed text-ink-soft wide:text-lg">{block.text}</p>
           </div>
         ))}
       </div>

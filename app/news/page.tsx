@@ -23,15 +23,15 @@ export default async function NewsPage({
   return (
     <div>
       <div className="border-b border-ink/10 bg-cream-deep px-4 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow text-brick">Notizie dal quartiere</p>
-          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
+        <div className="mx-auto max-w-5xl wide:max-w-6xl">
+          <p className="eyebrow text-brick wide:text-sm">Notizie dal quartiere</p>
+          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             Bacheca
           </h1>
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-12 wide:max-w-6xl">
         <div className="font-mono flex flex-wrap gap-2 text-xs font-semibold tracking-wide uppercase">
           <Link
             href="/news"
@@ -59,7 +59,7 @@ export default async function NewsPage({
         </div>
 
         {posts.length > 0 ? (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 wide:grid-cols-4">
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}

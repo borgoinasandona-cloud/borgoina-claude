@@ -41,35 +41,35 @@ export default async function IlBorgoPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/60" />
           </div>
         )}
-        <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center">
-          <p className="eyebrow text-brick-light">Comitato civico di quartiere</p>
-          <h1 className="font-display text-5xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-6xl lg:text-7xl">
+        <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center wide:max-w-5xl">
+          <p className="eyebrow text-brick-light wide:text-sm">Comitato civico di quartiere</p>
+          <h1 className="font-display text-5xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-6xl lg:text-7xl wide:text-8xl">
             {staticPageTitles["il-borgo"]}
           </h1>
           {intro.text && (
-            <p className="mx-auto max-w-2xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl">
+            <p className="mx-auto max-w-2xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl wide:max-w-3xl wide:text-2xl">
               {intro.text}
             </p>
           )}
         </div>
       </div>
 
-      <div className="mx-auto mt-8 max-w-3xl px-4 py-12 text-center md:py-16">
-        <p className="eyebrow text-brick">Storia e presente</p>
-        <h2 className="font-display mt-3 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
+      <div className="mx-auto mt-8 max-w-3xl px-4 py-12 text-center md:py-16 wide:max-w-4xl">
+        <p className="eyebrow text-brick wide:text-sm">Storia e presente</p>
+        <h2 className="font-display mt-3 text-3xl font-extrabold tracking-tight text-ink md:text-4xl wide:text-5xl">
           {section0.title}
         </h2>
-        <div className="mt-4 text-lg leading-relaxed text-ink-soft">
+        <div className="mt-4 text-lg leading-relaxed text-ink-soft wide:text-xl">
           <HtmlContent content={section0.textHtml} />
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 pb-16 md:pb-24">
+      <div className="mx-auto max-w-5xl px-4 pb-16 md:pb-24 wide:max-w-6xl">
         <div className="grid gap-12 md:grid-cols-2">
           {[section1, section2].map((section) => (
             <div key={section.title} className="flex h-full flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <h3 className="font-display text-2xl font-bold text-ink">{section.title}</h3>
+                <h3 className="font-display text-2xl font-bold text-ink wide:text-3xl">{section.title}</h3>
                 <div className="text-ink-soft leading-relaxed">
                   <HtmlContent content={section.textHtml} />
                 </div>
@@ -90,7 +90,7 @@ export default async function IlBorgoPage() {
       </div>
 
       <div className="bg-cream-deep px-4 py-16 md:py-20">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-5xl wide:max-w-6xl">
           <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="order-2 md:order-1">
               {section3.images[0] && (
@@ -105,7 +105,7 @@ export default async function IlBorgoPage() {
               )}
             </div>
             <div className="order-1 md:order-2">
-              <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl wide:text-5xl">
                 {section3.title}
               </h2>
               <div className="mt-4 text-ink-soft leading-relaxed">
@@ -118,13 +118,13 @@ export default async function IlBorgoPage() {
 
       {remainingSections.length > 0 && (
         <div className="px-4 py-16 md:py-20">
-          <div className="mx-auto max-w-5xl space-y-16">
+          <div className="mx-auto max-w-5xl space-y-16 wide:max-w-6xl">
             {remainingSections.map((section, idx) => {
               const isEven = idx % 2 === 0;
               return (
                 <div key={section.title} className="grid items-center gap-12 md:grid-cols-2">
                   <div className={isEven ? "order-1" : "order-1 md:order-2"}>
-                    <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
+                    <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl wide:text-5xl">
                       {section.title}
                     </h2>
                     <div className="mt-4 text-ink-soft leading-relaxed">

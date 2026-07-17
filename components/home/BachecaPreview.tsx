@@ -4,15 +4,18 @@ import type { Category, Post } from "@prisma/client";
 
 export function BachecaPreview({ posts }: { posts: (Post & { categories: Category[] })[] }) {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
+    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24 wide:max-w-6xl">
       <div className="flex items-end justify-between">
         <div>
-          <p className="eyebrow text-brick">Sempre aggiornati</p>
-          <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
+          <p className="eyebrow text-brick wide:text-sm">Sempre aggiornati</p>
+          <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl wide:text-5xl">
             Ultime dalla Bacheca
           </h2>
         </div>
-        <Link href="/news" className="text-base font-bold text-brick transition-colors hover:text-brick-dark">
+        <Link
+          href="/news"
+          className="text-base font-bold text-brick transition-colors hover:text-brick-dark wide:text-lg"
+        >
           Vedi tutte →
         </Link>
       </div>
