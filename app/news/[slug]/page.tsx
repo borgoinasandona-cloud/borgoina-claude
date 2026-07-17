@@ -30,39 +30,46 @@ export default async function NewsDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <Link href="/news" className="text-sm text-green-700 hover:underline">
-        ← Torna alla Bacheca
-      </Link>
+    <article>
+      <header className="bg-neutral-50 border-b border-neutral-200/60 py-16 px-4">
+        <div className="mx-auto max-w-3xl">
+          <Link href="/news" className="inline-flex items-center gap-1 text-sm font-bold text-green-700 hover:text-green-800 transition mb-6">
+            ← Torna alla Bacheca
+          </Link>
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {post.categories.map((category) => (
-          <span
-            key={category.id}
-            className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-800"
-          >
-            {category.name}
-          </span>
-        ))}
-      </div>
+          <div className="flex flex-wrap gap-1.5">
+            {post.categories.map((category) => (
+              <span
+                key={category.id}
+                className="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-800"
+              >
+                {category.name}
+              </span>
+            ))}
+          </div>
 
-      <h1 className="mt-2 text-3xl font-semibold text-neutral-900">{post.title}</h1>
-      {post.publishedAt && (
-        <p className="mt-1 text-sm text-neutral-500">
-          {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
-        </p>
-      )}
+          <h1 className="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+            {post.title}
+          </h1>
+          {post.publishedAt && (
+            <p className="mt-3 text-sm font-medium text-neutral-500">
+              {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
+            </p>
+          )}
+        </div>
+      </header>
 
-      {post.coverImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={cloudinaryUrl(post.coverImage, { width: 1200, crop: "limit" })}
-          alt={post.title}
-          className="mt-6 w-full rounded-lg object-cover"
-        />
-      )}
+      <div className="mx-auto max-w-3xl px-4 py-12 text-neutral-800 leading-relaxed text-lg">
+        {post.coverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={cloudinaryUrl(post.coverImage, { width: 1200, crop: "limit" })}
+            alt={post.title}
+            className="w-full rounded-xl object-cover shadow-sm border border-neutral-100/80 mb-8"
+          />
+        )}
 
-      <HtmlContent content={post.content} />
+        <HtmlContent content={post.content} />
 
       {post.externalLink && (
         <p className="mt-6">
@@ -90,6 +97,7 @@ export default async function NewsDetailPage({
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </article>
   );
 }

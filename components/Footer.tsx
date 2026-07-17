@@ -7,16 +7,16 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t border-neutral-200 bg-neutral-50">
-      <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-neutral-600">
+      <div className="mx-auto max-w-5xl px-4 py-12 text-base text-neutral-600">
         <Image
           src="/logo/logo-vert.png"
           alt={siteConfig.name}
           width={295}
           height={259}
-          className="h-16 w-auto"
+          className="h-20 md:h-24 w-auto"
         />
-        <p className="mt-4 font-medium text-neutral-800">Comitato {siteConfig.name}</p>
-        <p className="mt-1">
+        <p className="mt-6 font-semibold text-neutral-800 text-lg">Comitato {siteConfig.name}</p>
+        <p className="mt-2">
           <a href={`mailto:${siteConfig.contactEmail}`} className="hover:text-green-700">
             {siteConfig.contactEmail}
           </a>

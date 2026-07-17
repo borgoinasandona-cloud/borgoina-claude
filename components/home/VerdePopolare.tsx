@@ -21,16 +21,23 @@ const blocks = [
 
 export function VerdePopolare() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-12">
-      <h2 className="text-2xl font-semibold text-neutral-900">Verde popolare</h2>
-      <div className="mt-6 grid gap-6 sm:grid-cols-3">
+    <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
+      <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-900">Verde popolare</h2>
+      <div className="mt-8 grid gap-8 sm:grid-cols-3">
         {blocks.map((block) => (
-          <div key={block.title}>
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
-              <Image src={block.image} alt={block.title} fill className="object-cover" />
+          <div key={block.title} className="group">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl shadow-sm border border-neutral-100/80">
+              <Image 
+                src={block.image} 
+                alt={block.title} 
+                fill 
+                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+              />
             </div>
-            <h3 className="mt-3 font-semibold text-neutral-900">{block.title}</h3>
-            <p className="mt-1 text-sm text-neutral-600">{block.text}</p>
+            <h3 className="mt-4 text-xl font-bold text-neutral-900 group-hover:text-green-700 transition-colors duration-200">
+              {block.title}
+            </h3>
+            <p className="mt-2 text-base text-neutral-600 leading-relaxed">{block.text}</p>
           </div>
         ))}
       </div>
