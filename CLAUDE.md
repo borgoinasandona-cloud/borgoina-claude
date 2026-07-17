@@ -60,17 +60,29 @@ al momento del seed — da cambiare prima di condividere l'accesso).
 
 ## Deploy
 
-- Progetto Vercel: `terotero-s-projects/borgoina-claude`, collegato via `vercel link` (CLI, non da
-  GitHub — il collegamento automatico GitHub→Vercel non è riuscito: la GitHub App di Vercel non ha
-  accesso a `borgoinasandona-cloud/borgoina-claude`; per ora i deploy sono manuali via `vercel deploy --prod`)
-- URL produzione: https://borgoina-claude-coral.vercel.app
-- Variabili d'ambiente impostate su Vercel **solo per Production** (Preview aveva un bug della CLI
-  su `git_branch_required` che non si è risolto nemmeno con la sintassi suggerita dall'errore stesso —
-  da riprovare con una versione più recente della CLI, o impostarle a mano dalla dashboard se servono
-  deploy di anteprima con dati reali)
-- `.vercelignore` esclude `.env` e `materiale/` dall'upload (il primo deploy aveva incluso `.env` per
-  errore nel bundle sorgente — nessuna nuova fuga di segreti, erano già gli stessi valori messi
-  volontariamente nell'env store di Vercel, ma va comunque evitato)
+- **Progetto Vercel reale: `borgoina/borgoina-claude`** (team "Borgoina", owner account
+  `borgoinasandona@gmail.com` / username `borgoinasandona-5180`) — **non** `terotero-s-projects`
+  (quel progetto era un duplicato creato per errore in una sessione precedente e poi eliminato).
+  Collegato a GitHub (`borgoinasandona-cloud/borgoina-claude`, branch `main`): un push su `main`
+  fa partire il deploy da solo. **Il flusso normale è commit + push, non `vercel deploy`.**
+- URL produzione: https://borgoina-claude.vercel.app
+- Il mio account Vercel CLI di default (`dperissutti-5941`) **non è membro** del team `borgoina`
+  (piano Hobby, non si possono invitare membri). Per operare da CLI/API su questo progetto serve un
+  Access Token generato dall'account `borgoinasandona@gmail.com` (Settings → Tokens), passato con
+  `--token` (mai salvato su disco/nel repo)
+- **Tre problemi trovati e risolti sul progetto reale il 2026-07-17** (erano lì da quando il progetto
+  è stato creato, il sito non ha mai funzionato pubblicamente prima di questo):
+  1. `ssoProtection: "all_except_custom_domains"` bloccava l'accesso pubblico a tutti i domini
+     `*.vercel.app` (compreso quello di produzione, dato che non c'è ancora un dominio custom
+     collegato) — disattivata via API (`PATCH /v9/projects/{id}` con `ssoProtection: null`)
+  2. `framework: null` (Framework Preset "Other" invece di "Next.js") faceva sì che Vercel
+     deployasse solo la cartella `public/` come sito statico, **senza registrare nessuna funzione
+     serverless** — root cause del 404 su ogni pagina. File statici (es. `/logo/...`) funzionavano,
+     le route dell'app no: è il sintomo da riconoscere per questo bug. Corretto impostando
+     `framework: "nextjs"` via API
+  3. **Zero variabili d'ambiente** configurate su Production — impostate con gli stessi valori del
+     `.env` locale (stesso identico processo già fatto in precedenza sul progetto duplicato)
+- `.vercelignore` esclude `.env` e `materiale/` dall'upload
 
 (aggiornare questa checklist mano a mano, non lasciarla disallineata dal repo)
 

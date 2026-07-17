@@ -46,6 +46,8 @@ export function RichTextEditor({
   // Forza un re-render su ogni modifica/selezione: serve sia per l'hidden input
   // (che legge editor.getHTML() ad ogni render) sia per lo stato "attivo" dei bottoni.
   const [, forceRerender] = useState(0);
+  const [showSource, setShowSource] = useState(false);
+  const [sourceHtml, setSourceHtml] = useState(defaultValue || "");
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -80,9 +82,22 @@ export function RichTextEditor({
     editor?.chain().focus().setImage({ src: result.secureUrl }).run();
   }
 
+  function toggleSource() {
+    if (!editor) return;
+    if (showSource) {
+      editor.commands.setContent(sourceHtml, { emitUpdate: true });
+      setShowSource(false);
+    } else {
+      setSourceHtml(editor.getHTML());
+      setShowSource(true);
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center gap-1 rounded-t-md border border-neutral-300 bg-neutral-50 p-1.5">
+        {!showSource && (
+          <>
         <ToolbarButton
           label="Grassetto"
           active={editor?.isActive("bold")}
@@ -125,6 +140,22 @@ export function RichTextEditor({
           onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
         >
           H3
+        </ToolbarButton>
+        <ToolbarButton
+          label="Titolo 4"
+          active={editor?.isActive("heading", { level: 4 })}
+          disabled={!editor}
+          onClick={() => editor?.chain().focus().toggleHeading({ level: 4 }).run()}
+        >
+          H4
+        </ToolbarButton>
+        <ToolbarButton
+          label="Titolo 5"
+          active={editor?.isActive("heading", { level: 5 })}
+          disabled={!editor}
+          onClick={() => editor?.chain().focus().toggleHeading({ level: 5 }).run()}
+        >
+          H5
         </ToolbarButton>
 
         <span className="mx-1 h-5 w-px bg-neutral-300" />
@@ -186,10 +217,36 @@ export function RichTextEditor({
         >
           ↷
         </ToolbarButton>
+
+        <span className="mx-1 h-5 w-px bg-neutral-300" />
+          </>
+        )}
+        <ToolbarButton
+          label={showSource ? "Torna all'editor visuale" : "Visualizza codice sorgente"}
+          active={showSource}
+          disabled={!editor}
+          onClick={toggleSource}
+        >
+          {"</>"}
+        </ToolbarButton>
       </div>
 
-      <EditorContent editor={editor} />
-      <input type="hidden" name={name} value={editor?.getHTML() ?? defaultValue} />
+      {showSource ? (
+        <textarea
+          value={sourceHtml}
+          onChange={(event) => setSourceHtml(event.target.value)}
+          rows={16}
+          spellCheck={false}
+          className="w-full rounded-b-md border border-t-0 border-neutral-300 px-3 py-2 font-mono text-sm focus:outline-none"
+        />
+      ) : (
+        <EditorContent editor={editor} />
+      )}
+      <input
+        type="hidden"
+        name={name}
+        value={showSource ? sourceHtml : (editor?.getHTML() ?? defaultValue)}
+      />
     </div>
   );
 }
