@@ -41,7 +41,7 @@ export default function RootLayout({
       lang="it"
       className={`${bigShoulders.variable} ${workSans.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-cream text-ink">
+      <body className="flex min-h-full flex-col bg-white text-ink">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
