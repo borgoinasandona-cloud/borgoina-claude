@@ -28,7 +28,6 @@ export function Header() {
           ))}
         </nav>
       </div>
-      <div className="brick-coursing" />
     </header>
   );
 }

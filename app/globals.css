@@ -57,24 +57,6 @@ body {
   font-family: var(--font-mono), ui-monospace, monospace;
 }
 
-/* Signature motif: brick coursing — a striped band echoing the terracotta
-   brick + sky-blue mortar lines in the committee's own logo. Used sparingly
-   as a section divider, never as blanket decoration. */
-.brick-coursing {
-  height: 10px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--color-brick) 0px,
-    var(--color-brick) 38px,
-    var(--color-cream) 38px,
-    var(--color-cream) 42px,
-    var(--color-sky) 42px,
-    var(--color-sky) 80px,
-    var(--color-cream) 80px,
-    var(--color-cream) 84px
-  );
-}
-
 /* Niente `color` qui: viene sempre passato via utility Tailwind (es. "eyebrow text-sage-dark").
    Un color hardcoded qui vincerebbe sempre sull'utility, essendo CSS non-layered contro
    le utility di Tailwind (che sono dentro @layer utilities). */

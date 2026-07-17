@@ -52,7 +52,6 @@ export default async function IlBorgoPage() {
             </p>
           )}
         </div>
-        <div className="brick-coursing absolute inset-x-0 bottom-0" />
       </div>
 
       <div className="mx-auto mt-8 max-w-3xl px-4 py-12 text-center md:py-16">

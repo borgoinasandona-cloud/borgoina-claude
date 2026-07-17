@@ -41,7 +41,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-      <div className="brick-coursing absolute inset-x-0 bottom-0" />
     </section>
   );
 }
