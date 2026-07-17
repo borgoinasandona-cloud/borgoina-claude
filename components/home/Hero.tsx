@@ -6,8 +6,8 @@ export function Hero() {
     <section className="relative -mt-[76px] md:-mt-[88px] wide:-mt-[96px]">
       <div className="relative h-[480px] w-full md:h-[600px] wide:h-[680px]">
         <Image
-          src="/images/home/hero.jpg"
-          alt="Veduta aerea del Borgo INA di San Donà di Piave"
+          src="/images/home/home-slide-borgo1.jpg"
+          alt="Una via alberata del Borgo INA di San Donà di Piave"
           fill
           priority
           className="object-cover"
