@@ -13,7 +13,7 @@
   --color-sky: #4e8fa6;
   --color-sky-dark: #386e81;
   --color-cream: #f4f2f2;
-  --color-cream-deep: #f0e6d3;
+  --color-cream-deep: #f3efef;
   --color-ink: #2a2019;
   --color-ink-soft: #5c5148;
   --color-sage: #6e7b4f;
@@ -41,31 +41,37 @@ body {
   background: #ffffff;
   color: var(--color-ink);
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 1.0625rem; /* 17px */
+  font-size: 1.0625rem;
+  /* 17px */
   line-height: 1.65;
 }
 
 @media (min-width: 768px) {
   body {
-    font-size: 1.125rem; /* 18px */
+    font-size: 1.125rem;
+    /* 18px */
   }
 }
 
 @media (min-width: 1570px) {
   body {
-    font-size: 1.1875rem; /* 19px */
+    font-size: 1.1875rem;
+    /* 19px */
   }
 
   .prose-content h1 {
-    font-size: 2.75rem; /* 44px */
+    font-size: 2.75rem;
+    /* 44px */
   }
 
   .prose-content h2 {
-    font-size: 2.125rem; /* 34px */
+    font-size: 2.125rem;
+    /* 34px */
   }
 
   .prose-content h3 {
-    font-size: 1.65rem; /* 26px */
+    font-size: 1.65rem;
+    /* 26px */
   }
 }
 
@@ -98,15 +104,18 @@ body {
 }
 
 .prose-content h1 {
-  font-size: 2.25rem; /* 36px */
+  font-size: 2.25rem;
+  /* 36px */
 }
 
 .prose-content h2 {
-  font-size: 1.75rem; /* 28px */
+  font-size: 1.75rem;
+  /* 28px */
 }
 
 .prose-content h3 {
-  font-size: 1.4rem; /* 22px */
+  font-size: 1.4rem;
+  /* 22px */
 }
 
 .prose-content p {
