@@ -4,7 +4,7 @@ import Link from "next/link";
 export function Hero() {
   return (
     <section className="relative">
-      <div className="relative h-[480px] md:h-[580px] w-full">
+      <div className="relative h-[480px] w-full md:h-[600px]">
         <Image
           src="/images/home/hero.jpg"
           alt="Veduta aerea del Borgo INA di San Donà di Piave"
@@ -12,32 +12,36 @@ export function Hero() {
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/55 to-ink/20" />
       </div>
-      <div className="absolute inset-0 flex flex-col items-start justify-center px-4">
+      <div className="absolute inset-0 flex flex-col items-start justify-end px-4 pb-16 md:pb-20">
         <div className="mx-auto w-full max-w-5xl">
-          <h1 className="max-w-2xl text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white drop-shadow-sm leading-tight">
-            Comitato Borgo INA San Donà
+          <p className="eyebrow text-cream/80">Comitato civico di quartiere</p>
+          <h1 className="font-display mt-3 max-w-2xl text-5xl leading-[0.95] font-extrabold tracking-tight text-cream sm:text-6xl lg:text-7xl">
+            Borgo INA
+            <br />
+            San Donà
           </h1>
-          <p className="mt-4 max-w-xl text-lg sm:text-xl text-neutral-100/90 drop-shadow-sm leading-relaxed">
+          <p className="mt-5 max-w-xl text-lg text-cream/85 sm:text-xl">
             Il quartiere si racconta: notizie, iniziative e vita di comunità del Borgo INA.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/news"
-              className="rounded-lg bg-green-700 px-6 py-3 text-base font-semibold text-white shadow-md hover:bg-green-800 transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="rounded bg-brick px-6 py-3 text-base font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
             >
               Vai alla Bacheca
             </Link>
             <Link
               href="/chi-siamo"
-              className="rounded-lg bg-white/90 px-6 py-3 text-base font-semibold text-neutral-900 shadow-md hover:bg-white transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="rounded border border-cream/40 px-6 py-3 text-base font-semibold text-cream transition-colors hover:bg-cream/10"
             >
               Chi siamo
             </Link>
           </div>
         </div>
       </div>
+      <div className="brick-coursing absolute inset-x-0 bottom-0" />
     </section>
   );
 }

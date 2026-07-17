@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import type { Role } from "@prisma/client";
 
 /**
  * Config "edge-safe": nessun Prisma adapter e nessuna query DB qui dentro,
@@ -31,13 +32,13 @@ export const authConfig = {
     },
     jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role: string }).role;
+        token.role = (user as { role: Role }).role;
       }
       return token;
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as any;
+        session.user.role = token.role as Role;
       }
       return session;
     },

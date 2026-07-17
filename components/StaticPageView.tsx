@@ -9,18 +9,18 @@ export function StaticPageView({
 }) {
   return (
     <div>
-      <div className="bg-neutral-50 border-b border-neutral-200/60 py-16 px-4">
+      <div className="border-b border-ink/10 bg-cream-deep py-16 px-4">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+          <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
             {title}
           </h1>
         </div>
       </div>
-      <div className="mx-auto max-w-3xl px-4 py-12 text-neutral-800 leading-relaxed text-lg">
+      <div className="mx-auto max-w-3xl px-4 py-12 text-lg leading-relaxed text-ink">
         {content ? (
           <HtmlContent content={content} />
         ) : (
-          <p className="text-neutral-500">
+          <p className="text-ink-soft">
             Contenuto non ancora disponibile. Verrà pubblicato a breve dall&apos;amministrazione.
           </p>
         )}

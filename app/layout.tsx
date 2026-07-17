@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Big_Shoulders, Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bigShoulders = Big_Shoulders({
+  variable: "--font-display",
+  weight: ["700", "800", "900"],
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const workSans = Work_Sans({
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  weight: ["500", "600"],
   subsets: ["latin"],
 });
 
@@ -31,9 +39,9 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bigShoulders.variable} ${workSans.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col bg-cream text-ink">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

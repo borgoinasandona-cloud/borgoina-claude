@@ -15,23 +15,24 @@ export default async function ContattiPage() {
 
   return (
     <div>
-      <div className="bg-neutral-50 border-b border-neutral-200/60 py-16 px-4">
+      <div className="border-b border-ink/10 bg-cream-deep px-4 py-16">
         <div className="mx-auto max-w-5xl">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+          <p className="eyebrow text-brick">Scrivici</p>
+          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
             {staticPageTitles.contatti}
           </h1>
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
         <div className="grid gap-12 lg:grid-cols-5">
-          <div className="lg:col-span-3 text-neutral-800 text-lg leading-relaxed">
+          <div className="text-lg leading-relaxed text-ink lg:col-span-3">
             {page?.content ? (
               <HtmlContent content={page.content} />
             ) : (
-              <p className="text-neutral-600">
+              <p className="text-ink-soft">
                 Puoi scriverci a{" "}
-                <a href={`mailto:${siteConfig.contactEmail}`} className="text-green-700 underline">
+                <a href={`mailto:${siteConfig.contactEmail}`} className="font-semibold text-brick underline">
                   {siteConfig.contactEmail}
                 </a>{" "}
                 oppure usare il modulo a fianco.
@@ -39,8 +40,9 @@ export default async function ContattiPage() {
             )}
           </div>
           <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-neutral-900 mb-4">Inviaci un messaggio</h2>
+            <div className="rounded border border-ink/10 bg-white p-6 shadow-sm">
+              <p className="eyebrow text-brick">Modulo di contatto</p>
+              <h2 className="font-display mt-2 text-xl font-bold text-ink">Inviaci un messaggio</h2>
               <ContactForm />
             </div>
           </div>

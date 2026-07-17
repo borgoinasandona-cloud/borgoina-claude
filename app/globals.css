@@ -1,20 +1,43 @@
 @import "tailwindcss";
 
+/*
+  Palette grounded in the neighbourhood itself: INA-Casa post-war brick housing
+  (terracotta brick, sky-blue mortar lines — both already in the committee's own
+  logo), warm plaster/cream instead of clinical white, and a muted "orto" sage
+  for the shared-garden material. Not a generic civic-green template.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-brick: #b54a2a;
+  --color-brick-dark: #8a3a1f;
+  --color-brick-light: #e2793f;
+  --color-sky: #4e8fa6;
+  --color-sky-dark: #386e81;
+  --color-cream: #faf5ea;
+  --color-cream-deep: #f0e6d3;
+  --color-ink: #2a2019;
+  --color-ink-soft: #5c5148;
+  --color-sage: #6e7b4f;
+  --color-sage-dark: #55603c;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brick: var(--color-brick);
+  --color-brick-dark: var(--color-brick-dark);
+  --color-brick-light: var(--color-brick-light);
+  --color-sky: var(--color-sky);
+  --color-sky-dark: var(--color-sky-dark);
+  --color-cream: var(--color-cream);
+  --color-cream-deep: var(--color-cream-deep);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-sage: var(--color-sage);
+  --color-sage-dark: var(--color-sage-dark);
+  --font-sans: var(--font-sans);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-cream);
+  color: var(--color-ink);
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 1.0625rem; /* 17px */
   line-height: 1.65;
@@ -26,24 +49,62 @@ body {
   }
 }
 
+.font-display {
+  font-family: var(--font-display), "Arial Narrow", sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* Signature motif: brick coursing — a striped band echoing the terracotta
+   brick + sky-blue mortar lines in the committee's own logo. Used sparingly
+   as a section divider, never as blanket decoration. */
+.brick-coursing {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-brick) 0px,
+    var(--color-brick) 38px,
+    var(--color-cream) 38px,
+    var(--color-cream) 42px,
+    var(--color-sky) 42px,
+    var(--color-sky) 80px,
+    var(--color-cream) 80px,
+    var(--color-cream) 84px
+  );
+}
+
+/* Niente `color` qui: viene sempre passato via utility Tailwind (es. "eyebrow text-sage-dark").
+   Un color hardcoded qui vincerebbe sempre sull'utility, essendo CSS non-layered contro
+   le utility di Tailwind (che sono dentro @layer utilities). */
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .prose-content :is(h1, h2, h3, h4) {
-  color: #171717;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-family: var(--font-display), sans-serif;
+  color: var(--color-ink);
+  font-weight: 800;
+  letter-spacing: -0.01em;
   margin-top: 1.75em;
-  margin-bottom: 0.6em;
+  margin-bottom: 0.5em;
 }
 
 .prose-content h1 {
-  font-size: 1.875rem; /* 30px */
+  font-size: 2.25rem; /* 36px */
 }
 
 .prose-content h2 {
-  font-size: 1.5rem; /* 24px */
+  font-size: 1.75rem; /* 28px */
 }
 
 .prose-content h3 {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.4rem; /* 22px */
 }
 
 .prose-content p {
@@ -65,34 +126,33 @@ body {
 }
 
 .prose-content a {
-  color: #15803d;
+  color: var(--color-brick);
   text-decoration: underline;
   text-underline-offset: 4px;
-  font-weight: 500;
+  font-weight: 600;
   transition: color 0.2s;
 }
 
 .prose-content a:hover {
-  color: #166534;
+  color: var(--color-brick-dark);
 }
 
 .prose-content img {
   max-width: 100%;
   height: auto;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   margin: 2rem auto;
-  box-shadow: 0 4px 20px -2px rgba(0,0,0,0.08), 0 2px 8px -1px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px -2px rgba(42, 32, 25, 0.12), 0 2px 8px -1px rgba(42, 32, 25, 0.06);
+  border: 1px solid rgba(42, 32, 25, 0.08);
   display: block;
 }
 
 .prose-content blockquote {
-  border-left: 4px solid #15803d;
+  border-left: 4px solid var(--color-sky);
   padding-left: 1.25rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   font-style: italic;
-  color: #404040;
+  color: var(--color-ink-soft);
   font-size: 1.125em;
 }
-

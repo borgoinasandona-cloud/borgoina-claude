@@ -6,9 +6,9 @@ export function PostCard({ post }: { post: Post & { categories: Category[] } }) 
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="block overflow-hidden rounded-2xl border border-neutral-200/80 bg-white hover:shadow-lg hover:-translate-y-1 hover:border-neutral-300 transition duration-300 group"
+      className="group block overflow-hidden rounded border border-ink/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-lg"
     >
-      <div className="aspect-video w-full overflow-hidden bg-neutral-100">
+      <div className="aspect-video w-full overflow-hidden bg-cream-deep">
         {post.coverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -23,24 +23,22 @@ export function PostCard({ post }: { post: Post & { categories: Category[] } }) 
           {post.categories.map((category) => (
             <span
               key={category.id}
-              className="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-800"
+              className="font-mono rounded-sm bg-brick/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-brick uppercase"
             >
               {category.name}
             </span>
           ))}
         </div>
-        <h2 className="mt-3 text-xl font-bold text-neutral-900 group-hover:text-green-700 transition-colors duration-200 line-clamp-2">
+        <h2 className="font-display mt-3 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-brick line-clamp-2">
           {post.title}
         </h2>
         {post.publishedAt && (
-          <p className="mt-2 text-sm text-neutral-500">
+          <p className="font-mono mt-2 text-xs text-ink-soft">
             {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
           </p>
         )}
         {post.excerpt && (
-          <p className="mt-3 text-base text-neutral-600 line-clamp-3 leading-relaxed">
-            {post.excerpt}
-          </p>
+          <p className="mt-3 text-base leading-relaxed text-ink-soft line-clamp-3">{post.excerpt}</p>
         )}
       </div>
     </Link>

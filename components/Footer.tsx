@@ -6,40 +6,47 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-neutral-200 bg-neutral-50">
-      <div className="mx-auto max-w-5xl px-4 py-12 text-base text-neutral-600">
-        <Image
-          src="/logo/logo-vert.png"
-          alt={siteConfig.name}
-          width={295}
-          height={259}
-          className="h-20 md:h-24 w-auto"
-        />
-        <p className="mt-6 font-semibold text-neutral-800 text-lg">Comitato {siteConfig.name}</p>
-        <p className="mt-2">
-          <a href={`mailto:${siteConfig.contactEmail}`} className="hover:text-green-700">
-            {siteConfig.contactEmail}
-          </a>
-        </p>
-        {siteConfig.instagramUrl && (
-          <p className="mt-1">
-            <a
-              href={siteConfig.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-green-700"
-            >
-              Instagram
-            </a>
-          </p>
-        )}
-        <p className="mt-4">
-          <Link href="/contatti" className="hover:text-green-700">
-            Contatti
-          </Link>
-        </p>
-        <p className="mt-6 text-xs text-neutral-400">
-          © {year} Comitato {siteConfig.name}
+    <footer className="mt-auto bg-ink text-cream/80">
+      <div className="brick-coursing" />
+      <div className="mx-auto max-w-5xl px-4 py-14">
+        <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
+          <div>
+            <Image
+              src="/logo/logo-vert-white.png"
+              alt={siteConfig.name}
+              width={295}
+              height={259}
+              className="h-20 w-auto md:h-24"
+            />
+            <p className="eyebrow mt-5 text-cream/50">Comitato civico di quartiere</p>
+          </div>
+          <div className="space-y-3 text-sm sm:text-right">
+            <p className="eyebrow text-brick-light">Contatti</p>
+            <p>
+              <a href={`mailto:${siteConfig.contactEmail}`} className="transition-colors hover:text-white">
+                {siteConfig.contactEmail}
+              </a>
+            </p>
+            <p>Via Luigi Cadorna 33, 30027 San Donà di Piave (VE)</p>
+            <div className="flex flex-col gap-1 sm:items-end">
+              {siteConfig.instagramUrl && (
+                <a
+                  href={siteConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-white"
+                >
+                  Instagram
+                </a>
+              )}
+              <Link href="/contatti" className="transition-colors hover:text-white">
+                Scrivici →
+              </Link>
+            </div>
+          </div>
+        </div>
+        <p className="mt-12 border-t border-cream/15 pt-6 text-xs text-cream/50">
+          © {year} Comitato {siteConfig.name} — associazione registrata, San Donà di Piave
         </p>
       </div>
     </footer>

@@ -2,84 +2,13 @@ import type { Metadata } from "next";
 import { getPage, staticPageTitles } from "@/lib/pages";
 import { StaticPageView } from "@/components/StaticPageView";
 import { HtmlContent } from "@/components/HtmlContent";
+import { parseIntro, parseSections } from "@/lib/html-sections";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: staticPageTitles["il-borgo"],
 };
-
-interface Section {
-  title: string;
-  textHtml: string;
-  images: { src: string; alt: string }[];
-}
-
-function parseImagesFromHtml(html: string) {
-  const imgTagRegex = /<img\s+[^>]*>/gi;
-  const images: { src: string; alt: string; rawTag: string }[] = [];
-  let match;
-  while ((match = imgTagRegex.exec(html)) !== null) {
-    const rawTag = match[0];
-    const srcMatch = /src="([^"]+)"/i.exec(rawTag) || /src='([^']+)'/i.exec(rawTag);
-    const altMatch = /alt="([^"]*)"/i.exec(rawTag) || /alt='([^']*)'/i.exec(rawTag);
-    if (srcMatch) {
-      images.push({
-        src: srcMatch[1],
-        alt: altMatch ? altMatch[1] : "",
-        rawTag,
-      });
-    }
-  }
-  return images;
-}
-
-function parseSections(html: string): Section[] {
-  const parts = html.split(/<h[23][^>]*>/);
-  const sections: Section[] = [];
-
-  for (let i = 1; i < parts.length; i++) {
-    const part = parts[i];
-    const subParts = part.split(/<\/h[23]>/);
-    if (subParts.length < 2) continue;
-
-    const title = subParts[0].trim();
-    const bodyHtml = subParts.slice(1).join("</h[23]>").trim();
-
-    const parsedImages = parseImagesFromHtml(bodyHtml);
-    let textHtml = bodyHtml;
-    for (const img of parsedImages) {
-      textHtml = textHtml.replace(img.rawTag, "");
-    }
-
-    sections.push({
-      title,
-      textHtml: textHtml.trim(),
-      images: parsedImages,
-    });
-  }
-
-  return sections;
-}
-
-function parseIntro(html: string) {
-  const firstH3Index = html.search(/<h[23][^>]*>/i);
-  const introHtml = firstH3Index === -1 ? html : html.substring(0, firstH3Index);
-
-  const images = parseImagesFromHtml(introHtml);
-  
-  let text = introHtml;
-  for (const img of images) {
-    text = text.replace(img.rawTag, "");
-  }
-  
-  const cleanText = text.replace(/<[^>]*>/g, "").trim();
-
-  return {
-    text: cleanText,
-    image: images[0] ? images[0].src : null,
-  };
-}
 
 export default async function IlBorgoPage() {
   const page = await getPage("il-borgo");
@@ -91,106 +20,82 @@ export default async function IlBorgoPage() {
   const intro = parseIntro(page.content);
   const sections = parseSections(page.content);
 
-  // Fallback to default layout if parsing fails or page structure is different
+  // Fallback al layout semplice se il contenuto non ha la struttura attesa (4 sezioni).
   if (sections.length < 4) {
     return <StaticPageView title={staticPageTitles["il-borgo"]} content={page.content} />;
   }
 
-  const section0 = sections[0];
-  const section1 = sections[1];
-  const section2 = sections[2];
-  const section3 = sections[3];
-  const remainingSections = sections.slice(4);
+  const [section0, section1, section2, section3, ...remainingSections] = sections;
 
   return (
     <div>
-      {/* Page Hero Banner */}
-      <div className="relative h-[360px] md:h-[460px] flex items-center justify-center overflow-hidden bg-neutral-900 text-white px-4">
+      <div className="relative flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 text-cream md:h-[460px]">
         {intro.image && (
           <div className="absolute inset-0 z-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={intro.image}
               alt={staticPageTitles["il-borgo"]}
-              className="h-full w-full object-cover opacity-40 scale-105 filter blur-[1px]"
+              className="h-full w-full scale-105 object-cover opacity-40 blur-[1px]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-neutral-900/40 to-neutral-950/50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/60" />
           </div>
         )}
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight drop-shadow-md leading-tight">
+        <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center">
+          <p className="eyebrow text-brick-light">Comitato civico di quartiere</p>
+          <h1 className="font-display text-5xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-6xl lg:text-7xl">
             {staticPageTitles["il-borgo"]}
           </h1>
           {intro.text && (
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-200/90 leading-relaxed font-medium drop-shadow-sm px-4">
+            <p className="mx-auto max-w-2xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl">
               {intro.text}
             </p>
           )}
         </div>
+        <div className="brick-coursing absolute inset-x-0 bottom-0" />
       </div>
 
-      {/* Section 0: Introduction Title Banner */}
-      <div className="text-center max-w-3xl mx-auto py-12 md:py-16 px-4 mt-8">
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+      <div className="mx-auto mt-8 max-w-3xl px-4 py-12 text-center md:py-16">
+        <p className="eyebrow text-brick">Storia e presente</p>
+        <h2 className="font-display mt-3 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
           {section0.title}
         </h2>
-        <div className="mt-4 text-lg text-neutral-600 leading-relaxed">
+        <div className="mt-4 text-lg leading-relaxed text-ink-soft">
           <HtmlContent content={section0.textHtml} />
         </div>
       </div>
 
-      {/* Columns Section (Section 1 and 2) */}
       <div className="mx-auto max-w-5xl px-4 pb-16 md:pb-24">
         <div className="grid gap-12 md:grid-cols-2">
-          {/* Column 1 */}
-          <div className="space-y-6 flex flex-col justify-between h-full">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-neutral-900">{section1.title}</h3>
-              <div className="text-neutral-600 leading-relaxed">
-                <HtmlContent content={section1.textHtml} />
+          {[section1, section2].map((section) => (
+            <div key={section.title} className="flex h-full flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <h3 className="font-display text-2xl font-bold text-ink">{section.title}</h3>
+                <div className="text-ink-soft leading-relaxed">
+                  <HtmlContent content={section.textHtml} />
+                </div>
               </div>
+              {section.images[0] && (
+                <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={section.images[0].src}
+                    alt={section.images[0].alt || section.title}
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+              )}
             </div>
-            {section1.images[0] && (
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-neutral-200/60 mt-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={section1.images[0].src}
-                  alt={section1.images[0].alt || section1.title}
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Column 2 */}
-          <div className="space-y-6 flex flex-col justify-between h-full">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-neutral-900">{section2.title}</h3>
-              <div className="text-neutral-600 leading-relaxed">
-                <HtmlContent content={section2.textHtml} />
-              </div>
-            </div>
-            {section2.images[0] && (
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-neutral-200/60 mt-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={section2.images[0].src}
-                  alt={section2.images[0].alt || section2.title}
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            )}
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Alternating Section 3 */}
-      <div className="bg-neutral-50 border-t border-neutral-200/40 py-16 md:py-20 px-4">
+      <div className="bg-cream-deep px-4 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <div className="grid gap-12 md:grid-cols-2 items-center">
+          <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="order-2 md:order-1">
               {section3.images[0] && (
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-neutral-200/60">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={section3.images[0].src}
@@ -201,10 +106,10 @@ export default async function IlBorgoPage() {
               )}
             </div>
             <div className="order-1 md:order-2">
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+              <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
                 {section3.title}
               </h2>
-              <div className="mt-4 text-neutral-600 leading-relaxed">
+              <div className="mt-4 text-ink-soft leading-relaxed">
                 <HtmlContent content={section3.textHtml} />
               </div>
             </div>
@@ -212,25 +117,24 @@ export default async function IlBorgoPage() {
         </div>
       </div>
 
-      {/* Other extra sections if any */}
       {remainingSections.length > 0 && (
-        <div className="py-16 md:py-20 px-4">
+        <div className="px-4 py-16 md:py-20">
           <div className="mx-auto max-w-5xl space-y-16">
             {remainingSections.map((section, idx) => {
               const isEven = idx % 2 === 0;
               return (
-                <div key={idx} className="grid gap-12 md:grid-cols-2 items-center">
+                <div key={section.title} className="grid items-center gap-12 md:grid-cols-2">
                   <div className={isEven ? "order-1" : "order-1 md:order-2"}>
-                    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+                    <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink leading-tight md:text-4xl">
                       {section.title}
                     </h2>
-                    <div className="mt-4 text-neutral-600 leading-relaxed">
+                    <div className="mt-4 text-ink-soft leading-relaxed">
                       <HtmlContent content={section.textHtml} />
                     </div>
                   </div>
                   <div className={isEven ? "order-2" : "order-2 md:order-1"}>
                     {section.images[0] && (
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md border border-neutral-200/60">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={section.images[0].src}
