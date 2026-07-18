@@ -37,7 +37,8 @@ export function getPostByIdForAdmin(id: string) {
 
 export function getAllPostsForAdmin() {
   return prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
+    // Bozze (publishedAt null) in fondo, non in cima.
+    orderBy: { publishedAt: { sort: "desc", nulls: "last" } },
     include: { categories: true },
   });
 }
