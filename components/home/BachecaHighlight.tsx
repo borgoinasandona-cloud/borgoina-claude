@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { cloudinaryUrl } from "@/lib/cloudinary";
+import { hasGallery } from "@/lib/posts";
+import { GalleryBadge } from "@/components/GalleryBadge";
 import type { Category, Post } from "@prisma/client";
 
-export function BachecaHighlight({ post }: { post: (Post & { categories: Category[] }) | null }) {
+type FeaturedPost = Post & { categories: Category[]; _count: { images: number } };
+
+export function BachecaHighlight({ post }: { post: FeaturedPost | null }) {
   return (
     <section className="mx-auto max-w-5xl px-4 py-16 md:py-24 wide:max-w-6xl">
       <p className="eyebrow text-brick wide:text-sm">In evidenza</p>
@@ -14,7 +18,7 @@ export function BachecaHighlight({ post }: { post: (Post & { categories: Categor
           href={`/news/${post.slug}`}
           className="group mt-8 flex flex-col overflow-hidden rounded border border-ink/10 bg-white transition duration-300 hover:border-ink/20 hover:shadow-lg sm:flex-row"
         >
-          <div className="aspect-video w-full shrink-0 overflow-hidden bg-cream-deep sm:w-[400px]">
+          <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-cream-deep sm:w-[400px]">
             {post.coverImage && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -22,6 +26,11 @@ export function BachecaHighlight({ post }: { post: (Post & { categories: Categor
                 alt={post.title}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
+            )}
+            {hasGallery(post) && (
+              <div className="absolute right-2 bottom-2">
+                <GalleryBadge />
+              </div>
             )}
           </div>
           <div className="flex flex-col justify-center p-6 sm:py-8 sm:pr-8">

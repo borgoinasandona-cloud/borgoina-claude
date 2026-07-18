@@ -80,24 +80,27 @@ export default async function NewsDetailPage({
               href={post.externalLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-brick underline"
+              className="inline-flex items-center gap-2 rounded bg-brick px-4 py-2 text-base font-semibold text-cream no-underline shadow-md transition-colors hover:bg-brick-dark"
             >
-              Vedi la galleria completa
+              🖼️ Vedi la galleria completa
             </a>
           </p>
         )}
 
         {post.images.length > 0 && (
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {post.images.map((image) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={image.id}
-                src={image.url}
-                alt={image.alt ?? post.title}
-                className="aspect-square w-full rounded border border-ink/10 object-cover"
-              />
-            ))}
+          <div className="mt-8">
+            <p className="eyebrow text-brick">🖼️ Galleria</p>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {post.images.map((image) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={image.id}
+                  src={image.url}
+                  alt={image.alt ?? post.title}
+                  className="aspect-square w-full rounded border border-ink/10 object-cover"
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

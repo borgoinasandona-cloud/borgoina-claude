@@ -1,14 +1,20 @@
 import Link from "next/link";
 import { cloudinaryUrl } from "@/lib/cloudinary";
+import { hasGallery } from "@/lib/posts";
+import { GalleryBadge } from "@/components/GalleryBadge";
 import type { Category, Post } from "@prisma/client";
 
-export function PostCard({ post }: { post: Post & { categories: Category[] } }) {
+export function PostCard({
+  post,
+}: {
+  post: Post & { categories: Category[]; _count: { images: number } };
+}) {
   return (
     <Link
       href={`/news/${post.slug}`}
       className="group block overflow-hidden rounded border border-ink/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-lg"
     >
-      <div className="aspect-video w-full overflow-hidden bg-cream-deep">
+      <div className="relative aspect-video w-full overflow-hidden bg-cream-deep">
         {post.coverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -16,6 +22,11 @@ export function PostCard({ post }: { post: Post & { categories: Category[] } }) 
             alt={post.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
+        )}
+        {hasGallery(post) && (
+          <div className="absolute right-2 bottom-2">
+            <GalleryBadge />
+          </div>
         )}
       </div>
       <div className="p-5">

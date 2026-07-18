@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
 
+export function hasGallery(post: { externalLink: string | null; _count: { images: number } }) {
+  return post._count.images > 0 || Boolean(post.externalLink);
+}
+
 export function getPublishedPosts({ categorySlug }: { categorySlug?: string } = {}) {
   return prisma.post.findMany({
     where: {
@@ -8,7 +12,7 @@ export function getPublishedPosts({ categorySlug }: { categorySlug?: string } = 
       ...(categorySlug ? { categories: { some: { slug: categorySlug } } } : {}),
     },
     orderBy: { publishedAt: "desc" },
-    include: { categories: true },
+    include: { categories: true, _count: { select: { images: true } } },
   });
 }
 
@@ -17,7 +21,7 @@ export function getLatestPublishedPosts(take: number) {
     where: { visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() } },
     orderBy: { publishedAt: "desc" },
     take,
-    include: { categories: true },
+    include: { categories: true, _count: { select: { images: true } } },
   });
 }
 
@@ -25,7 +29,7 @@ export function getFeaturedPost() {
   return prisma.post.findFirst({
     where: { visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() }, featured: true },
     orderBy: { publishedAt: "desc" },
-    include: { categories: true },
+    include: { categories: true, _count: { select: { images: true } } },
   });
 }
 

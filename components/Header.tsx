@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { navLinks, siteConfig } from "@/lib/site-config";
+import { InstagramIcon } from "@/components/InstagramIcon";
 
 // Pagine il cui hero è una foto a piena larghezza (non una fascia di colore piatto):
 // solo lì l'header può stare trasparente sopra l'immagine finché non si scrolla.
@@ -49,7 +50,7 @@ export function Header() {
             priority
           />
         </Link>
-        <nav className="flex flex-wrap gap-x-6 gap-y-1">
+        <nav className="flex flex-wrap items-center gap-x-6 gap-y-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -61,6 +62,19 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          {siteConfig.instagramUrl && (
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className={`transition-colors ${
+                overlay ? "text-cream/90 hover:text-white" : "text-ink-soft hover:text-brick"
+              }`}
+            >
+              <InstagramIcon />
+            </a>
+          )}
         </nav>
       </div>
     </header>

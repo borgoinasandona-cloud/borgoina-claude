@@ -6,7 +6,6 @@ export const siteConfig = {
 };
 
 export const navLinks = [
-  { href: "/", label: "Home" },
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
   { href: "/news", label: "Bacheca" },

@@ -2,7 +2,9 @@ import Link from "next/link";
 import { PostCard } from "@/components/PostCard";
 import type { Category, Post } from "@prisma/client";
 
-export function BachecaPreview({ posts }: { posts: (Post & { categories: Category[] })[] }) {
+type PreviewPost = Post & { categories: Category[]; _count: { images: number } };
+
+export function BachecaPreview({ posts }: { posts: PreviewPost[] }) {
   return (
     <section className="mx-auto max-w-5xl px-4 py-16 md:py-24 wide:max-w-6xl">
       <div className="flex items-end justify-between">
