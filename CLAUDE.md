@@ -32,27 +32,58 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
   `sanitize-html` (puro JS, nessuna dipendenza nativa/jsdom). Se serve sanitizzare HTML lato server,
   usare `sanitize-html` o testare sempre con un deploy reale prima di considerarlo verificato —
   `next build`/`next start` locali non bastano a intercettare questa classe di bug
+- **`package.json` ha `postinstall: "prisma generate"`, non toglierlo**: senza, un deploy Vercel dopo
+  una modifica a `schema.prisma` (con `package.json`/lockfile invariati) può riusare `node_modules`
+  dalla cache con un Prisma Client stantio e fallire il build con errori di tipo su campi che esistono
+  nello schema ma non nel client generato
+- **Attenzione alla cascata CSS in `app/globals.css`**: regole CSS "semplici" (fuori da `@layer`)
+  battono sempre le utility Tailwind di `@layer utilities`, indipendentemente dall'ordine nel markup
+  — successo due volte in questa sessione (un colore hardcoded su `.eyebrow` che sovrascriveva ogni
+  `text-*` usato insieme, e lo sfondo del `body` che non rispondeva a `bg-white`). Se una utility
+  Tailwind sembra "non applicarsi", controllare prima le regole non-layered in globals.css
 
 ## Stato attuale
 
 - [x] Repo inizializzato
 - [x] Schema Prisma da PLANNING.md creato (Account/Session/VerificationToken aggiunti per Auth.js),
-      **migrato su Neon** (`DATABASE_URL` in `.env`, migrazione `20260716153602_init` applicata)
+      **migrato su Neon** (`DATABASE_URL` in `.env`, migrazione `20260716153602_init` applicata).
+      Aggiunto anche `Post.featured Boolean @default(false)` (migrazione `20260718104149_add_post_featured`,
+      non prevista nel bozza originale di PLANNING.md — vedi sezione "In evidenza" più sotto)
 - [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
-      `api/upload/sign`) implementato; non ancora verificato un upload reale da UI
+      `api/upload/sign`) implementato; usato con successo per caricare le cover dei 16 articoli
+      Bacheca importati (via script una tantum, non ancora testato un upload reale dalla UI admin)
 - [x] Setup Resend — chiave reale in `.env`; invio email non ancora verificato end-to-end;
       "from" usa ancora il dominio sandbox `onboarding@resend.dev` — **da verificare un dominio
       proprio su Resend prima di andare live**, altrimenti le email rischiano lo spam
 - [x] Auth admin (Credentials) — verificato end-to-end (login con credenziali corrette → sessione
       valida → accesso a `/admin`; credenziali sbagliate e utenti anonimi vengono respinti)
-- [x] Pagine statiche (Il Borgo, Chi Siamo, Contatti) — pubbliche + editor admin, contenuto vuoto finché
-      non arrivano i testi reali da Dario
-- [x] CRUD Bacheca (post + categorie + immagini) — codice completo, DB live ma non ancora popolato
-      da UI (nessun articolo di prova creato)
-- [ ] Import contenuti dal sito attuale — in `materiale/` ci sono solo immagini, non testi;
-      `npm run cloudinary:import` è pronto per caricare le immagini su Cloudinary quando servirà
+- [x] Pagine statiche (Il Borgo, Chi Siamo, Contatti) — pubbliche + editor admin. **Il Borgo e Chi
+      Siamo hanno contenuto reale pubblicato** (testi/immagini recuperati dal sito attuale e scritti
+      su DB). **Contatti resta senza contenuto CMS** (mostra solo l'email statica + form) — nessun
+      testo introduttivo fornito finora
+- [x] CRUD Bacheca (post + categorie + immagini) — codice completo, **popolata con i 16 articoli
+      importati dal listino del sito attuale** (cover, titolo, estratto, categoria — vedi sotto)
+- [x] Import contenuti dal sito attuale — completato per Il Borgo, Chi Siamo e i 16 articoli Bacheca
+      (cover + titolo + estratto + categoria, dalla pagina `/it/news/` del sito attuale); immagini
+      caricate su Cloudinary via script una tantum (poi cancellati, non è rimasta pipeline riusabile).
+      `npm run cloudinary:import` resta disponibile per import bulk di cartelle da `materiale/`
 - [x] Form contatti → Resend — pagina `/contatti` con form (Server Action), salva anche su
       `ContactMessage` come fallback se l'invio email fallisce; invio email reale non ancora testato
+- [x] Redesign front-end pubblico applicando la skill `.claude/skills/frontend-design/` — palette
+      brick/terracotta ispirata al logo e all'architettura in mattoni del quartiere, font Big
+      Shoulders/Work Sans/IBM Plex Mono, breakpoint custom `wide` a 1570px per monitor grandi,
+      sfondo sito bianco con `--color-cream` portato a `#f4f2f2`
+- [x] Header pubblico: overlay trasparente con logo bianco sopra le pagine con hero-foto (`/`,
+      `/il-borgo`), diventa solido allo scroll; link "Home" rimosso (resta il logo cliccabile),
+      icona Instagram a destra (link da `NEXT_PUBLIC_INSTAGRAM_URL`); sotto `md` il menu si nasconde
+      in un hamburger (`components/MenuIcons.tsx`) che forza l'header in versione solida quando aperto
+- [x] Badge "🖼️ Galleria" sulle card/articoli Bacheca che hanno immagini in galleria o `externalLink`
+      (`lib/posts.ts` → `hasGallery()`, `components/GalleryBadge.tsx`)
+- [x] Campo "In evidenza" su `Post` (admin: checkbox in `PostForm.tsx`) — se true, l'articolo appare
+      nella sezione "Il Borgo utile" della home al posto del più recente (`getFeaturedPost()` in
+      `lib/posts.ts`, con fallback al post più recente se nessuno è marcato)
+- [x] Admin: nav raggruppata in "Pagine" (Il Borgo/Chi siamo/Contatti) e "Articoli" (Bacheca/Categorie);
+      lista Bacheca ordinata per data di pubblicazione decrescente
 - [ ] Fase 2: Google OAuth + area riservata
 
 Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`

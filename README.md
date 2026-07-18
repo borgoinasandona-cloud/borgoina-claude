@@ -49,5 +49,7 @@ Cartella asset fornita da Dario:
 - `/materiale/loghi` — PNG trasparenti (+ SVG se disponibili)
 - `/materiale/Immagini-sito` - Foto recuperate dal sito attuale (`npm run cloudinary:import` le carica tutte
   su Cloudinary e salva la mappatura path → public_id in `scripts/cloudinary-import-results.json`)
-- Testi pagine statiche (Il Borgo, Chi Siamo, Contatti) e tutti gli articoli della Bacheca, con categoria e data
-  — da fornire, non ancora presenti nel repo
+- Testi pagine statiche: **Il Borgo e Chi Siamo importati e pubblicati** (contenuto + immagini dal sito
+  attuale); **Contatti resta senza testo introduttivo** (mostra solo l'email statica + form)
+- Articoli Bacheca: **16 articoli importati** dal listino `/it/news/` del sito attuale (cover, titolo,
+  estratto, categoria) — vedi CLAUDE.md per lo stato aggiornato

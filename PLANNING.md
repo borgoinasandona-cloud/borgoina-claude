@@ -73,7 +73,7 @@ model Page {
   id        String   @id @default(cuid())
   slug      String   @unique   // "il-borgo" | "chi-siamo" | "contatti"
   title     String
-  content   String   @db.Text
+  content   String   @db.Text   // HTML (editor WYSIWYG, non Markdown — vedi CLAUDE.md)
   updatedAt DateTime @updatedAt
 }
 
@@ -82,10 +82,11 @@ model Post {
   slug         String      @unique
   title        String
   excerpt      String?
-  content      String      @db.Text
+  content      String      @db.Text   // HTML (editor WYSIWYG, non Markdown)
   coverImage   String?     // Cloudinary public_id
   externalLink String?     // es. link galleria Google Photos
   publishedAt  DateTime?
+  featured     Boolean     @default(false)   // se true, evidenziato in home al posto del più recente
   visibility   Visibility  @default(PUBLIC)
   categories   Category[]
   images       PostImage[]
