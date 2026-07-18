@@ -36,9 +36,9 @@ export default async function ChiSiamoPage() {
             <img
               src={intro.image}
               alt={staticPageTitles["chi-siamo"]}
-              className="h-full w-full scale-105 object-cover opacity-40 blur-[1px]"
+              className="h-full w-full scale-105 object-cover opacity-65 blur-[1px]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/30 to-ink/35" />
           </div>
         )}
         <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center wide:max-w-5xl">
