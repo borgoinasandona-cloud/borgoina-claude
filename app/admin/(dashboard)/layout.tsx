@@ -16,8 +16,13 @@ const adminNav: AdminNavItem[] = [
       { href: "/admin/pages/contatti", label: "Contatti" },
     ],
   },
-  { href: "/admin/posts", label: "Bacheca" },
-  { href: "/admin/categories", label: "Categorie" },
+  {
+    group: "Articoli",
+    items: [
+      { href: "/admin/posts", label: "Bacheca" },
+      { href: "/admin/categories", label: "Categorie" },
+    ],
+  },
 ];
 
 export default async function AdminDashboardLayout({
