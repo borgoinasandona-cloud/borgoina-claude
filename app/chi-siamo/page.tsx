@@ -82,7 +82,7 @@ export default async function ChiSiamoPage() {
                     {index === 0 && (
                       <div className="mt-6">
                         <Link
-                          href="/news"
+                          href="/news/altra-voce"
                           className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
                         >
                           Vedi la gallery
