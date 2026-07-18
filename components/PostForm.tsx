@@ -137,6 +137,21 @@ export function PostForm({
       </div>
 
       <div>
+        <label className="inline-flex items-center gap-2 text-sm font-medium text-neutral-700">
+          <input
+            type="checkbox"
+            name="featured"
+            defaultChecked={post?.featured ?? false}
+          />
+          In evidenza
+        </label>
+        <p className="mt-1 text-xs text-neutral-500">
+          Mostra questo articolo nella sezione &quot;In evidenza&quot; della home page pubblica. Se più
+          articoli sono segnati, viene mostrato il più recente tra questi.
+        </p>
+      </div>
+
+      <div>
         <label htmlFor="externalLink" className="block text-sm font-medium text-neutral-700">
           Link esterno (es. galleria Google Photos)
         </label>

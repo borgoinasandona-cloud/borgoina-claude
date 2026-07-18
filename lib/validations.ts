@@ -46,6 +46,7 @@ export const postSchema = z.object({
   coverImage: z.string().trim().optional().or(z.literal("")),
   externalLink: z.string().trim().url("URL non valida").optional().or(z.literal("")),
   publishedAt: z.string().optional().or(z.literal("")),
+  featured: z.boolean().default(false),
   visibility: z.enum(["PUBLIC", "PRIVATE"]).default("PUBLIC"),
   categoryIds: z.array(z.string()).default([]),
   images: z.array(postImageSchema).default([]),

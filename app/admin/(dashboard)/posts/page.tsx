@@ -23,7 +23,14 @@ export default async function AdminPostsPage() {
         {posts.map((post) => (
           <li key={post.id} className="flex items-center justify-between py-3">
             <div>
-              <p className="font-medium text-neutral-900">{post.title}</p>
+              <p className="flex items-center gap-2 font-medium text-neutral-900">
+                {post.title}
+                {post.featured && (
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                    In evidenza
+                  </span>
+                )}
+              </p>
               <p className="text-xs text-neutral-500">
                 /{post.slug} · {post.visibility === "PUBLIC" ? "Pubblico" : "Privato"} ·{" "}
                 {post.publishedAt

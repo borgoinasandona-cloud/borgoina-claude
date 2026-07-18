@@ -37,6 +37,7 @@ function parsePostFormData(formData: FormData) {
     coverImage: formData.get("coverImage") || "",
     externalLink: formData.get("externalLink") || "",
     publishedAt: formData.get("publishedAt") || "",
+    featured: formData.get("featured") === "on",
     visibility: formData.get("visibility") || "PUBLIC",
     categoryIds: formData.getAll("categoryIds"),
     images,

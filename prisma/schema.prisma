@@ -82,6 +82,7 @@ model Post {
   coverImage   String? // Cloudinary public_id
   externalLink String? // es. link galleria Google Photos
   publishedAt  DateTime?
+  featured     Boolean     @default(false)
   visibility   Visibility  @default(PUBLIC)
   categories   Category[]
   images       PostImage[]

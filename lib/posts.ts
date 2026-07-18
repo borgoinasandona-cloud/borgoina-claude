@@ -21,6 +21,14 @@ export function getLatestPublishedPosts(take: number) {
   });
 }
 
+export function getFeaturedPost() {
+  return prisma.post.findFirst({
+    where: { visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() }, featured: true },
+    orderBy: { publishedAt: "desc" },
+    include: { categories: true },
+  });
+}
+
 export function getPublishedPostBySlug(slug: string) {
   return prisma.post.findFirst({
     where: { slug, visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() } },
