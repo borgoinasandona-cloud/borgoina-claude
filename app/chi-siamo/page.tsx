@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getPage, staticPageTitles } from "@/lib/pages";
 import { StaticPageView } from "@/components/StaticPageView";
 import { HtmlContent } from "@/components/HtmlContent";
-import { parseSections } from "@/lib/html-sections";
+import { parseIntro, parseSections } from "@/lib/html-sections";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,7 @@ export default async function ChiSiamoPage() {
     return <StaticPageView title={staticPageTitles["chi-siamo"]} content={page?.content} />;
   }
 
+  const intro = parseIntro(page.content);
   const sections = parseSections(page.content);
 
   if (sections.length === 0) {
@@ -28,12 +29,28 @@ export default async function ChiSiamoPage() {
 
   return (
     <div>
-      <div className="border-b border-ink/10 bg-cream-deep px-4 py-16">
-        <div className="mx-auto max-w-5xl wide:max-w-6xl">
-          <p className="eyebrow text-brick wide:text-sm">Comitato civico di quartiere</p>
-          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
+      <div className="relative -mt-[76px] flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 pt-[76px] text-cream md:-mt-[88px] md:h-[460px] md:pt-[88px] wide:-mt-[96px] wide:pt-[96px]">
+        {intro.image && (
+          <div className="absolute inset-0 z-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={intro.image}
+              alt={staticPageTitles["chi-siamo"]}
+              className="h-full w-full scale-105 object-cover opacity-40 blur-[1px]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/60" />
+          </div>
+        )}
+        <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center wide:max-w-5xl">
+          <p className="eyebrow text-brick-light wide:text-sm">Comitato civico di quartiere</p>
+          <h1 className="font-display text-5xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-6xl lg:text-7xl wide:text-8xl">
             {staticPageTitles["chi-siamo"]}
           </h1>
+          {intro.text && (
+            <p className="mx-auto max-w-2xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl wide:max-w-3xl wide:text-2xl">
+              {intro.text}
+            </p>
+          )}
         </div>
       </div>
 

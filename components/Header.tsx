@@ -10,10 +10,11 @@ import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
 
 // Pagine il cui hero è una foto a piena larghezza (non una fascia di colore piatto):
 // solo lì l'header può stare trasparente sopra l'immagine finché non si scrolla.
-// Nota: /il-borgo ha questo hero solo quando il contenuto CMS ha la struttura attesa
-// (vedi app/il-borgo/page.tsx) — se in futuro va in fallback su StaticPageView, l'header
-// si comporterebbe comunque come se ci fosse un hero foto per quell'istante iniziale.
-const HERO_IMAGE_PATHS = new Set(["/", "/il-borgo"]);
+// Nota: /il-borgo e /chi-siamo hanno questo hero solo quando il contenuto CMS ha la
+// struttura attesa (vedi le rispettive app/*/page.tsx) — se in futuro vanno in fallback
+// su StaticPageView, l'header si comporterebbe comunque come se ci fosse un hero foto
+// per quell'istante iniziale.
+const HERO_IMAGE_PATHS = new Set(["/", "/il-borgo", "/chi-siamo"]);
 
 export function Header() {
   const pathname = usePathname();
