@@ -36,7 +36,11 @@ export function Footer() {
                 {siteConfig.contactEmail}
               </a>
             </p>
-            <p>Via Luigi Cadorna 33<br>30027 San Donà di Piave (VE)</p>
+            <p>
+              Via Luigi Cadorna 33
+              <br />
+              30027 San Donà di Piave (VE)
+            </p>
             <div className="flex flex-col gap-1 sm:items-end">
               {siteConfig.instagramUrl && (
                 <a
