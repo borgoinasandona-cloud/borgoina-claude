@@ -4,7 +4,8 @@ import { createUploadSignature } from "@/lib/cloudinary";
 
 export async function POST() {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
+  // Non più solo ADMIN: anche i soci loggati caricano immagini (cover dei loro annunci community).
+  if (!session?.user) {
     return NextResponse.json({ error: "Non autorizzato" }, { status: 401 });
   }
 

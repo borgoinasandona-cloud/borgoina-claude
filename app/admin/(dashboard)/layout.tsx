@@ -23,6 +23,10 @@ const adminNav: AdminNavItem[] = [
       { href: "/admin/categories", label: "Categorie" },
     ],
   },
+  {
+    group: "Community",
+    items: [{ href: "/admin/community", label: "Annunci" }],
+  },
 ];
 
 export default async function AdminDashboardLayout({

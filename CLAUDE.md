@@ -55,10 +55,37 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       `20260719145041_add_community_bacheca`): Postgres non permette di usare un nuovo valore enum
       come `DEFAULT` di colonna nella stessa transazione in cui viene aggiunto (errore `55P04`) —
       se in futuro serve aggiungere un altro valore a un enum esistente E usarlo subito in una
-      colonna/tabella nuova, va sempre spezzato in due migration. **Solo lo schema è stato creato,
-      nessuna route/pagina/admin per creare, moderare o commentare i post della community esiste
-      ancora** — l'enforcement di chi vede quali commenti (regola autore↔commentatore sui post di
-      tipo oggetto) resta da implementare a livello di query/app
+      colonna/tabella nuova, va sempre spezzato in due migration
+- [x] Bacheca community — implementata end-to-end (schema + UI):
+      - Registrazione/login soci: `/community/register`, `/community/login` (Credentials, ruolo
+        `MEMBER`, stesso meccanismo di login dell'admin — vedi `lib/auth.ts`). Nessun Google OAuth
+        (resta Fase 2), nessuna verifica email
+      - Pubblicazione annunci (`/community/new`, richiede login) e listino/dettaglio pubblici
+        (`/community`, `/community/[slug]`), con filtro per tipo e cover image opzionale (upload
+        Cloudinary via `/api/upload/sign`, ora aperto a qualunque utente loggato e non più solo ADMIN)
+      - Ogni annuncio nasce `visibility: PENDING`; moderazione admin in `/admin/community`
+        (Approva → `PUBLIC`, Rifiuta → `PRIVATE`, Elimina). L'autore vede il proprio annuncio anche
+        da `PENDING`/`PRIVATE` con un banner di stato; chiunque altro riceve 404 finché non è `PUBLIC`
+      - L'autore può aggiornare lo `status` (disponibile/in sospeso/chiuso) ed eliminare il proprio
+        annuncio da `/community/[slug]`
+      - Commenti: chiunque sia loggato può commentare; la regola "sui post di tipo oggetto i commenti
+        sono visibili solo tra autore e chi commenta" è implementata in
+        `lib/community.ts` → `filterVisibleComments()` — **approssimazione nota**: non essendoci un
+        campo di threading nello schema (nessun `parentId`), un utente che ha già commentato vede
+        anche tutti i commenti scritti dall'autore ad altri commentatori (non i commenti altrui,
+        solo le risposte dell'autore) — non è un vero isolamento per-thread, va tenuto a mente se in
+        futuro serve una privacy più stretta
+      - **Bug reale trovato e corretto durante il testing E2E**: `lib/auth.config.ts` → callback
+        `session` impostava `session.user.role` ma non `session.user.id` (restava `undefined` pur
+        con `session.user` troncato/definito) — passava inosservato ovunque nel codice si controllasse
+        solo `if (!session?.user)`, ma rompeva in silenzio qualunque check più specifico su
+        `session.user.id` (es. la creazione di un post community, che sembrava fallire "a caso" con
+        un redirect al login). Corretto copiando `token.sub` in `session.user.id`; il tipo `Session`
+        in `types/next-auth.d.ts` ora dichiara `id: string` come obbligatorio (non più opzionale via
+        `DefaultSession`) proprio per intercettare in futuro regressioni di questo tipo a compile-time
+      - Testato end-to-end con Playwright (registrazione → post PENDING → nascosto al pubblico →
+        approvazione admin → visibile → regola commenti verificata con 3 utenti reali), dati di
+        test ripuliti dal DB di produzione dopo la verifica
 - [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
       `api/upload/sign`) implementato; usato con successo per caricare le cover dei 16 articoli
       Bacheca importati (via script una tantum, non ancora testato un upload reale dalla UI admin)

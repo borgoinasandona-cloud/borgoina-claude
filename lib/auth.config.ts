@@ -39,6 +39,12 @@ export const authConfig = {
     session({ session, token }) {
       if (session.user) {
         session.user.role = token.role as Role;
+        // token.sub è l'id utente (impostato da Auth.js all'accesso) — senza questa riga
+        // session.user.id resta undefined, anche se session.user stesso è definito: rompe
+        // in silenzio qualunque codice che controlla specificamente session.user.id
+        // (es. requireUser() nelle server action della community) pur lasciando passare
+        // i controlli più generici tipo `if (!session?.user)`.
+        session.user.id = token.sub as string;
       }
       return session;
     },

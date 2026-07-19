@@ -9,5 +9,6 @@ export const navLinks = [
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
   { href: "/news", label: "Bacheca" },
+  { href: "/community", label: "Community" },
   { href: "/contatti", label: "Contatti" },
 ];

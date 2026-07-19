@@ -58,8 +58,13 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   `CommunityPost.visibilityOfComments` (`PUBLIC`/`AUTHOR_ONLY`) è il meccanismo con cui questa
   regola viene applicata (impostato dall'app in base al `type` alla creazione, non forzato a DB
   level), l'enforcement effettivo di chi vede cosa resta un compito della query/app, non dello schema
-- Non implementate ancora: le route/pagine/admin per creare, moderare, commentare — solo lo schema
-  Prisma (migrations `20260719145500_add_visibility_pending` e `20260719145041_add_community_bacheca`)
+- **Implementata end-to-end il 2026-07-19**: registrazione/login soci (`/community/register`,
+  `/community/login`, riusa il Credentials provider esistente — anticipa un pezzo minimo di Fase 2,
+  senza Google OAuth né verifica email), listino/dettaglio/creazione annunci pubblici, moderazione
+  admin (`/admin/community`), commenti con la regola di visibilità applicata in
+  `lib/community.ts` → `filterVisibleComments()`. Dettagli, limiti noti (approssimazione della
+  privacy dei commenti senza threading) e un bug di sessione trovato/corretto durante il testing:
+  vedi CLAUDE.md
 
 ## Data model (bozza Prisma)
 

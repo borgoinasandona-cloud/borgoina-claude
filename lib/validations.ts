@@ -52,7 +52,38 @@ export const postSchema = z.object({
   images: z.array(postImageSchema).default([]),
 });
 
+export const registerSchema = z.object({
+  name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
+  email: z.string().trim().email("Email non valida"),
+  password: z.string().min(8, "La password deve avere almeno 8 caratteri").max(200),
+});
+
+const COMMUNITY_POST_TYPES = ["GIFT", "LOAN", "REQUEST", "SALE", "ISSUE", "ANNOUNCEMENT"] as const;
+const OBJECT_TYPES = ["GIFT", "LOAN", "REQUEST", "SALE"] as const;
+
+export const communityPostSchema = z.object({
+  title: z.string().trim().min(1, "Il titolo è obbligatorio").max(200),
+  content: z.string().trim().min(1, "Il testo è obbligatorio").max(5000),
+  coverImage: z.string().trim().optional().or(z.literal("")),
+  type: z.enum(COMMUNITY_POST_TYPES),
+});
+
+export const communityPostStatusSchema = z.object({
+  status: z.enum(["AVAILABLE", "PENDING", "CLOSED"]),
+});
+
+export const commentSchema = z.object({
+  content: z.string().trim().min(1, "Il commento è obbligatorio").max(2000),
+});
+
+export function isObjectType(type: string) {
+  return (OBJECT_TYPES as readonly string[]).includes(type);
+}
+
 export type ContactInput = z.infer<typeof contactSchema>;
 export type PageInput = z.infer<typeof pageSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type PostInput = z.infer<typeof postSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type CommunityPostInput = z.infer<typeof communityPostSchema>;
+export type CommentInput = z.infer<typeof commentSchema>;
