@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,11 +17,25 @@ import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
 // per quell'istante iniziale.
 const HERO_IMAGE_PATHS = new Set(["/", "/il-borgo", "/chi-siamo"]);
 
+// Il portale del menu mobile richiede document.body, non disponibile durante il render
+// server: useSyncExternalStore rileva il mount lato client senza ricorrere a un
+// useEffect con un setState dentro (che React sconsiglia — vedi CLAUDE.md).
+function subscribeNoop() {
+  return () => {};
+}
+function getClientSnapshot() {
+  return true;
+}
+function getServerSnapshot() {
+  return false;
+}
+
 export function Header() {
   const pathname = usePathname();
   const hasImageHero = HERO_IMAGE_PATHS.has(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, getClientSnapshot, getServerSnapshot);
 
   // Chiudi il menu mobile quando cambia pagina (pattern "adjust state during render"
   // di React, per evitare un useEffect con solo un setState dentro).
@@ -41,6 +56,15 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasImageHero]);
+
+  // Blocca lo scroll della pagina sotto mentre il menu mobile (modale) è aperto.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   // A menu mobile aperto l'header resta sempre in versione solida, anche sopra una hero foto.
   const overlay = hasImageHero && !scrolled && !mobileOpen;
@@ -98,32 +122,60 @@ export function Header() {
         </button>
       </div>
 
-      {mobileOpen && (
-        <nav className="border-t border-ink/10 bg-cream px-4 py-4 md:hidden">
-          <div className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-              >
-                {link.label}
-              </Link>
-            ))}
-            {siteConfig.instagramUrl && (
-              <a
-                href={siteConfig.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-              >
-                <InstagramIcon />
-                Instagram
-              </a>
-            )}
-          </div>
-        </nav>
-      )}
+      {/* Portale su document.body: un ancestor con backdrop-blur (l'header stesso) creerebbe
+          un containing block per gli elementi "fixed", confinandoli al riquadro dell'header
+          invece che a tutto il viewport — per questo backdrop e pannello vivono fuori da <header>. */}
+      {mounted &&
+        createPortal(
+          <>
+            {/* Backdrop: attenua la pagina sotto, chiude il menu al click. Parte da sotto
+                l'header (non inset-0) così non deve mai competere con lui per lo stacking:
+                una volta portato su document.body, l'header (nidificato in un wrapper non
+                posizionato) e questi elementi "fixed" appartengono a livelli di stacking
+                diversi e uno z-index più alto sull'header non basterebbe a tenerlo sopra. */}
+            <div
+              className={`fixed inset-x-0 top-[76px] bottom-0 z-20 bg-ink/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+                mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+              onClick={() => setMobileOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Pannello del menu mobile: modale che scende dall'header con un piccolo fade + slide. */}
+            <nav
+              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream px-4 py-6 shadow-xl transition-all duration-300 ease-out md:hidden ${
+                mobileOpen
+                  ? "translate-y-0 opacity-100"
+                  : "pointer-events-none -translate-y-3 opacity-0"
+              }`}
+              inert={!mobileOpen}
+            >
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                {siteConfig.instagramUrl && (
+                  <a
+                    href={siteConfig.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                  >
+                    <InstagramIcon />
+                    Instagram
+                  </a>
+                )}
+              </div>
+            </nav>
+          </>,
+          document.body,
+        )}
     </header>
   );
 }
