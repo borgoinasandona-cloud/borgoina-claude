@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getPage, staticPageTitles } from "@/lib/pages";
 import { StaticPageView } from "@/components/StaticPageView";
 import { HtmlContent } from "@/components/HtmlContent";
@@ -52,6 +53,16 @@ export default async function IlBorgoPage() {
             </p>
           )}
         </div>
+      </div>
+
+      <div className="relative z-10 mx-auto mt-6 flex justify-center px-4 md:-mt-14">
+        <Image
+          src="/images/il-borgo/logoinasandona.jpg"
+          alt="Logo INA Casa"
+          width={410}
+          height={413}
+          className="h-20 w-20 rounded-sm border-[3px] border-white object-cover shadow-xl md:h-28 md:w-28"
+        />
       </div>
 
       <div className="mx-auto mt-8 max-w-3xl px-4 py-12 text-center md:py-16 wide:max-w-4xl">
