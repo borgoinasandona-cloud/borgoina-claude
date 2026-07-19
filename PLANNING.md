@@ -42,6 +42,25 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
 - Campo `visibility` su `Post`/`Page` attivabile (`PUBLIC` → `PRIVATE`)
 - Contenuti privati visibili solo a utenti autenticati (member area)
 
+### Fase 3 — bacheca community (non prevista nel planning originale, aggiunta il 2026-07-19)
+- **Bacheca news (`Post`) resta invariata**, gestita solo dall'admin — nessuna modifica al modello
+- Nuova bacheca separata (`CommunityPost`) dove gli iscritti pubblicano due tipi di contenuto:
+  oggetti (regalo/prestito/cerco/vendo, `type` in `GIFT`/`LOAN`/`REQUEST`/`SALE`) e
+  segnalazioni/eventi (`type` in `ISSUE`/`ANNOUNCEMENT`)
+- Moderazione: ogni `CommunityPost` nasce con `visibility: PENDING` (nuovo valore sull'enum
+  `Visibility` condiviso con `Post`/`Page`) e va approvato dall'admin (`PENDING` → `PUBLIC`) prima
+  di comparire pubblicamente — le query pubbliche filtrano già per `visibility: "PUBLIC"` in modo
+  stretto, quindi `PENDING` resta escluso senza bisogno di modifiche a `lib/posts.ts`
+- `status` (`AVAILABLE`/`PENDING`/`CLOSED`) traccia lo stato pratico di un oggetto (es. riservato,
+  concluso) — rilevante soprattutto per i `type` oggetto, opzionale per segnalazioni/eventi
+- Commenti (`Comment`, collegati solo a `CommunityPost`, non a `Post`): la regola è che sui post di
+  tipo oggetto i commenti sono visibili solo tra autore del post e autore del commento — il campo
+  `CommunityPost.visibilityOfComments` (`PUBLIC`/`AUTHOR_ONLY`) è il meccanismo con cui questa
+  regola viene applicata (impostato dall'app in base al `type` alla creazione, non forzato a DB
+  level), l'enforcement effettivo di chi vede cosa resta un compito della query/app, non dello schema
+- Non implementate ancora: le route/pagine/admin per creare, moderare, commentare — solo lo schema
+  Prisma (migrations `20260719145500_add_visibility_pending` e `20260719145041_add_community_bacheca`)
+
 ## Data model (bozza Prisma)
 
 ```prisma
@@ -53,17 +72,40 @@ enum Role {
 enum Visibility {
   PUBLIC
   PRIVATE
+  PENDING   // in attesa di moderazione — usato dalla community, non dalla bacheca news admin
+}
+
+enum CommunityPostType {
+  GIFT          // regalo
+  LOAN          // prestito
+  REQUEST       // cerco
+  SALE          // vendo
+  ISSUE         // segnalazione
+  ANNOUNCEMENT  // evento/avviso
+}
+
+enum CommunityPostStatus {
+  AVAILABLE
+  PENDING
+  CLOSED
+}
+
+enum CommentVisibility {
+  PUBLIC
+  AUTHOR_ONLY
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  password  String?   // hash bcrypt, null se solo OAuth
-  name      String?
-  role      Role      @default(MEMBER)
-  accounts  Account[]
-  sessions  Session[]
-  createdAt DateTime  @default(now())
+  id             String          @id @default(cuid())
+  email          String          @unique
+  password       String?         // hash bcrypt, null se solo OAuth
+  name           String?
+  role           Role            @default(MEMBER)
+  accounts       Account[]
+  sessions       Session[]
+  communityPosts CommunityPost[]
+  comments       Comment[]
+  createdAt      DateTime        @default(now())
 }
 
 // Account / Session / VerificationToken: modelli standard richiesti da Auth.js
@@ -92,6 +134,35 @@ model Post {
   images       PostImage[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+// Bacheca della community: iscritti pubblicano oggetti (regalo/prestito/cerco/vendo)
+// e segnalazioni/eventi, separata dalla bacheca news (Post) gestita solo dall'admin.
+model CommunityPost {
+  id                   String               @id @default(cuid())
+  slug                 String               @unique
+  title                String
+  content              String               @db.Text   // HTML (editor WYSIWYG)
+  coverImage           String?              // Cloudinary public_id
+  authorId             String
+  author               User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  type                 CommunityPostType
+  status               CommunityPostStatus?
+  visibility           Visibility           @default(PENDING)
+  visibilityOfComments CommentVisibility    @default(PUBLIC)
+  comments             Comment[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+}
+
+model Comment {
+  id              String        @id @default(cuid())
+  communityPostId String
+  communityPost   CommunityPost @relation(fields: [communityPostId], references: [id], onDelete: Cascade)
+  authorId        String
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content         String        @db.Text
+  createdAt       DateTime      @default(now())
 }
 
 model Category {

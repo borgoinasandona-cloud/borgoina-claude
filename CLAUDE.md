@@ -49,6 +49,16 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       **migrato su Neon** (`DATABASE_URL` in `.env`, migrazione `20260716153602_init` applicata).
       Aggiunto anche `Post.featured Boolean @default(false)` (migrazione `20260718104149_add_post_featured`,
       non prevista nel bozza originale di PLANNING.md — vedi sezione "In evidenza" più sotto)
+- [x] Schema Prisma: bacheca community (`CommunityPost`, `Comment`, enum `CommunityPostType`/
+      `CommunityPostStatus`/`CommentVisibility`, `Visibility.PENDING`) — vedi PLANNING.md "Fase 3".
+      Migrato su Neon in due migration separate (`20260719145500_add_visibility_pending` poi
+      `20260719145041_add_community_bacheca`): Postgres non permette di usare un nuovo valore enum
+      come `DEFAULT` di colonna nella stessa transazione in cui viene aggiunto (errore `55P04`) —
+      se in futuro serve aggiungere un altro valore a un enum esistente E usarlo subito in una
+      colonna/tabella nuova, va sempre spezzato in due migration. **Solo lo schema è stato creato,
+      nessuna route/pagina/admin per creare, moderare o commentare i post della community esiste
+      ancora** — l'enforcement di chi vede quali commenti (regola autore↔commentatore sui post di
+      tipo oggetto) resta da implementare a livello di query/app
 - [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
       `api/upload/sign`) implementato; usato con successo per caricare le cover dei 16 articoli
       Bacheca importati (via script una tantum, non ancora testato un upload reale dalla UI admin)
