@@ -61,7 +61,7 @@ export default async function IlBorgoPage() {
           alt="Logo INA Casa"
           width={410}
           height={413}
-          className="h-20 w-20 rounded-sm border-[3px] border-white object-cover shadow-xl md:h-28 md:w-28"
+          className="h-40 w-40 rounded-sm border-[3px] border-white object-cover shadow-xl md:h-56 md:w-56"
         />
       </div>
 
