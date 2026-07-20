@@ -159,13 +159,17 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         **Effetto collaterale**: il layout root ora legge i cookie ad ogni richiesta, quindi tutte
         le pagine sono diventate `ƒ` (dynamic) invece di poter restare `○` (static) — inevitabile
         per un header che mostra lo stato di login
-      - Verificato in locale: redirect a `accounts.google.com` con `client_id`/`redirect_uri`/
-        `scope` corretti (non è possibile automatizzare un login Google reale via Playwright);
-        nessuna regressione su login admin e login/registrazione community Credentials esistenti
-      - **Da fare fuori dal codice, non ancora verificato**: confermare che il progetto OAuth su
-        Google Cloud Console autorizzi `https://borgoina-claude.vercel.app/api/auth/callback/google`
-        come redirect URI (e l'eventuale dominio custom, quando live) — `GOOGLE_CLIENT_ID`/
-        `GOOGLE_CLIENT_SECRET` sono già stati copiati su Vercel Production
+      - Verificato in locale (dove funziona): redirect a `accounts.google.com` con `client_id`/
+        `redirect_uri`/`scope` corretti (non è possibile automatizzare un login Google reale via
+        Playwright); nessuna regressione su login admin e login/registrazione community
+        Credentials esistenti, sia in locale sia in produzione
+      - **Bloccante confermato in produzione, da correggere su Google Cloud Console (non nel
+        codice)**: il pulsante Google su `https://borgoina-claude.vercel.app` restituisce
+        `redirect_uri_mismatch` — il progetto OAuth su Google Cloud Console non ha ancora
+        `https://borgoina-claude.vercel.app/api/auth/callback/google` tra gli "Authorized redirect
+        URIs" (funziona invece in locale, dove `http://localhost:3000/...` evidentemente è già
+        autorizzato). `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` sono già su Vercel Production —
+        manca solo questo passaggio lato Google per sbloccare il login in produzione
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
