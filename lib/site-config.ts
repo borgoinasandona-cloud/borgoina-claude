@@ -6,9 +6,11 @@ export const siteConfig = {
 };
 
 export const navLinks = [
+  // Pagine del sito
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
+  { href: "/contatti", label: "Contatti" },
+  // Servizi (Instagram resta a parte, non in questo elenco — vedi Header/Footer)
   { href: "/news", label: "Bacheca" },
   { href: "/community", label: "Community" },
-  { href: "/contatti", label: "Contatti" },
 ];
