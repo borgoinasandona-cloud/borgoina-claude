@@ -6,14 +6,12 @@ import {
   type NewCommunityPostState,
 } from "@/app/community/new/actions";
 import { ImageUploader, type CloudinaryUploadResult } from "@/components/ImageUploader";
-import { communityPostTypeLabels, OBJECT_TYPES } from "@/lib/community";
+import { communityPostTypeLabels, communityPostTypeGroups } from "@/lib/community";
 
 const initialState: NewCommunityPostState = { status: "idle" };
 
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
-
-const ANNOUNCEMENT_TYPES = ["ISSUE", "ANNOUNCEMENT"];
 
 export function CommunityPostForm() {
   const [state, formAction, pending] = useActionState(createCommunityPostAction, initialState);
@@ -29,20 +27,15 @@ export function CommunityPostForm() {
           <option value="" disabled>
             Scegli…
           </option>
-          <optgroup label="Oggetti">
-            {OBJECT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {communityPostTypeLabels[type]}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Segnalazioni ed eventi">
-            {ANNOUNCEMENT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {communityPostTypeLabels[type]}
-              </option>
-            ))}
-          </optgroup>
+          {communityPostTypeGroups.map((group) => (
+            <optgroup key={group.label} label={group.label}>
+              {group.types.map((type) => (
+                <option key={type} value={type}>
+                  {communityPostTypeLabels[type]}
+                </option>
+              ))}
+            </optgroup>
+          ))}
         </select>
       </div>
 

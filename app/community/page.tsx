@@ -32,7 +32,7 @@ export default async function CommunityPage({
             Community
           </h1>
           <p className="mt-3 max-w-2xl text-lg text-ink-soft wide:text-xl">
-            Oggetti da regalare, prestare, cercare o vendere, e segnalazioni tra chi vive nel Borgo.
+            Oggetti da regalare, prestare o vendere, e servizi e lavori tra chi vive nel Borgo.
           </p>
           <Link
             href={session?.user ? "/community/new" : "/community/login"}

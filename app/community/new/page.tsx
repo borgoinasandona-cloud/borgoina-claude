@@ -22,8 +22,9 @@ export default async function NewCommunityPostPage() {
         Nuovo annuncio
       </h1>
       <p className="mt-3 text-sm text-ink-soft">
-        Regala, presta, cerca o vendi un oggetto, oppure segnala qualcosa al quartiere. Prima di
-        comparire pubblicamente, ogni annuncio viene controllato da un amministratore.
+        Regala, vendi o presta un oggetto, oppure offriti o chiedi una mano per un servizio o un
+        lavoretto. Prima di comparire pubblicamente, ogni annuncio viene controllato da un
+        amministratore.
       </p>
       <CommunityPostForm />
     </div>

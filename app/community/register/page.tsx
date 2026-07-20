@@ -12,7 +12,7 @@ export default function CommunityRegisterPage() {
       <p className="eyebrow text-brick wide:text-sm">Community</p>
       <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink">Crea account</h1>
       <p className="mt-3 text-sm text-ink-soft">
-        Registrati per pubblicare oggetti e segnalazioni nella bacheca della community e commentare
+        Registrati per pubblicare oggetti e servizi nella bacheca della community e commentare
         gli annunci degli altri iscritti.
       </p>
       <RegisterForm />

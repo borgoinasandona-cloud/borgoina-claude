@@ -1,14 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import type { CommunityPost, Comment, CommunityPostType } from "@prisma/client";
 
+// Segnalazioni/eventi (ISSUE, ANNOUNCEMENT) ritirate dalla community il 2026-07-20: quel
+// contenuto vive nella bacheca news (Post), non più selezionabile/creabile qui. I due valori
+// restano nell'enum Postgres (niente DROP VALUE pulito) ma non compaiono in nessuna label.
 export const communityPostTypeLabels: Record<string, string> = {
-  REQUEST: "Cerco",
   GIFT: "Regalo",
-  LOAN: "Offro",
   SALE: "Vendo",
-  ISSUE: "Segnalazione",
-  ANNOUNCEMENT: "Evento/Avviso",
+  LOAN: "Presto",
+  SERVICE_OFFER: "Offro",
+  REQUEST: "Chiedo",
 };
+
+export const communityPostTypeGroups = [
+  { label: "Oggetti", types: ["GIFT", "SALE", "LOAN"] },
+  { label: "Servizi e lavori", types: ["SERVICE_OFFER", "REQUEST"] },
+];
 
 export const communityPostStatusLabels: Record<string, string> = {
   AVAILABLE: "Disponibile",
@@ -16,10 +23,13 @@ export const communityPostStatusLabels: Record<string, string> = {
   CLOSED: "Chiuso",
 };
 
-export const OBJECT_TYPES = ["REQUEST", "GIFT", "LOAN", "SALE"];
-
+/**
+ * Ogni tipo di annuncio ancora selezionabile è uno scambio "privato" (oggetto o servizio) tra
+ * due persone: tutti hanno lo stato disponibile/in sospeso/chiuso e commenti autore↔commentatore.
+ * Non c'è più una categoria "pubblica" tipo segnalazioni/eventi rimasta in community.
+ */
 export function isObjectPostType(type: string) {
-  return OBJECT_TYPES.includes(type);
+  return type in communityPostTypeLabels;
 }
 
 /** Visibilità di default dei commenti in base al tipo, applicata alla creazione del post. */

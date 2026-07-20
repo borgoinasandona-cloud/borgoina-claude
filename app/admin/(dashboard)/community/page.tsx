@@ -19,7 +19,7 @@ export default async function AdminCommunityPage() {
         <h1 className="text-2xl font-semibold text-neutral-900">Community</h1>
       </div>
       <p className="mt-2 text-sm text-neutral-500">
-        Annunci pubblicati dagli iscritti (oggetti e segnalazioni). Vanno approvati prima di comparire
+        Annunci pubblicati dagli iscritti (oggetti e servizi/lavori). Vanno approvati prima di comparire
         sul sito pubblico.
       </p>
 

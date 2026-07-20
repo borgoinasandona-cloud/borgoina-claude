@@ -19,12 +19,16 @@ enum Visibility {
 }
 
 enum CommunityPostType {
-  GIFT // regalo
-  LOAN // prestito
-  REQUEST // cerco
-  SALE // vendo
-  ISSUE // segnalazione
-  ANNOUNCEMENT // evento/avviso
+  GIFT // regalo (gruppo "Oggetti")
+  LOAN // presto (gruppo "Oggetti")
+  REQUEST // chiedo (gruppo "Servizi e lavori")
+  SALE // vendo (gruppo "Oggetti")
+  SERVICE_OFFER // offro (gruppo "Servizi e lavori")
+  // ISSUE e ANNOUNCEMENT: ritirati dalla community il 2026-07-20 (quel contenuto vive nella
+  // bacheca news, Post) — valori lasciati nell'enum per non rompere Postgres (niente DROP VALUE
+  // pulito), ma non più selezionabili/creabili da nessuna UI.
+  ISSUE
+  ANNOUNCEMENT
 }
 
 enum CommunityPostStatus {
