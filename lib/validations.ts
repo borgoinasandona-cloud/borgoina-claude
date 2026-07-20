@@ -77,6 +77,18 @@ export const commentSchema = z.object({
   content: z.string().trim().min(1, "Il commento è obbligatorio").max(2000),
 });
 
+export const updateAccountSchema = z.object({
+  name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
+  email: z.string().trim().email("Email non valida"),
+  currentPassword: z.string().min(1, "Inserisci la password attuale per confermare le modifiche"),
+  newPassword: z
+    .string()
+    .min(8, "La nuova password deve avere almeno 8 caratteri")
+    .max(200)
+    .optional()
+    .or(z.literal("")),
+});
+
 export type ContactInput = z.infer<typeof contactSchema>;
 export type PageInput = z.infer<typeof pageSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
@@ -84,3 +96,4 @@ export type PostInput = z.infer<typeof postSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type CommunityPostInput = z.infer<typeof communityPostSchema>;
 export type CommentInput = z.infer<typeof commentSchema>;
+export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;

@@ -86,6 +86,19 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       - Testato end-to-end con Playwright (registrazione → post PENDING → nascosto al pubblico →
         approvazione admin → visibile → regola commenti verificata con 3 utenti reali), dati di
         test ripuliti dal DB di produzione dopo la verifica
+      - Pagina account soci (`/community/account`): l'iscritto modifica nome/email/password
+        (ogni modifica richiede la password attuale per conferma, verificata con `bcrypt.compare`)
+        e fa logout. Link "Il mio account" visibile su `/community` solo se loggato. **Nota**: la
+        sessione usa strategy JWT — se un socio cambia nome/email, il cookie di sessione resta con
+        i valori vecchi finché non rifà login (la pagina account stessa e tutte le query pubbliche
+        leggono sempre nome/email freschi da Prisma via `session.user.id`, mai dal token, quindi
+        non c'è disallineamento visibile — ma va tenuto a mente se in futuro si legge
+        `session.user.name`/`session.user.email` altrove)
+      - Categorie ristrutturate il 2026-07-20: Oggetti (Regalo/Vendo/Presto) e Servizi e lavori
+        (Offro/Chiedo) — rimossa la categoria Segnalazioni/eventi (quel contenuto vive nella
+        bacheca news). Aggiunto valore enum `SERVICE_OFFER`; `ISSUE`/`ANNOUNCEMENT` restano
+        nell'enum Postgres ma non sono più selezionabili. Corretta anche una cronologia di
+        migration fuori ordine (vedi commit `91949a9`)
 - [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
       `api/upload/sign`) implementato; usato con successo per caricare le cover dei 16 articoli
       Bacheca importati (via script una tantum, non ancora testato un upload reale dalla UI admin)

@@ -34,12 +34,22 @@ export default async function CommunityPage({
           <p className="mt-3 max-w-2xl text-lg text-ink-soft wide:text-xl">
             Oggetti da regalare, prestare o vendere, e servizi e lavori tra chi vive nel Borgo.
           </p>
-          <Link
-            href={session?.user ? "/community/new" : "/community/login"}
-            className="mt-6 inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
-          >
-            + Nuovo annuncio
-          </Link>
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <Link
+              href={session?.user ? "/community/new" : "/community/login"}
+              className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
+            >
+              + Nuovo annuncio
+            </Link>
+            {session?.user && (
+              <Link
+                href="/community/account"
+                className="text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
+              >
+                Il mio account →
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
