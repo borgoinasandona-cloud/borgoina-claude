@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { navLinks, siteConfig } from "@/lib/site-config";
+import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -21,9 +21,17 @@ export function Footer() {
           </div>
           <div className="space-y-3 text-sm wide:text-base">
             <p className="eyebrow text-brick-light">Menù</p>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col items-start gap-1.5">
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="transition-colors hover:text-white">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={
+                    link.accent
+                      ? `font-mono rounded-sm px-2.5 py-1 text-xs font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent]}`
+                      : "transition-colors hover:text-white"
+                  }
+                >
                   {link.label}
                 </Link>
               ))}

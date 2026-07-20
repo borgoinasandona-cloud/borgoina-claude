@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { navLinks, siteConfig } from "@/lib/site-config";
+import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
 import { InstagramIcon } from "@/components/InstagramIcon";
 import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
 
@@ -93,7 +93,11 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+              className={
+                link.accent
+                  ? `font-mono rounded-sm px-2.5 py-1 text-[0.75rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-xs ${navLinkAccentClasses[link.accent]}`
+                  : `font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`
+              }
             >
               {link.label}
             </Link>
@@ -150,12 +154,16 @@ export function Header() {
               }`}
               inert={!mobileOpen}
             >
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-start gap-4">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                    className={
+                      link.accent
+                        ? `font-mono rounded-sm px-3 py-1.5 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent]}`
+                        : "font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                    }
                   >
                     {link.label}
                   </Link>
