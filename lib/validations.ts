@@ -58,8 +58,8 @@ export const registerSchema = z.object({
   password: z.string().min(8, "La password deve avere almeno 8 caratteri").max(200),
 });
 
-const COMMUNITY_POST_TYPES = ["GIFT", "LOAN", "REQUEST", "SALE", "ISSUE", "ANNOUNCEMENT"] as const;
-const OBJECT_TYPES = ["GIFT", "LOAN", "REQUEST", "SALE"] as const;
+const COMMUNITY_POST_TYPES = ["REQUEST", "GIFT", "LOAN", "SALE", "ISSUE", "ANNOUNCEMENT"] as const;
+const OBJECT_TYPES = ["REQUEST", "GIFT", "LOAN", "SALE"] as const;
 
 export const communityPostSchema = z.object({
   title: z.string().trim().min(1, "Il titolo è obbligatorio").max(200),

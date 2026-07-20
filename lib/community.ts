@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import type { CommunityPost, Comment, CommunityPostType } from "@prisma/client";
 
 export const communityPostTypeLabels: Record<string, string> = {
-  GIFT: "Regalo",
-  LOAN: "Prestito",
   REQUEST: "Cerco",
+  GIFT: "Regalo",
+  LOAN: "Offro",
   SALE: "Vendo",
   ISSUE: "Segnalazione",
   ANNOUNCEMENT: "Evento/Avviso",
@@ -16,7 +16,7 @@ export const communityPostStatusLabels: Record<string, string> = {
   CLOSED: "Chiuso",
 };
 
-export const OBJECT_TYPES = ["GIFT", "LOAN", "REQUEST", "SALE"];
+export const OBJECT_TYPES = ["REQUEST", "GIFT", "LOAN", "SALE"];
 
 export function isObjectPostType(type: string) {
   return OBJECT_TYPES.includes(type);
