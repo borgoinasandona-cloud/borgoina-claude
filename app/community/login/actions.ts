@@ -25,3 +25,7 @@ export async function communityLoginAction(
     throw error;
   }
 }
+
+export async function signInWithGoogleAction() {
+  await signIn("google", { redirectTo: "/community" });
+}

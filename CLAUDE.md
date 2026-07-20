@@ -10,7 +10,8 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 - Vercel (hosting/deploy)
 - Cloudinary (tutte le immagini: loghi, cover, gallerie)
 - Resend (email: form contatti, poi reset password/notifiche login)
-- Auth.js v5 — Credentials in Fase 1, + Google OAuth in Fase 2 (stessa tabella `User`, non ricrearla)
+- Auth.js v5 — Credentials (admin + community) e Google OAuth, stessa tabella `User`. Session
+  strategy `jwt` obbligata: Auth.js non supporta Credentials con sessioni `database`
 
 ## Regole del progetto
 
@@ -58,8 +59,8 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       colonna/tabella nuova, va sempre spezzato in due migration
 - [x] Bacheca community — implementata end-to-end (schema + UI):
       - Registrazione/login soci: `/community/register`, `/community/login` (Credentials, ruolo
-        `MEMBER`, stesso meccanismo di login dell'admin — vedi `lib/auth.ts`). Nessun Google OAuth
-        (resta Fase 2), nessuna verifica email
+        `MEMBER`, stesso meccanismo di login dell'admin — vedi `lib/auth.ts`). Login Google
+        aggiunto il 2026-07-20 (vedi voce dedicata più sotto), nessuna verifica email per Credentials
       - Pubblicazione annunci (`/community/new`, richiede login) e listino/dettaglio pubblici
         (`/community`, `/community/[slug]`), con filtro per tipo e cover image opzionale (upload
         Cloudinary via `/api/upload/sign`, ora aperto a qualunque utente loggato e non più solo ADMIN)
@@ -134,7 +135,39 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       `lib/posts.ts`, con fallback al post più recente se nessuno è marcato)
 - [x] Admin: nav raggruppata in "Pagine" (Il Borgo/Chi siamo/Contatti) e "Articoli" (Bacheca/Categorie);
       lista Bacheca ordinata per data di pubblicazione decrescente
-- [ ] Fase 2: Google OAuth + area riservata
+- [x] Login Google (Auth.js v5 + `@auth/prisma-adapter`, aggiunto il 2026-07-20):
+      - Modelli `User`/`Account`/`Session`/`VerificationToken` erano già nello schema nel formato
+        richiesto dall'adapter fin dallo scaffold iniziale — nessuna migration necessaria
+      - **Session strategy resta `jwt`, non `database`**: Auth.js non supporta il Credentials
+        provider con sessioni `database` (limitazione intenzionale, documentata — vedi
+        https://authjs.dev/concepts/session-strategies). Passare a `database` avrebbe rotto il
+        login sia admin sia soci esistenti; `jwt` funziona perfettamente anche con provider OAuth
+      - `GoogleProvider` in `lib/auth.ts` con `clientId`/`clientSecret` passati esplicitamente da
+        `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (nomi storici del progetto, non gli
+        `AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET` che Auth.js v5 inferirebbe automaticamente)
+      - Nuovo utente Google → `role: MEMBER` di default (schema, invariato); nessun modo per
+        ottenere `ADMIN` via OAuth, resta assegnabile solo a mano/seed
+      - `allowDangerousEmailAccountLinking` **non** impostato (resta `false`, il default sicuro di
+        Auth.js): se un'email ha già un account Credentials, un login Google con la stessa email
+        viene rifiutato (`OAuthAccountNotLinked`) invece di collegarsi automaticamente — scelta
+        deliberata per non fidarsi ciecamente del match email senza una decisione esplicita
+      - Pulsante "Continua con Google" su `/community/login` e `/community/register`
+        (`components/GoogleSignInButton.tsx`, azione `signInWithGoogleAction`)
+      - Header pubblico ora riceve la sessione da `app/layout.tsx` (Server Component, `await auth()`)
+        e la passa come prop a `Header` (Client Component): mostra "Accedi" da sloggati,
+        nome utente + "Esci" da loggati, sia in versione desktop sia nel modale mobile.
+        **Effetto collaterale**: il layout root ora legge i cookie ad ogni richiesta, quindi tutte
+        le pagine sono diventate `ƒ` (dynamic) invece di poter restare `○` (static) — inevitabile
+        per un header che mostra lo stato di login
+      - Verificato in locale: redirect a `accounts.google.com` con `client_id`/`redirect_uri`/
+        `scope` corretti (non è possibile automatizzare un login Google reale via Playwright);
+        nessuna regressione su login admin e login/registrazione community Credentials esistenti
+      - **Da fare fuori dal codice, non ancora verificato**: confermare che il progetto OAuth su
+        Google Cloud Console autorizzi `https://borgoina-claude.vercel.app/api/auth/callback/google`
+        come redirect URI (e l'eventuale dominio custom, quando live) — `GOOGLE_CLIENT_ID`/
+        `GOOGLE_CLIENT_SECRET` sono già stati copiati su Vercel Production
+- [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
+      il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
 Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`
 al momento del seed — da cambiare prima di condividere l'accesso).

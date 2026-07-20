@@ -5,9 +5,11 @@ import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import type { Session } from "next-auth";
 import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
 import { InstagramIcon } from "@/components/InstagramIcon";
 import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
+import { logoutAction } from "@/app/community/account/actions";
 
 // Pagine il cui hero è una foto a piena larghezza (non una fascia di colore piatto):
 // solo lì l'header può stare trasparente sopra l'immagine finché non si scrolla.
@@ -30,7 +32,7 @@ function getServerSnapshot() {
   return false;
 }
 
-export function Header() {
+export function Header({ session }: { session: Session | null }) {
   const pathname = usePathname();
   const hasImageHero = HERO_IMAGE_PATHS.has(pathname);
   const [scrolled, setScrolled] = useState(false);
@@ -113,6 +115,32 @@ export function Header() {
               <InstagramIcon />
             </a>
           )}
+
+          {session?.user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/community/account"
+                className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+              >
+                {session.user.name || "Account"}
+              </Link>
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+                >
+                  Esci
+                </button>
+              </form>
+            </div>
+          ) : (
+            <Link
+              href="/community/login"
+              className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+            >
+              Accedi
+            </Link>
+          )}
         </nav>
 
         <button
@@ -179,6 +207,34 @@ export function Header() {
                     Instagram
                   </a>
                 )}
+
+                <div className="w-full border-t border-ink/10 pt-4">
+                  {session?.user ? (
+                    <div className="flex flex-col items-start gap-4">
+                      <Link
+                        href="/community/account"
+                        className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                      >
+                        {session.user.name || "Account"}
+                      </Link>
+                      <form action={logoutAction}>
+                        <button
+                          type="submit"
+                          className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                        >
+                          Esci
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/community/login"
+                      className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                    >
+                      Accedi
+                    </Link>
+                  )}
+                </div>
               </div>
             </nav>
           </>,

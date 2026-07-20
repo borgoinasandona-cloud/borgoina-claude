@@ -38,9 +38,10 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
 - Immagini su Cloudinary
 
 ### Fase 2 — contenuti riservati
-- Login membri: email/password **+ Google OAuth**, stessa tabella `User` già pronta da Fase 1
-- Campo `visibility` su `Post`/`Page` attivabile (`PUBLIC` → `PRIVATE`)
-- Contenuti privati visibili solo a utenti autenticati (member area)
+- [x] Login membri: email/password **+ Google OAuth** (aggiunto il 2026-07-20, session strategy
+      `jwt` — vedi CLAUDE.md), stessa tabella `User` già pronta da Fase 1
+- [ ] Campo `visibility` su `Post`/`Page` attivabile (`PUBLIC` → `PRIVATE`)
+- [ ] Contenuti privati visibili solo a utenti autenticati (member area)
 
 ### Fase 3 — bacheca community (non prevista nel planning originale, aggiunta il 2026-07-19)
 - **Bacheca news (`Post`) resta invariata**, gestita solo dall'admin — nessuna modifica al modello

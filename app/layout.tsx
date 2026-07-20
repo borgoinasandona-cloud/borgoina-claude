@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";
+import { auth } from "@/lib/auth";
 
 const bigShoulders = Big_Shoulders({
   variable: "--font-display",
@@ -31,18 +32,20 @@ export const metadata: Metadata = {
   description: `Sito del comitato di quartiere ${siteConfig.name}`,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="it"
       className={`${bigShoulders.variable} ${workSans.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white text-ink">
-        <Header />
+        <Header session={session} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
