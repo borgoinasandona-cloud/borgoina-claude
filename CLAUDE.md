@@ -159,17 +159,31 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         **Effetto collaterale**: il layout root ora legge i cookie ad ogni richiesta, quindi tutte
         le pagine sono diventate `ƒ` (dynamic) invece di poter restare `○` (static) — inevitabile
         per un header che mostra lo stato di login
-      - Verificato in locale (dove funziona): redirect a `accounts.google.com` con `client_id`/
-        `redirect_uri`/`scope` corretti (non è possibile automatizzare un login Google reale via
-        Playwright); nessuna regressione su login admin e login/registrazione community
-        Credentials esistenti, sia in locale sia in produzione
-      - **Bloccante confermato in produzione, da correggere su Google Cloud Console (non nel
-        codice)**: il pulsante Google su `https://borgoina-claude.vercel.app` restituisce
-        `redirect_uri_mismatch` — il progetto OAuth su Google Cloud Console non ha ancora
-        `https://borgoina-claude.vercel.app/api/auth/callback/google` tra gli "Authorized redirect
-        URIs" (funziona invece in locale, dove `http://localhost:3000/...` evidentemente è già
-        autorizzato). `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` sono già su Vercel Production —
-        manca solo questo passaggio lato Google per sbloccare il login in produzione
+      - Verificato in locale e in produzione: redirect a `accounts.google.com` con `client_id`/
+        `redirect_uri`/`scope` corretti; nessuna regressione su login admin e login/registrazione
+        community Credentials esistenti
+      - **Due bug reali trovati e corretti dopo il deploy, testando il login Google dal vivo**:
+        1. `redirect_uri_mismatch` — il progetto OAuth su Google Cloud Console non aveva
+           l'URI di callback autorizzato; risolto da Dario lato Google Cloud Console (non nel
+           codice), aggiungendo sia `https://borgoina-claude.vercel.app/api/auth/callback/google`
+           sia quello del dominio custom `https://borgoinasandona.terotero.it/api/auth/callback/google`
+        2. Dopo il consenso Google, la callback falliva con l'errore generico
+           `/api/auth/error?error=Configuration` ("Server error... check the server logs") — causa
+           reale: il modello `User` non aveva i campi `emailVerified`/`image` richiesti dallo
+           schema Prisma di riferimento di Auth.js (https://authjs.dev/getting-started/adapters/prisma).
+           `@auth/prisma-adapter`'s `createUser` passa l'intero oggetto `AdapterUser` (incluso
+           `emailVerified: null`) direttamente a `prisma.user.create()`: con quei campi assenti
+           dallo schema, Prisma rifiutava l'insert e Auth.js mascherava l'errore reale con la
+           pagina generica "Configuration" (il messaggio "check the server logs" è letterale — il
+           dettaglio non arriva mai al client per motivi di sicurezza). Diagnosticato leggendo
+           direttamente `node_modules/@auth/prisma-adapter/index.js` e confrontando con lo schema
+           Prisma ufficiale di Auth.js, poi confermato riproducendo la stessa chiamata
+           (`prisma.user.create({ data: { email, emailVerified: null, name, image } })`) prima e
+           dopo la migration. Risolto aggiungendo `emailVerified DateTime?` e `image String?` a
+           `User` (migrazione `20260721090930_add_user_emailverified_image`, additiva, nessun
+           rischio per i dati esistenti) — **se in futuro si integra un altro provider OAuth,
+           controllare sempre lo schema `User` contro il riferimento Prisma ufficiale di Auth.js,
+           non solo Account/Session/VerificationToken**
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

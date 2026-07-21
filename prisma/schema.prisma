@@ -45,6 +45,8 @@ enum CommentVisibility {
 model User {
   id             String          @id @default(cuid())
   email          String          @unique
+  emailVerified  DateTime? // richiesto da @auth/prisma-adapter per gli utenti OAuth (Google)
+  image          String? // avatar da provider OAuth, richiesto da @auth/prisma-adapter
   password       String? // hash bcrypt, null se solo OAuth
   name           String?
   role           Role            @default(MEMBER)
