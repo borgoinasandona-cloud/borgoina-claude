@@ -8,7 +8,15 @@ const initialState: UpdateAccountState = { status: "idle" };
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
-export function AccountForm({ name, email }: { name: string; email: string }) {
+export function AccountForm({
+  name,
+  email,
+  hasPassword,
+}: {
+  name: string;
+  email: string;
+  hasPassword: boolean;
+}) {
   const [state, formAction, pending] = useActionState(updateAccountAction, initialState);
 
   return (
@@ -32,26 +40,28 @@ export function AccountForm({ name, email }: { name: string; email: string }) {
           htmlFor="newPassword"
           className="text-xs font-semibold tracking-wide text-ink-soft uppercase"
         >
-          Nuova password (lascia vuoto per non cambiarla)
+          {hasPassword ? "Nuova password (lascia vuoto per non cambiarla)" : "Imposta una password (facoltativo)"}
         </label>
         <input id="newPassword" name="newPassword" type="password" minLength={8} className={inputClass} />
       </div>
 
-      <div className="border-t border-ink/10 pt-4">
-        <label
-          htmlFor="currentPassword"
-          className="text-xs font-semibold tracking-wide text-ink-soft uppercase"
-        >
-          Password attuale (per confermare le modifiche)
-        </label>
-        <input
-          id="currentPassword"
-          name="currentPassword"
-          type="password"
-          required
-          className={inputClass}
-        />
-      </div>
+      {hasPassword && (
+        <div className="border-t border-ink/10 pt-4">
+          <label
+            htmlFor="currentPassword"
+            className="text-xs font-semibold tracking-wide text-ink-soft uppercase"
+          >
+            Password attuale (per confermare le modifiche)
+          </label>
+          <input
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            required
+            className={inputClass}
+          />
+        </div>
+      )}
 
       <button
         type="submit"

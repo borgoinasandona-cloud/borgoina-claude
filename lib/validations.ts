@@ -80,7 +80,9 @@ export const commentSchema = z.object({
 export const updateAccountSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
   email: z.string().trim().email("Email non valida"),
-  currentPassword: z.string().min(1, "Inserisci la password attuale per confermare le modifiche"),
+  // Obbligatoria solo per chi ha già una password impostata (login Credentials) — chi si è
+  // registrato solo con Google non ne ha una da confermare, controllato lato action.
+  currentPassword: z.string().optional().or(z.literal("")),
   newPassword: z
     .string()
     .min(8, "La nuova password deve avere almeno 8 caratteri")

@@ -95,6 +95,19 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         leggono sempre nome/email freschi da Prisma via `session.user.id`, mai dal token, quindi
         non c'è disallineamento visibile — ma va tenuto a mente se in futuro si legge
         `session.user.name`/`session.user.email` altrove)
+      - **Bug reale trovato e corretto il 2026-07-21**: chi si era registrato solo con Google
+        (`User.password` = `null`) non poteva salvare NESSUNA modifica su `/community/account`,
+        perché il form chiedeva sempre la password attuale per confermare — password che un
+        account solo-OAuth non ha mai avuto. La pagina ora calcola `hasPassword` lato server
+        (`!!user.password`) e lo passa al form: se `false`, il campo "Password attuale" resta
+        nascosto e la action salta del tutto quel controllo (l'identità è già garantita dalla
+        sessione OAuth); se l'utente vuole può comunque impostare una password per poter accedere
+        anche via Credentials in futuro. Corretto anche un bug collaterale scoperto testando
+        questo fix: `formData.get("currentPassword")` restituisce `null` (non `undefined`) quando
+        il campo non è nel DOM, e lo schema Zod (`z.string().optional().or(z.literal(""))`)
+        accetta `undefined`/`""` ma non `null` — falliva con un generico "Invalid input" anche a
+        campo correttamente nascosto. Risolto normalizzando a `formData.get(...) || ""` come già
+        si faceva per `newPassword`
       - Categorie ristrutturate il 2026-07-20: Oggetti (Regalo/Vendo/Presto) e Servizi e lavori
         (Offro/Chiedo) — rimossa la categoria Segnalazioni/eventi (quel contenuto vive nella
         bacheca news). Aggiunto valore enum `SERVICE_OFFER`; `ISSUE`/`ANNOUNCEMENT` restano

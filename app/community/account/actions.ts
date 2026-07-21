@@ -29,7 +29,7 @@ export async function updateAccountAction(
   const parsed = updateAccountSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    currentPassword: formData.get("currentPassword"),
+    currentPassword: formData.get("currentPassword") || "",
     newPassword: formData.get("newPassword") || "",
   });
 
@@ -40,13 +40,21 @@ export async function updateAccountAction(
   const { name, email, currentPassword, newPassword } = parsed.data;
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-  if (!dbUser?.password) {
+  if (!dbUser) {
     return { status: "error", message: "Account non valido." };
   }
 
-  const passwordValid = await bcrypt.compare(currentPassword, dbUser.password);
-  if (!passwordValid) {
-    return { status: "error", message: "Password attuale errata." };
+  // Chi ha una password (login Credentials) deve confermarla per salvare qualsiasi modifica.
+  // Chi si è registrato solo con Google non ne ha una da confermare: l'identità è già garantita
+  // dalla sessione OAuth, quindi si salta questo controllo.
+  if (dbUser.password) {
+    if (!currentPassword) {
+      return { status: "error", message: "Inserisci la password attuale per confermare le modifiche." };
+    }
+    const passwordValid = await bcrypt.compare(currentPassword, dbUser.password);
+    if (!passwordValid) {
+      return { status: "error", message: "Password attuale errata." };
+    }
   }
 
   if (email !== dbUser.email) {
