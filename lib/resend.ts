@@ -12,9 +12,8 @@ function getResendClient() {
   return resendClient;
 }
 
-// "from" usa il dominio sandbox di Resend finché il dominio del comitato non è verificato
-// (vedi README.md — verifica SPF/DKIM prima di andare live).
-const FROM_ADDRESS = "Sito Borgo INA <onboarding@resend.dev>";
+// Dominio borgoinasandona.it verificato su Resend (SPF/DKIM) il 2026-07-27.
+const FROM_ADDRESS = "Sito Borgo INA <noreply@borgoinasandona.it>";
 
 export async function sendContactEmail({
   name,
