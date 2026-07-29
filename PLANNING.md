@@ -199,5 +199,8 @@ model ContactMessage {
 ## Domande aperte (da chiudere prima o durante lo sviluppo)
 
 - Conferma: la form contatti serve davvero o basta mostrare l'email?
-- Dominio finale: resta su terotero.it o passa a un dominio proprio? (influisce sulla verifica Resend)
+- [x] **Dominio finale: chiuso il 2026-07-27** — passato a un dominio proprio, `borgoinasandona.it`
+      (acquistato da Dario), non più un sottodominio di terotero.it. Il vecchio
+      `borgoinasandona.terotero.it` reindirizza al nuovo dominio. Il dominio è stato verificato
+      anche su Resend per l'invio email (vedi CLAUDE.md)
 - Chi, oltre a Dario, dovrà avere accesso admin al pannello?

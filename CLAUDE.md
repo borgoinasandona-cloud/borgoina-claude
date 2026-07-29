@@ -116,9 +116,11 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 - [x] Setup Cloudinary — credenziali reali in `.env`, upload firmato (`lib/cloudinary.ts`,
       `api/upload/sign`) implementato; usato con successo per caricare le cover dei 16 articoli
       Bacheca importati (via script una tantum, non ancora testato un upload reale dalla UI admin)
-- [x] Setup Resend — chiave reale in `.env`; invio email non ancora verificato end-to-end;
-      "from" usa ancora il dominio sandbox `onboarding@resend.dev` — **da verificare un dominio
-      proprio su Resend prima di andare live**, altrimenti le email rischiano lo spam
+- [x] Setup Resend — chiave reale in `.env`. **Dominio `borgoinasandona.it` verificato su Resend
+      (SPF/DKIM) il 2026-07-27**: `lib/resend.ts` usa `noreply@borgoinasandona.it` invece del
+      sandbox `onboarding@resend.dev`. Verificato inviando una email reale via API (accettata con
+      un message id, prova che il dominio è verificato — un dominio non verificato viene rifiutato
+      subito da Resend) — il form `/contatti` stesso non ancora testato end-to-end nel browser
 - [x] Auth admin (Credentials) — verificato end-to-end (login con credenziali corrette → sessione
       valida → accesso a `/admin`; credenziali sbagliate e utenti anonimi vengono respinti)
 - [x] Pagine statiche (Il Borgo, Chi Siamo, Contatti) — pubbliche + editor admin. **Il Borgo e Chi
@@ -197,6 +199,10 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
            rischio per i dati esistenti) — **se in futuro si integra un altro provider OAuth,
            controllare sempre lo schema `User` contro il riferimento Prisma ufficiale di Auth.js,
            non solo Account/Session/VerificationToken**
+      - **Migrazione dominio (2026-07-27)**: aggiunto `https://borgoinasandona.it/api/auth/callback/google`
+        ai redirect URI autorizzati su Google Cloud Console (da Dario); verificato che il login
+        Google funzioni sul nuovo dominio (redirect a `accounts.google.com` con `redirect_uri`
+        corretto)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
@@ -210,7 +216,12 @@ al momento del seed — da cambiare prima di condividere l'accesso).
   (quel progetto era un duplicato creato per errore in una sessione precedente e poi eliminato).
   Collegato a GitHub (`borgoinasandona-cloud/borgoina-claude`, branch `main`): un push su `main`
   fa partire il deploy da solo. **Il flusso normale è commit + push, non `vercel deploy`.**
-- URL produzione: https://borgoina-claude.vercel.app
+- **URL produzione: https://borgoinasandona.it** (dominio proprio, acquistato il 2026-07-27 — non
+  più un sottodominio di terotero.it). `www.borgoinasandona.it` e il vecchio
+  `borgoinasandona.terotero.it` reindirizzano entrambi qui (redirect 308 configurati via API
+  Vercel su `PATCH /v9/projects/{id}/domains/{domain}` con `redirect`/`redirectStatusCode`),
+  path incluso (es. `/community` → `/community`, non solo la home). Resta raggiungibile anche
+  `https://borgoina-claude.vercel.app` (dominio Vercel di default, nessun redirect impostato lì)
 - Il mio account Vercel CLI di default (`dperissutti-5941`) **non è membro** del team `borgoina`
   (piano Hobby, non si possono invitare membri). Per operare da CLI/API su questo progetto serve un
   Access Token generato dall'account `borgoinasandona@gmail.com` (Settings → Tokens), passato con
