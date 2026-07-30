@@ -89,32 +89,7 @@ export function Header({ session }: { session: Session | null }) {
           />
         </Link>
 
-        <nav className="hidden items-center gap-x-6 gap-y-1 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={
-                link.accent
-                  ? `font-mono rounded-sm px-2.5 py-1 text-[0.75rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-xs ${navLinkAccentClasses[link.accent]}`
-                  : `font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`
-              }
-            >
-              {link.label}
-            </Link>
-          ))}
-          {siteConfig.instagramUrl && (
-            <a
-              href={siteConfig.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className={`transition-colors ${iconColor}`}
-            >
-              <InstagramIcon />
-            </a>
-          )}
-
+        <div className="flex items-center gap-4">
           {session?.user ? (
             <Link
               href="/community/account"
@@ -138,17 +113,17 @@ export function Header({ session }: { session: Session | null }) {
               Accedi
             </Link>
           )}
-        </nav>
 
-        <button
-          type="button"
-          onClick={() => setMobileOpen((open) => !open)}
-          aria-label={mobileOpen ? "Chiudi il menu" : "Apri il menu"}
-          aria-expanded={mobileOpen}
-          className={`transition-colors md:hidden ${overlay ? "text-cream" : "text-ink"}`}
-        >
-          {mobileOpen ? <CloseIcon /> : <HamburgerIcon />}
-        </button>
+          <button
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-label={mobileOpen ? "Chiudi il menu" : "Apri il menu"}
+            aria-expanded={mobileOpen}
+            className={`transition-colors ${overlay ? "text-cream" : "text-ink"}`}
+          >
+            {mobileOpen ? <CloseIcon /> : <HamburgerIcon />}
+          </button>
+        </div>
       </div>
 
       {/* Portale su document.body: un ancestor con backdrop-blur (l'header stesso) creerebbe
@@ -163,23 +138,25 @@ export function Header({ session }: { session: Session | null }) {
                 posizionato) e questi elementi "fixed" appartengono a livelli di stacking
                 diversi e uno z-index più alto sull'header non basterebbe a tenerlo sopra. */}
             <div
-              className={`fixed inset-x-0 top-[76px] bottom-0 z-20 bg-ink/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+              className={`fixed inset-x-0 top-[76px] bottom-0 z-20 bg-ink/60 backdrop-blur-sm transition-opacity duration-300 md:top-[88px] wide:top-[96px] ${
                 mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
 
-            {/* Pannello del menu mobile: modale che scende dall'header con un piccolo fade + slide. */}
+            {/* Pannello del menu: modale che scende dall'header con un piccolo fade + slide.
+                L'offset dall'alto segue l'altezza dell'header, che cresce con il logo ai
+                breakpoint più larghi (vedi le classi h-11/md:h-14/wide:h-16 sul logo). */}
             <nav
-              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream px-4 py-6 shadow-xl transition-all duration-300 ease-out md:hidden ${
+              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream px-4 py-6 shadow-xl transition-all duration-300 ease-out md:top-[88px] wide:top-[96px] ${
                 mobileOpen
                   ? "translate-y-0 opacity-100"
                   : "pointer-events-none -translate-y-3 opacity-0"
               }`}
               inert={!mobileOpen}
             >
-              <div className="flex flex-col items-start gap-4">
+              <div className="mx-auto flex max-w-5xl flex-col items-start gap-4 wide:max-w-6xl">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -204,32 +181,6 @@ export function Header({ session }: { session: Session | null }) {
                     Instagram
                   </a>
                 )}
-
-                <div className="w-full border-t border-ink/10 pt-4">
-                  {session?.user ? (
-                    <Link
-                      href="/community/account"
-                      className="flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                    >
-                      {session.user.image && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={session.user.image}
-                          alt=""
-                          className="h-6 w-6 rounded-full object-cover"
-                        />
-                      )}
-                      {session.user.name || "Account"}
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/community/login"
-                      className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                    >
-                      Accedi
-                    </Link>
-                  )}
-                </div>
               </div>
             </nav>
           </>,
