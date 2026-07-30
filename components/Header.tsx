@@ -118,8 +118,16 @@ export function Header({ session }: { session: Session | null }) {
           {session?.user ? (
             <Link
               href="/community/account"
-              className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+              className={`flex items-center gap-2 font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
             >
+              {session.user.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={session.user.image}
+                  alt=""
+                  className="h-6 w-6 rounded-full object-cover"
+                />
+              )}
               {session.user.name || "Account"}
             </Link>
           ) : (
@@ -201,8 +209,16 @@ export function Header({ session }: { session: Session | null }) {
                   {session?.user ? (
                     <Link
                       href="/community/account"
-                      className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                      className="flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
                     >
+                      {session.user.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={session.user.image}
+                          alt=""
+                          className="h-6 w-6 rounded-full object-cover"
+                        />
+                      )}
                       {session.user.name || "Account"}
                     </Link>
                   ) : (

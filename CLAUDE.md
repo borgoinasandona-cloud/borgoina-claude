@@ -245,15 +245,32 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         correzione sarebbe rimasto bloccato al primo login Credentials. `updateAccountAction` ora
         marca anche `emailVerified` in quel momento (vedi commento in
         `app/community/account/actions.ts`)
-      - Nuova env var **`NEXT_PUBLIC_SITE_URL`** (base per i link assoluti nelle email): va
-        impostata su Vercel Production a `https://borgoinasandona.it` (in locale resta
-        `http://localhost:3000`, vedi `.env.example`) — **da verificare/impostare manualmente
-        su Vercel**, non ancora fatto tramite API in questa sessione
+      - Nuova env var **`NEXT_PUBLIC_SITE_URL`** (base per i link assoluti nelle email): impostata
+        da Dario su Vercel Production a `https://borgoinasandona.it` il 2026-07-30 (in locale
+        resta `http://localhost:3000`, vedi `.env.example`)
       - Testato end-to-end in locale con Playwright contro un utente reale creato via UI
         (registrazione → login bloccato → rinvio conferma → verifica via token letto dal DB →
         login riuscito → token riusato rifiutato → token falso rifiutato → recupero password →
         nuova password funzionante, vecchia rifiutata → token di reset falso rifiutato), dati di
         test ripuliti dal DB subito dopo
+- [x] **Foto profilo utenti (2026-07-30)**: upload della propria foto da `/community/account`
+      (`components/AccountForm.tsx`, riusa `components/ImageUploader.tsx`/`/api/upload/sign` già
+      esistenti — stesso upload firmato Cloudinary usato per le cover Bacheca/community, nessun
+      endpoint nuovo). Salvata come URL completo in `User.image` (campo già esistente dallo
+      scaffold Auth.js, finora usato solo dall'avatar Google mai letto altrove nel codice), con
+      pulsante "Rimuovi foto" per tornare a `null`. Placeholder con iniziali quando non impostata
+      - `authorize()` in `lib/auth.ts` ora restituisce anche `image`: prima solo il login Google
+        popolava `session.user.image` (l'adapter carica l'intero record utente), il login
+        Credentials perdeva l'avatar caricato dall'utente
+      - Avatar mostrato in `Header.tsx` accanto al nome (desktop + pannello mobile), con lo stesso
+        limite già noto per nome/email: sessione `jwt`, quindi l'header mostra il valore aggiornato
+        solo dal login successivo, non nella sessione corrente in cui l'utente ha appena caricato
+        la foto — verificato esplicitamente nel test (stesso comportamento, non una regressione)
+      - Testato end-to-end in locale con Playwright: upload reale su Cloudinary → preview → salvataggio
+        → valore persistito in `User.image` → avatar assente nella sessione corrente ma presente
+        dopo un nuovo login → rimozione foto → torna a `null` nel DB. Dati e immagine di test
+        ripuliti dopo la verifica (l'immagine caricata su Cloudinary durante il test resta, è un
+        1x1 px trascurabile — nessuna pipeline di pulizia Cloudinary in questo progetto)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

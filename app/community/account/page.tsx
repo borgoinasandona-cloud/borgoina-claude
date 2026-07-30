@@ -19,7 +19,7 @@ export default async function CommunityAccountPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { name: true, email: true, password: true },
+    select: { name: true, email: true, password: true, image: true },
   });
   if (!user) {
     redirect("/community/login");
@@ -39,7 +39,12 @@ export default async function CommunityAccountPage() {
           : "Aggiorna i tuoi dati. Ti sei registrato con Google, quindi non hai una password da confermare — puoi impostarne una qui per poter accedere anche con email e password."}
       </p>
 
-      <AccountForm name={user.name ?? ""} email={user.email} hasPassword={hasPassword} />
+      <AccountForm
+        name={user.name ?? ""}
+        email={user.email}
+        image={user.image}
+        hasPassword={hasPassword}
+      />
 
       <form action={logoutAction} className="mt-8 border-t border-ink/10 pt-6">
         <button

@@ -1,26 +1,73 @@
 "use client";
 
+import { useState } from "react";
 import { useActionState } from "react";
 import { updateAccountAction, type UpdateAccountState } from "@/app/community/account/actions";
+import { ImageUploader } from "@/components/ImageUploader";
 
 const initialState: UpdateAccountState = { status: "idle" };
 
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]!.toUpperCase())
+    .join("");
+}
+
 export function AccountForm({
   name,
   email,
+  image,
   hasPassword,
 }: {
   name: string;
   email: string;
+  image: string | null;
   hasPassword: boolean;
 }) {
   const [state, formAction, pending] = useActionState(updateAccountAction, initialState);
+  const [avatar, setAvatar] = useState(image ?? "");
 
   return (
     <form action={formAction} className="mt-5 space-y-4">
+      <div>
+        <label className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Foto profilo
+        </label>
+        <div className="mt-2 flex items-center gap-4">
+          {avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatar} alt="" className="h-14 w-14 rounded-full object-cover" />
+          ) : (
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-ink/10 text-sm font-semibold text-ink-soft">
+              {initials(name)}
+            </div>
+          )}
+          <div className="flex flex-col items-start gap-1">
+            <ImageUploader
+              label={avatar ? "Cambia foto" : "Carica foto"}
+              labelClassName="cursor-pointer text-sm font-semibold text-brick hover:text-brick-dark"
+              onUploaded={(result) => setAvatar(result.secureUrl)}
+            />
+            {avatar && (
+              <button
+                type="button"
+                onClick={() => setAvatar("")}
+                className="text-sm text-ink-soft hover:text-brick-dark"
+              >
+                Rimuovi foto
+              </button>
+            )}
+          </div>
+        </div>
+        <input type="hidden" name="image" value={avatar} />
+      </div>
+
       <div>
         <label htmlFor="name" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
           Nome

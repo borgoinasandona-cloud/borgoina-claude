@@ -89,6 +89,8 @@ export const resetPasswordSchema = z.object({
 export const updateAccountSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
   email: z.string().trim().email("Email non valida"),
+  // Cloudinary secure_url, come CommunityPost.coverImage — stringa vuota = nessuna foto.
+  image: z.string().trim().optional().or(z.literal("")),
   // Obbligatoria solo per chi ha già una password impostata (login Credentials) — chi si è
   // registrato solo con Google non ne ha una da confermare, controllato lato action.
   currentPassword: z.string().optional().or(z.literal("")),

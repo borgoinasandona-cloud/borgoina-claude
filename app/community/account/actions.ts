@@ -29,6 +29,7 @@ export async function updateAccountAction(
   const parsed = updateAccountSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
+    image: formData.get("image") || "",
     currentPassword: formData.get("currentPassword") || "",
     newPassword: formData.get("newPassword") || "",
   });
@@ -37,7 +38,7 @@ export async function updateAccountAction(
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Dati non validi." };
   }
 
-  const { name, email, currentPassword, newPassword } = parsed.data;
+  const { name, email, image, currentPassword, newPassword } = parsed.data;
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
   if (!dbUser) {
@@ -69,6 +70,7 @@ export async function updateAccountAction(
     data: {
       name,
       email,
+      image: image || null,
       ...(newPassword
         ? {
             password: await bcrypt.hash(newPassword, 10),
