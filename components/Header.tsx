@@ -156,31 +156,54 @@ export function Header({ session }: { session: Session | null }) {
               }`}
               inert={!mobileOpen}
             >
-              <div className="mx-auto flex max-w-5xl flex-col items-start gap-4 wide:max-w-6xl">
-                {navLinks.map((link) => (
+              <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 wide:max-w-6xl">
+                {/* Colonna 1: Home + pagine del sito. "Home" resta fuori da navLinks (usato
+                    anche dal Footer, dove non serve — vedi CLAUDE.md) e viene aggiunta solo qui. */}
+                <div className="flex flex-col items-start gap-4">
                   <Link
-                    key={link.href}
-                    href={link.href}
-                    className={
-                      link.accent
-                        ? `font-mono rounded-sm px-3 py-1.5 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent]}`
-                        : "font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                    }
+                    href="/"
+                    className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
                   >
-                    {link.label}
+                    Home
                   </Link>
-                ))}
-                {siteConfig.instagramUrl && (
-                  <a
-                    href={siteConfig.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                  >
-                    <InstagramIcon />
-                    Instagram
-                  </a>
-                )}
+                  {navLinks
+                    .filter((link) => !link.accent)
+                    .map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                </div>
+
+                {/* Colonna 2: servizi (fondino colorato) + Instagram. */}
+                <div className="flex flex-col items-start gap-4">
+                  {navLinks
+                    .filter((link) => link.accent)
+                    .map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`font-mono rounded-sm px-3 py-1.5 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent!]}`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  {siteConfig.instagramUrl && (
+                    <a
+                      href={siteConfig.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
+                    >
+                      <InstagramIcon />
+                      Instagram
+                    </a>
+                  )}
+                </div>
               </div>
             </nav>
           </>,
