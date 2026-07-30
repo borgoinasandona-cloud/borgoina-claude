@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { auth } from "@/lib/auth";
 import {
   getCommunityPostBySlug,
@@ -134,7 +136,10 @@ export default async function CommunityPostDetailPage({
         )}
 
         <div className="mt-12 border-t border-ink/10 pt-8">
-          <p className="eyebrow text-brick">💬 Commenti</p>
+          <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
+            <FontAwesomeIcon icon={faComment} className="h-3.5 w-3.5" aria-hidden="true" />
+            Commenti
+          </p>
 
           {post.visibilityOfComments === "AUTHOR_ONLY" && !isAuthor && (
             <p className="mt-2 text-sm text-ink-soft">

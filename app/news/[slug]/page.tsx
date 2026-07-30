@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { getPublishedPostBySlug } from "@/lib/posts";
 import { HtmlContent } from "@/components/HtmlContent";
 import { cloudinaryUrl } from "@/lib/cloudinary";
@@ -82,14 +84,18 @@ export default async function NewsDetailPage({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded bg-brick px-4 py-2 text-base font-semibold text-cream no-underline shadow-md transition-colors hover:bg-brick-dark"
             >
-              🖼️ Vedi la galleria completa
+              <FontAwesomeIcon icon={faImage} className="h-4 w-4" aria-hidden="true" />
+              Vedi la galleria completa
             </a>
           </p>
         )}
 
         {post.images.length > 0 && (
           <div className="mt-8">
-            <p className="eyebrow text-brick">🖼️ Galleria</p>
+            <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
+              <FontAwesomeIcon icon={faImage} className="h-3.5 w-3.5" aria-hidden="true" />
+              Galleria
+            </p>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {post.images.map((image) => (
                 // eslint-disable-next-line @next/next/no-img-element

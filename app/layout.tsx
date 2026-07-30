@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Big_Shoulders, Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import "@/lib/fontawesome";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";

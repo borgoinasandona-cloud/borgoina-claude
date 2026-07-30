@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { communityPostTypeLabels, communityPostStatusLabels, isObjectPostType } from "@/lib/community";
 import type { CommunityPost } from "@prisma/client";
 
@@ -41,8 +43,9 @@ export function CommunityPostCard({ post }: { post: CardPost }) {
           {post.content}
         </p>
         {post._count.comments > 0 && (
-          <p className="font-mono mt-3 text-xs font-semibold tracking-wide text-brick uppercase">
-            💬 {post._count.comments} {post._count.comments === 1 ? "commento" : "commenti"}
+          <p className="font-mono mt-3 inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-brick uppercase">
+            <FontAwesomeIcon icon={faComment} className="h-3.5 w-3.5" aria-hidden="true" />
+            {post._count.comments} {post._count.comments === 1 ? "commento" : "commenti"}
           </p>
         )}
       </div>
