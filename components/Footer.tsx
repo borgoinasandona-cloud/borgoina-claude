@@ -66,10 +66,23 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <p className="mt-12 border-t border-cream/15 pt-6 text-xs text-cream/50">
-          © {year} Comitato {siteConfig.name} — associazione registrata, C.F. 93053660275, San Donà di
-          Piave
-        </p>
+        <div className="mt-12 flex flex-col gap-2 border-t border-cream/15 pt-6 text-xs text-cream/50 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} Comitato {siteConfig.name} — associazione registrata, C.F. 93053660275, San Donà
+            di Piave
+          </p>
+          <p>
+            credits:{" "}
+            <a
+              href="https://terotero.it/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              TeroTero
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
