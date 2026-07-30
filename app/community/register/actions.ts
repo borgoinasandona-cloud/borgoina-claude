@@ -1,13 +1,14 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { signIn } from "@/lib/auth";
 import { registerSchema } from "@/lib/validations";
+import { createEmailVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/resend";
+import { siteConfig } from "@/lib/site-config";
 
 export type RegisterState = {
-  status: "idle" | "error";
+  status: "idle" | "error" | "success";
   message?: string;
 };
 
@@ -37,17 +38,15 @@ export async function registerAction(
     data: { name, email, password: passwordHash, role: "MEMBER" },
   });
 
-  try {
-    await signIn("credentials", { email, password, redirectTo: "/community" });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return {
-        status: "error",
-        message: "Account creato, ma l'accesso automatico è fallito: prova ad accedere manualmente.",
-      };
-    }
-    throw error;
-  }
+  const token = await createEmailVerificationToken(email);
+  await sendVerificationEmail({
+    to: email,
+    name,
+    url: `${siteConfig.url}/community/verify-email?token=${token}`,
+  });
 
-  return { status: "idle" };
+  return {
+    status: "success",
+    message: "Account creato. Controlla la tua casella email e clicca sul link di conferma per attivarlo.",
+  };
 }

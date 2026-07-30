@@ -60,7 +60,8 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 - [x] Bacheca community — implementata end-to-end (schema + UI):
       - Registrazione/login soci: `/community/register`, `/community/login` (Credentials, ruolo
         `MEMBER`, stesso meccanismo di login dell'admin — vedi `lib/auth.ts`). Login Google
-        aggiunto il 2026-07-20 (vedi voce dedicata più sotto), nessuna verifica email per Credentials
+        aggiunto il 2026-07-20 (vedi voce dedicata più sotto). Verifica email obbligatoria per
+        Credentials aggiunta il 2026-07-30 (vedi voce dedicata più sotto)
       - Pubblicazione annunci (`/community/new`, richiede login) e listino/dettaglio pubblici
         (`/community`, `/community/[slug]`), con filtro per tipo e cover image opzionale (upload
         Cloudinary via `/api/upload/sign`, ora aperto a qualunque utente loggato e non più solo ADMIN)
@@ -120,7 +121,14 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       (SPF/DKIM) il 2026-07-27**: `lib/resend.ts` usa `noreply@borgoinasandona.it` invece del
       sandbox `onboarding@resend.dev`. Verificato inviando una email reale via API (accettata con
       un message id, prova che il dominio è verificato — un dominio non verificato viene rifiutato
-      subito da Resend) — il form `/contatti` stesso non ancora testato end-to-end nel browser
+      subito da Resend) — testato anche end-to-end nel browser sul form `/contatti` in produzione
+      (submit reale → conferma a video, dato di test ripulito da `ContactMessage`)
+- [x] **`RESEND_API_KEY` ruotata il 2026-07-29** tramite l'integrazione nativa Vercel↔Resend (nuova
+      chiave creata e iniettata automaticamente come env var su Vercel). Verificato che la nuova
+      chiave possa ancora inviare da `noreply@borgoinasandona.it` (stesso account/dominio Resend,
+      nessuna riconfigurazione necessaria); `.env` locale aggiornato di conseguenza. La vecchia
+      chiave risultava ancora attiva al momento del check — se non serve più come backup, va
+      revocata a mano dalla dashboard Resend (non automatizzabile da qui)
 - [x] Auth admin (Credentials) — verificato end-to-end (login con credenziali corrette → sessione
       valida → accesso a `/admin`; credenziali sbagliate e utenti anonimi vengono respinti)
 - [x] Pagine statiche (Il Borgo, Chi Siamo, Contatti) — pubbliche + editor admin. **Il Borgo e Chi
@@ -203,6 +211,49 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         ai redirect URI autorizzati su Google Cloud Console (da Dario); verificato che il login
         Google funzioni sul nuovo dominio (redirect a `accounts.google.com` con `redirect_uri`
         corretto)
+- [x] **Verifica email + recupero password (2026-07-30)**:
+      - Riusa la tabella standard `VerificationToken` di Auth.js (mai toccata dal provider
+        Credentials) per entrambi i flussi: token esadecimale casuale con prefisso `ev_`
+        (verifica email, scadenza 24h) o `pr_` (reset password, scadenza 1h) — vedi `lib/tokens.ts`.
+        Nessuna migration necessaria, il modello esisteva già dallo scaffold Auth.js
+      - Registrazione (`app/community/register/actions.ts`): non fa più auto-login. Crea l'utente
+        con `emailVerified: null`, invia un'email con link `/community/verify-email?token=...`
+        (`lib/resend.ts` → `sendVerificationEmail`) e mostra un messaggio "controlla la tua email"
+      - Il gate vero e proprio è in `lib/auth.ts` → `authorize()`: se `user.emailVerified` è
+        `null` lancia `EmailNotVerifiedError` (sottoclasse di `CredentialsSignin` con
+        `code: "email-not-verified"`), letta poi in `communityLoginAction`/`loginAction` per
+        mostrare un messaggio dedicato invece del generico "credenziali non valide", con un
+        pulsante "Rinvia email di conferma" (`components/ResendVerificationForm.tsx`,
+        `app/community/verify-email/actions.ts`). **Il gate riguarda solo il provider
+        Credentials**: gli utenti Google passano dal flusso OAuth (che non chiama mai
+        `authorize()`), quindi non ne sono toccati
+      - Recupero password: `/community/forgot-password` → `/community/reset-password?token=...`
+        (`lib/resend.ts` → `sendPasswordResetEmail`). Risposta sempre identica indipendentemente
+        dal fatto che l'email esista o meno, per non rivelare quali indirizzi sono registrati.
+        Cliccare un link di reset valido marca anche `emailVerified` se non lo era già (prova
+        equivalente di possesso della casella), poi fa auto-login con la nuova password
+      - Link "Password dimenticata?" aggiunto anche su `/admin/login`: stesso flusso, stessa
+        tabella `User` — niente sistema separato per l'admin
+      - **Backfill obbligatorio prima del deploy**: senza toccare i dati esistenti, il gate
+        avrebbe bloccato all'istante ogni account Credentials già esistente (admin incluso, dato
+        che il seed non ha mai valorizzato `emailVerified`). Risolto con uno script una tantum
+        (`npx tsx`, poi cancellato) che marca `emailVerified = now()` per tutti gli utenti con
+        `password IS NOT NULL AND emailVerified IS NULL` **prima** del push — eseguito il
+        2026-07-30 sul DB di produzione (3 account: i due admin + un utente di test residuo)
+      - Caso limite gestito: un account nato solo con Google (`password: null`) che imposta una
+        password da `/community/account` non aveva mai ricevuto un link di verifica — senza
+        correzione sarebbe rimasto bloccato al primo login Credentials. `updateAccountAction` ora
+        marca anche `emailVerified` in quel momento (vedi commento in
+        `app/community/account/actions.ts`)
+      - Nuova env var **`NEXT_PUBLIC_SITE_URL`** (base per i link assoluti nelle email): va
+        impostata su Vercel Production a `https://borgoinasandona.it` (in locale resta
+        `http://localhost:3000`, vedi `.env.example`) — **da verificare/impostare manualmente
+        su Vercel**, non ancora fatto tramite API in questa sessione
+      - Testato end-to-end in locale con Playwright contro un utente reale creato via UI
+        (registrazione → login bloccato → rinvio conferma → verifica via token letto dal DB →
+        login riuscito → token riusato rifiutato → token falso rifiutato → recupero password →
+        nuova password funzionante, vecchia rifiutata → token di reset falso rifiutato), dati di
+        test ripuliti dal DB subito dopo
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

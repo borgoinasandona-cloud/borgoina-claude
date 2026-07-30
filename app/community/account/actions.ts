@@ -69,7 +69,16 @@ export async function updateAccountAction(
     data: {
       name,
       email,
-      ...(newPassword ? { password: await bcrypt.hash(newPassword, 10) } : {}),
+      ...(newPassword
+        ? {
+            password: await bcrypt.hash(newPassword, 10),
+            // Chi imposta una password per la prima volta da un account solo-Google non ha mai
+            // ricevuto il link di verifica email: l'accesso già autenticato via OAuth è di per
+            // sé prova sufficiente, altrimenti resterebbe bloccato al primo login Credentials
+            // (vedi il gate in lib/auth.ts).
+            emailVerified: dbUser.emailVerified ?? new Date(),
+          }
+        : {}),
     },
   });
 

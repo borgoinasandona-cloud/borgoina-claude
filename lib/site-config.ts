@@ -3,6 +3,9 @@ export const siteConfig = {
   contactEmail: process.env.CONTACT_EMAIL_TO ?? "borgoinasandona@gmail.com",
   // Da confermare/valorizzare quando disponibile (vedi PLANNING.md "Domande aperte").
   instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || null,
+  // Base per i link assoluti nelle email (verifica account, reset password): niente auto-detect
+  // affidabile lato server action, va impostato esplicitamente per env (vedi .env.example).
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 };
 
 export const navLinks: { href: string; label: string; accent?: "sky" | "sage" }[] = [

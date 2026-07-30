@@ -77,6 +77,15 @@ export const commentSchema = z.object({
   content: z.string().trim().min(1, "Il commento è obbligatorio").max(2000),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().email("Email non valida"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().trim().min(1),
+  password: z.string().min(8, "La password deve avere almeno 8 caratteri").max(200),
+});
+
 export const updateAccountSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
   email: z.string().trim().email("Email non valida"),

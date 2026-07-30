@@ -23,6 +23,11 @@ export default function CommunityLoginPage() {
       </div>
 
       <CommunityLoginForm />
+      <p className="mt-4 text-sm text-ink-soft">
+        <Link href="/community/forgot-password" className="font-semibold text-brick hover:text-brick-dark">
+          Password dimenticata?
+        </Link>
+      </p>
       <p className="mt-6 text-sm text-ink-soft">
         Non hai ancora un account?{" "}
         <Link href="/community/register" className="font-semibold text-brick hover:text-brick-dark">

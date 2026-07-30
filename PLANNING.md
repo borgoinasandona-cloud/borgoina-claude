@@ -40,6 +40,8 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
 ### Fase 2 — contenuti riservati
 - [x] Login membri: email/password **+ Google OAuth** (aggiunto il 2026-07-20, session strategy
       `jwt` — vedi CLAUDE.md), stessa tabella `User` già pronta da Fase 1
+- [x] Verifica email obbligatoria alla registrazione (link di attivazione) + recupero password via
+      email, aggiunti il 2026-07-30 — vedi CLAUDE.md
 - [ ] Campo `visibility` su `Post`/`Page` attivabile (`PUBLIC` → `PRIVATE`)
 - [ ] Contenuti privati visibili solo a utenti autenticati (member area)
 
