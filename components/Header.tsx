@@ -108,7 +108,7 @@ export function Header({ session }: { session: Session | null }) {
           ) : (
             <Link
               href="/community/login"
-              className={`font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+              className="font-mono rounded-sm bg-brick px-3.5 py-1.5 text-[0.75rem] font-semibold tracking-[0.08em] text-cream uppercase shadow-sm transition-colors hover:bg-brick-dark wide:px-4 wide:py-2 wide:text-sm"
             >
               Accedi
             </Link>
@@ -121,7 +121,11 @@ export function Header({ session }: { session: Session | null }) {
             aria-expanded={mobileOpen}
             className={`transition-colors ${overlay ? "text-cream" : "text-ink"}`}
           >
-            {mobileOpen ? <CloseIcon /> : <HamburgerIcon />}
+            {mobileOpen ? (
+              <CloseIcon className="h-7 w-7 wide:h-8 wide:w-8" />
+            ) : (
+              <HamburgerIcon className="h-7 w-7 wide:h-8 wide:w-8" />
+            )}
           </button>
         </div>
       </div>
