@@ -108,7 +108,7 @@ export function Header({ session }: { session: Session | null }) {
           ) : (
             <Link
               href="/community/login"
-              className="font-mono rounded-sm bg-brick px-3.5 py-1.5 text-[0.75rem] font-semibold tracking-[0.08em] text-cream uppercase shadow-sm transition-colors hover:bg-brick-dark wide:px-4 wide:py-2 wide:text-sm"
+              className="font-mono rounded-full bg-brick px-4 py-1.5 text-[0.75rem] font-semibold tracking-[0.08em] text-cream uppercase shadow-sm transition-colors hover:bg-brick-dark wide:px-5 wide:py-2 wide:text-sm"
             >
               Accedi
             </Link>
