@@ -149,60 +149,72 @@ export function Header({ session }: { session: Session | null }) {
                 L'offset dall'alto segue l'altezza dell'header, che cresce con il logo ai
                 breakpoint più larghi (vedi le classi h-11/md:h-14/wide:h-16 sul logo). */}
             <nav
-              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream px-4 py-6 shadow-xl transition-all duration-300 ease-out md:top-[88px] wide:top-[96px] ${
+              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream shadow-xl transition-all duration-300 ease-out md:top-[88px] wide:top-[96px] ${
                 mobileOpen
                   ? "translate-y-0 opacity-100"
                   : "pointer-events-none -translate-y-3 opacity-0"
               }`}
               inert={!mobileOpen}
             >
-              <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 wide:max-w-6xl">
+              <div className="mx-auto grid max-w-5xl grid-cols-2 gap-x-8 px-4 py-10 md:gap-x-16 md:py-14 wide:max-w-6xl wide:gap-x-24">
                 {/* Colonna 1: Home + pagine del sito. "Home" resta fuori da navLinks (usato
-                    anche dal Footer, dove non serve — vedi CLAUDE.md) e viene aggiunta solo qui. */}
-                <div className="flex flex-col items-start gap-4">
-                  <Link
-                    href="/"
-                    className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                  >
-                    Home
-                  </Link>
-                  {navLinks
-                    .filter((link) => !link.accent)
-                    .map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+                    anche dal Footer, dove non serve — vedi CLAUDE.md) e viene aggiunta solo qui.
+                    Etichette di gruppo (eyebrow) come nel resto del sito: qui incapsulano una
+                    distinzione reale — pagine statiche vs. spazi da usare/partecipare — non sono
+                    decorative. */}
+                <div className="flex flex-col items-start gap-5">
+                  <p className="eyebrow text-brick-light">Pagine</p>
+                  <div className="flex flex-col items-start gap-3 md:gap-4">
+                    <Link
+                      href="/"
+                      className="font-display rounded-sm text-2xl font-extrabold tracking-tight text-ink transition-all duration-200 hover:translate-x-1 hover:text-brick focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-3xl wide:text-4xl"
+                    >
+                      Home
+                    </Link>
+                    {navLinks
+                      .filter((link) => !link.accent)
+                      .map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="font-display rounded-sm text-2xl font-extrabold tracking-tight text-ink transition-all duration-200 hover:translate-x-1 hover:text-brick focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-3xl wide:text-4xl"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                  </div>
                 </div>
 
-                {/* Colonna 2: servizi (fondino colorato) + Instagram. */}
-                <div className="flex flex-col items-start gap-4">
-                  {navLinks
-                    .filter((link) => link.accent)
-                    .map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className={`font-mono rounded-sm px-3 py-1.5 text-sm font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent!]}`}
+                {/* Colonna 2: spazi da usare (fondino colorato) + Instagram. Il filo verticale
+                    color cielo richiama le linee di malta chiara tra i mattoni del logo/palette
+                    (vedi il commento in globals.css) — la stessa idea del bordo dei blockquote
+                    in .prose-content, non un divisore generico. */}
+                <div className="flex flex-col items-start gap-5 border-l-2 border-sky/25 pl-6 md:pl-10">
+                  <p className="eyebrow text-sky-dark">Partecipa</p>
+                  <div className="flex flex-col items-start gap-3 md:gap-4">
+                    {navLinks
+                      .filter((link) => link.accent)
+                      .map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={`font-mono rounded-sm px-4 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-200 hover:translate-x-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-base ${navLinkAccentClasses[link.accent!]}`}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    {siteConfig.instagramUrl && (
+                      <a
+                        href={siteConfig.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-sm font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-all duration-200 hover:translate-x-1 hover:text-brick focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-base"
                       >
-                        {link.label}
-                      </Link>
-                    ))}
-                  {siteConfig.instagramUrl && (
-                    <a
-                      href={siteConfig.instagramUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-mono text-sm font-semibold tracking-[0.08em] text-ink-soft uppercase transition-colors hover:text-brick"
-                    >
-                      <InstagramIcon />
-                      Instagram
-                    </a>
-                  )}
+                        <InstagramIcon />
+                        Instagram
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </nav>
