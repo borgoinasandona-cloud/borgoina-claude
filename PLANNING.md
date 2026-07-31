@@ -72,8 +72,10 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
 ### Fase 4 — Botteghe (non prevista nel planning originale, aggiunta il 2026-07-31)
 - Ogni iscritto può creare **una pagina di presentazione** della propria attività/bottega (modello
   `Shop`, `authorId` `@unique` → relazione 1:1), separata da `CommunityPost`: nome, categoria
-  (`ShopCategory`: artigianato/negozio/ristorazione/servizi/altro), descrizione, contatti
-  (telefono/email/sito), indirizzo, copertina, galleria (`ShopImage`)
+  (`ShopCategory`: artigianato/negozio/ristorazione/servizi/altro), copertina, galleria
+  (`ShopImage`), sezione **"Chi siamo"** (slogan, descrizione e servizi, storia, perché sceglierci)
+  e sezione **"Contatti"** (indirizzo, telefono/WhatsApp, email, sito, Instagram, orari). Sulla
+  pagina pubblica, se c'è un telefono compaiono i pulsanti "Scrivimi su WhatsApp" e "Chiama ora"
 - **Nessuna moderazione preventiva**: la pagina è pubblica non appena l'iscritto la crea
   (`visibility: PUBLIC` di default). L'admin può comunque nascondere/ripubblicare o eliminare da
   `/admin/botteghe` un contenuto inappropriato a posteriori (deciso così dopo una prima versione

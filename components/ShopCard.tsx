@@ -35,9 +35,13 @@ export function ShopCard({ shop }: { shop: CardShop }) {
         <h2 className="font-display text-xl font-bold text-ink transition-colors duration-200 group-hover:text-brick line-clamp-2 wide:text-2xl">
           {shop.name}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-ink-soft line-clamp-3 wide:text-lg">
-          {shop.description}
-        </p>
+        {shop.slogan ? (
+          <p className="mt-2 text-base text-brick-dark italic line-clamp-2 wide:text-lg">{shop.slogan}</p>
+        ) : (
+          <p className="mt-3 text-base leading-relaxed text-ink-soft line-clamp-3 wide:text-lg">
+            {shop.description}
+          </p>
+        )}
       </div>
     </Link>
   );

@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faImage } from "@fortawesome/free-regular-svg-icons";
+import { faEnvelope, faImage, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faPhone, faGlobe, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
+import { toWhatsAppNumber } from "@/lib/phone";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +49,8 @@ export default async function ShopDetailPage({
     notFound();
   }
 
+  const hasContacts = shop.address || shop.hours || shop.email || shop.website || shop.instagram;
+
   return (
     <article>
       <header className="border-b border-ink/10 bg-cream-deep px-4 py-16">
@@ -71,6 +75,9 @@ export default async function ShopDetailPage({
           <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {shop.name}
           </h1>
+          {shop.slogan && (
+            <p className="mt-2 max-w-2xl text-lg text-brick-dark italic wide:text-xl">{shop.slogan}</p>
+          )}
 
           <div className="mt-5 flex items-center gap-3">
             {shop.author.image ? (
@@ -105,42 +112,87 @@ export default async function ShopDetailPage({
           />
         )}
 
-        <p className="text-lg leading-relaxed whitespace-pre-wrap text-ink wide:text-xl">
+        {shop.phone && (
+          <div className="mb-8 flex flex-wrap gap-3">
+            <a
+              href={`https://wa.me/${toWhatsAppNumber(shop.phone)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#1ebe5a]"
+            >
+              <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" aria-hidden="true" />
+              Scrivimi su WhatsApp
+            </a>
+            <a
+              href={`tel:${shop.phone}`}
+              className="inline-flex items-center gap-2 rounded border border-ink/15 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brick hover:text-brick"
+            >
+              <FontAwesomeIcon icon={faPhone} className="h-4 w-4" aria-hidden="true" />
+              Chiama ora
+            </a>
+          </div>
+        )}
+
+        <p className="eyebrow text-brick">Chi siamo</p>
+        <p className="mt-3 text-lg leading-relaxed whitespace-pre-wrap text-ink wide:text-xl">
           {shop.description}
         </p>
 
-        {(shop.phone || shop.email || shop.website || shop.address) && (
-          <div className="mt-8 space-y-2 border-t border-ink/10 pt-6 text-base text-ink-soft">
-            {shop.phone && (
-              <p className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-brick" aria-hidden="true" />
-                <a href={`tel:${shop.phone}`} className="hover:text-brick">
-                  {shop.phone}
-                </a>
-              </p>
-            )}
-            {shop.email && (
-              <p className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 text-brick" aria-hidden="true" />
-                <a href={`mailto:${shop.email}`} className="hover:text-brick">
-                  {shop.email}
-                </a>
-              </p>
-            )}
-            {shop.website && (
-              <p className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-brick" aria-hidden="true" />
-                <a href={shop.website} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
-                  {shop.website}
-                </a>
-              </p>
-            )}
-            {shop.address && (
-              <p className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faLocationDot} className="h-4 w-4 text-brick" aria-hidden="true" />
-                {shop.address}
-              </p>
-            )}
+        {shop.history && (
+          <div className="mt-6">
+            <p className="font-display text-lg font-bold text-ink">La nostra storia</p>
+            <p className="mt-2 leading-relaxed whitespace-pre-wrap text-ink-soft">{shop.history}</p>
+          </div>
+        )}
+
+        {shop.whyChooseUs && (
+          <div className="mt-6">
+            <p className="font-display text-lg font-bold text-ink">Perché sceglierci</p>
+            <p className="mt-2 leading-relaxed whitespace-pre-wrap text-ink-soft">{shop.whyChooseUs}</p>
+          </div>
+        )}
+
+        {hasContacts && (
+          <div className="mt-10 border-t border-ink/10 pt-6">
+            <p className="eyebrow text-brick">Contatti</p>
+            <div className="mt-3 space-y-2 text-base text-ink-soft">
+              {shop.address && (
+                <p className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faLocationDot} className="h-4 w-4 text-brick" aria-hidden="true" />
+                  {shop.address}
+                </p>
+              )}
+              {shop.hours && (
+                <p className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faClock} className="mt-1 h-4 w-4 shrink-0 text-brick" aria-hidden="true" />
+                  <span className="whitespace-pre-wrap">{shop.hours}</span>
+                </p>
+              )}
+              {shop.email && (
+                <p className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 text-brick" aria-hidden="true" />
+                  <a href={`mailto:${shop.email}`} className="hover:text-brick">
+                    {shop.email}
+                  </a>
+                </p>
+              )}
+              {shop.website && (
+                <p className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-brick" aria-hidden="true" />
+                  <a href={shop.website} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+                    {shop.website}
+                  </a>
+                </p>
+              )}
+              {shop.instagram && (
+                <p className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faInstagram} className="h-4 w-4 text-brick" aria-hidden="true" />
+                  <a href={shop.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+                    Instagram
+                  </a>
+                </p>
+              )}
+            </div>
           </div>
         )}
 

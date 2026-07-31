@@ -33,13 +33,18 @@ function parseShopFormData(formData: FormData) {
 
   return shopSchema.safeParse({
     name: formData.get("name"),
-    description: formData.get("description"),
     category: formData.get("category"),
-    coverImage: formData.get("coverImage") || "",
+    slogan: formData.get("slogan") || "",
+    description: formData.get("description"),
+    history: formData.get("history") || "",
+    whyChooseUs: formData.get("whyChooseUs") || "",
+    address: formData.get("address") || "",
     phone: formData.get("phone") || "",
     email: formData.get("email") || "",
     website: formData.get("website") || "",
-    address: formData.get("address") || "",
+    instagram: formData.get("instagram") || "",
+    hours: formData.get("hours") || "",
+    coverImage: formData.get("coverImage") || "",
     images,
   });
 }
@@ -61,8 +66,7 @@ export async function saveShopAction(
 
   try {
     if (existing) {
-      // Modificare una bottega già approvata non la rimanda in moderazione (stesso principio di
-      // updateOwnPostStatusAction per gli annunci community: il campo visibility non viene toccato).
+      // Nessuna moderazione da re-innescare: il campo visibility non viene toccato dal salvataggio.
       await prisma.$transaction([
         prisma.shopImage.deleteMany({ where: { shopId: existing.id } }),
         prisma.shop.update({

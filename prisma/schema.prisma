@@ -166,13 +166,23 @@ model Shop {
   id          String       @id @default(cuid())
   slug        String       @unique
   name        String
-  description String       @db.Text // testo semplice, come CommunityPost.content (non HTML)
   category    ShopCategory
-  coverImage  String? // Cloudinary secure_url, come CommunityPost.coverImage
-  phone       String?
+
+  // Sezione "Chi siamo"
+  slogan      String? // frase corta, mostrata come tagline sotto il nome
+  description String       @db.Text // "descrizione e servizi" — testo semplice, come CommunityPost.content (non HTML)
+  history     String?      @db.Text // "da quanti anni esiste / storia"
+  whyChooseUs String?      @db.Text // "perché sceglierci"
+
+  // Sezione "Contatti"
+  address     String?
+  phone       String? // anche per il pulsante CTA WhatsApp in pubblico, non solo la chiamata
   email       String?
   website     String?
-  address     String?
+  instagram   String? // canale Instagram della bottega, distinto da siteConfig.instagramUrl (del comitato)
+  hours       String?      @db.Text // "orari", testo libero multi-riga
+
+  coverImage  String? // Cloudinary secure_url, come CommunityPost.coverImage
   authorId    String       @unique // 1:1 — un utente ha al massimo una bottega
   author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   images      ShopImage[]

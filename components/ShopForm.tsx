@@ -13,6 +13,10 @@ const initialState: ShopFormState = { status: "idle" };
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <p className="eyebrow border-t border-ink/10 pt-6 text-brick">{children}</p>;
+}
+
 export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
   const isEdit = Boolean(shop);
   const [state, formAction, pending] = useActionState(saveShopAction, initialState);
@@ -61,6 +65,22 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
         </select>
       </div>
 
+      <SectionHeading>Chi siamo</SectionHeading>
+
+      <div>
+        <label htmlFor="slogan" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Slogan
+        </label>
+        <input
+          id="slogan"
+          name="slogan"
+          type="text"
+          placeholder="Una frase corta e rappresentativa"
+          defaultValue={shop?.slogan ?? ""}
+          className={inputClass}
+        />
+      </div>
+
       <div>
         <label htmlFor="description" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
           Descrizione e servizi
@@ -75,12 +95,63 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
         />
       </div>
 
+      <div>
+        <label htmlFor="history" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Da quanti anni esiste / storia
+        </label>
+        <textarea
+          id="history"
+          name="history"
+          rows={3}
+          placeholder="Es. aperto da mio padre nel 1990, ora ci sono io con mia sorella"
+          defaultValue={shop?.history ?? ""}
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="whyChooseUs" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Perché sceglierci
+        </label>
+        <textarea
+          id="whyChooseUs"
+          name="whyChooseUs"
+          rows={3}
+          placeholder="Es. usiamo solo farine locali a km0 della zona di San Donà"
+          defaultValue={shop?.whyChooseUs ?? ""}
+          className={inputClass}
+        />
+      </div>
+
+      <SectionHeading>Contatti</SectionHeading>
+
+      <div>
+        <label htmlFor="address" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Indirizzo
+        </label>
+        <input
+          id="address"
+          name="address"
+          type="text"
+          placeholder="Es. Via Roma 12"
+          defaultValue={shop?.address ?? ""}
+          className={inputClass}
+        />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="phone" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
-            Telefono
+            Telefono / WhatsApp
           </label>
-          <input id="phone" name="phone" type="tel" defaultValue={shop?.phone ?? ""} className={inputClass} />
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            placeholder="Es. 340 1234567"
+            defaultValue={shop?.phone ?? ""}
+            className={inputClass}
+          />
         </div>
         <div>
           <label htmlFor="email" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
@@ -93,7 +164,7 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="website" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
-            Sito web / social
+            Sito web
           </label>
           <input
             id="website"
@@ -105,14 +176,35 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
           />
         </div>
         <div>
-          <label htmlFor="address" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
-            Indirizzo
+          <label htmlFor="instagram" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+            Canale Instagram
           </label>
-          <input id="address" name="address" type="text" defaultValue={shop?.address ?? ""} className={inputClass} />
+          <input
+            id="instagram"
+            name="instagram"
+            type="url"
+            placeholder="https://instagram.com/…"
+            defaultValue={shop?.instagram ?? ""}
+            className={inputClass}
+          />
         </div>
       </div>
 
       <div>
+        <label htmlFor="hours" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          Orari
+        </label>
+        <textarea
+          id="hours"
+          name="hours"
+          rows={2}
+          placeholder="Es. Lun-Sab 7:00-13:00 e 16:00-19:30, Domenica chiuso"
+          defaultValue={shop?.hours ?? ""}
+          className={inputClass}
+        />
+      </div>
+
+      <div className="border-t border-ink/10 pt-6">
         <span className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
           Immagine di copertina
         </span>
@@ -164,7 +256,7 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
         disabled={pending}
         className="w-full rounded bg-brick px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-brick-dark disabled:opacity-60"
       >
-        {pending ? "Salvataggio…" : isEdit ? "Salva modifiche" : "Pubblica (in moderazione)"}
+        {pending ? "Salvataggio…" : isEdit ? "Salva modifiche" : "Pubblica la pagina"}
       </button>
 
       {state.status === "error" && state.message && (

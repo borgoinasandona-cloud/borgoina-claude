@@ -329,6 +329,32 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         dettaglio pubblico mostra contatti/indirizzo/galleria → admin nasconde (404 pubblico
         immediato) e ripubblica da `/admin/botteghe` → modifica dell'autore non cambia la
         visibilità → eliminazione. Dati di test ripuliti dal DB di produzione dopo la verifica
+      - **Campi "Chi siamo"/"Contatti" + CTA (2026-07-31)**: aggiunti a `Shop` `slogan`,
+        `history` ("da quanti anni esiste/storia"), `whyChooseUs` ("perché sceglierci"),
+        `instagram` (canale della bottega, distinto da `siteConfig.instagramUrl` del comitato) e
+        `hours` (orari, testo libero multi-riga) — migration
+        `20260731102931_shop_about_and_contact_fields`. `ShopForm.tsx` riorganizzato in due sezioni
+        con divisore (`SectionHeading`, stile eyebrow): "Chi siamo" (slogan, descrizione, storia,
+        perché sceglierci) subito dopo il campo categoria, poi "Contatti" (indirizzo, telefono/
+        WhatsApp, email, sito, Instagram, orari)
+      - Pagina pubblica: slogan come tagline corsiva sotto il titolo; card del listino
+        (`ShopCard.tsx`) mostra lo slogan al posto dell'estratto della descrizione quando presente
+        (è letteralmente il suo scopo — una frase corta ad effetto per il listino); storia e
+        "perché sceglierci" come blocchi separati sotto la descrizione; sezione "Contatti" con
+        icone (indirizzo, orari, email, sito, Instagram)
+      - **Pulsanti CTA automatici**: "Scrivimi su WhatsApp" (verde brand WhatsApp `#25D366`,
+        icona `faWhatsapp` da `free-brands-svg-icons` — il logo non esiste in regular/solid) e
+        "Chiama ora" (outline, `tel:`), mostrati solo se `phone` è valorizzato. Il numero italiano
+        inserito dall'iscritto (es. "340 1234567", senza prefisso) va convertito in formato
+        internazionale per il link `wa.me`: `lib/phone.ts` → `toWhatsAppNumber()` normalizza
+        aggiungendo `39` se il numero non ha già un prefisso paese — approssimazione dichiarata,
+        pensata per numeri italiani (il sito è per un comitato di quartiere locale, non per un
+        pubblico internazionale)
+      - Testato end-to-end con Playwright: tutti i nuovi campi salvati e mostrati nell'ordine
+        corretto nel form, pagina pubblica mostra slogan/storia/perché-sceglierci/contatti/orari,
+        link WhatsApp verificato byte-per-byte (`340 1234567` → `https://wa.me/393401234567`),
+        link "Chiama ora" (`tel:340 1234567`) e Instagram della bottega corretti, card del listino
+        mostra lo slogan. Dati di test ripuliti dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

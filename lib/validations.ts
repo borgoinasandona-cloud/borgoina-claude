@@ -87,13 +87,20 @@ export const shopImageSchema = z.object({
 
 export const shopSchema = z.object({
   name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
-  description: z.string().trim().min(1, "La descrizione è obbligatoria").max(3000),
   category: z.enum(SHOP_CATEGORIES),
-  coverImage: z.string().trim().optional().or(z.literal("")),
+  // Chi siamo
+  slogan: z.string().trim().max(150).optional().or(z.literal("")),
+  description: z.string().trim().min(1, "La descrizione è obbligatoria").max(3000),
+  history: z.string().trim().max(1500).optional().or(z.literal("")),
+  whyChooseUs: z.string().trim().max(1500).optional().or(z.literal("")),
+  // Contatti
+  address: z.string().trim().max(200).optional().or(z.literal("")),
   phone: z.string().trim().max(40).optional().or(z.literal("")),
   email: z.string().trim().email("Email non valida").optional().or(z.literal("")),
   website: z.string().trim().url("URL non valida").optional().or(z.literal("")),
-  address: z.string().trim().max(200).optional().or(z.literal("")),
+  instagram: z.string().trim().url("URL non valida").optional().or(z.literal("")),
+  hours: z.string().trim().max(500).optional().or(z.literal("")),
+  coverImage: z.string().trim().optional().or(z.literal("")),
   images: z.array(shopImageSchema).default([]),
 });
 
