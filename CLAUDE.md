@@ -148,11 +148,13 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       Shoulders/Work Sans/IBM Plex Mono, breakpoint custom `wide` a 1570px per monitor grandi,
       sfondo sito bianco con `--color-cream` portato a `#f4f2f2`
 - [x] Header pubblico: overlay trasparente con logo bianco sopra le pagine con hero-foto (`/`,
-      `/il-borgo`), diventa solido allo scroll; link "Home" rimosso (resta il logo cliccabile),
-      icona Instagram a destra (link da `NEXT_PUBLIC_INSTAGRAM_URL`); sotto `md` il menu si nasconde
-      in un hamburger (`components/MenuIcons.tsx`) che forza l'header in versione solida quando aperto
-- [x] Badge "🖼️ Galleria" sulle card/articoli Bacheca che hanno immagini in galleria o `externalLink`
-      (`lib/posts.ts` → `hasGallery()`, `components/GalleryBadge.tsx`)
+      `/il-borgo`), diventa solido allo scroll (comportamento invariato dallo scaffold iniziale).
+      **Struttura del menu ridisegnata il 2026-07-30/31**: la versione originale qui descritta
+      (link "Home" rimosso, hamburger solo sotto `md`, "Esci" visibile nel menu) è superata — vedi
+      la voce dedicata più sotto ("Header/menù ridisegnati") per lo stato attuale
+- [x] Badge "Galleria" sulle card/articoli Bacheca che hanno immagini in galleria o `externalLink`
+      (`lib/posts.ts` → `hasGallery()`, `components/GalleryBadge.tsx` — icona Font Awesome
+      `faImage` regular dal 2026-07-30, non più l'emoji 🖼️ originale)
 - [x] Campo "In evidenza" su `Post` (admin: checkbox in `PostForm.tsx`) — se true, l'articolo appare
       nella sezione "Il Borgo utile" della home al posto del più recente (`getFeaturedPost()` in
       `lib/posts.ts`, con fallback al post più recente se nessuno è marcato)
@@ -177,9 +179,10 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       - Pulsante "Continua con Google" su `/community/login` e `/community/register`
         (`components/GoogleSignInButton.tsx`, azione `signInWithGoogleAction`)
       - Header pubblico ora riceve la sessione da `app/layout.tsx` (Server Component, `await auth()`)
-        e la passa come prop a `Header` (Client Component): mostra "Accedi" da sloggati,
-        nome utente + "Esci" da loggati, sia in versione desktop sia nel modale mobile.
-        **Effetto collaterale**: il layout root ora legge i cookie ad ogni richiesta, quindi tutte
+        e la passa come prop a `Header` (Client Component): mostra "Accedi" da sloggati, nome
+        utente (+ avatar dal 2026-07-30) da loggati — il logout si fa da `/community/account`, non
+        dal menu, da quando "Esci" è stato tolto dal menu (vedi commit `4c0a33d`, precedente a
+        questa sessione). **Effetto collaterale**: il layout root ora legge i cookie ad ogni richiesta, quindi tutte
         le pagine sono diventate `ƒ` (dynamic) invece di poter restare `○` (static) — inevitabile
         per un header che mostra lo stato di login
       - Verificato in locale e in produzione: redirect a `accounts.google.com` con `client_id`/

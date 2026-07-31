@@ -222,7 +222,8 @@ model ContactMessage {
 
 ## Domande aperte (da chiudere prima o durante lo sviluppo)
 
-- Conferma: la form contatti serve davvero o basta mostrare l'email?
+- [x] **Form contatti: chiusa, implementata e live** — c'è, invia via Resend, salva anche su
+      `ContactMessage` come fallback (vedi CLAUDE.md)
 - [x] **Dominio finale: chiuso il 2026-07-27** — passato a un dominio proprio, `borgoinasandona.it`
       (acquistato da Dario), non più un sottodominio di terotero.it. Il vecchio
       `borgoinasandona.terotero.it` reindirizza al nuovo dominio. Il dominio è stato verificato
