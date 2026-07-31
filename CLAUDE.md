@@ -358,6 +358,11 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         link WhatsApp verificato byte-per-byte (`340 1234567` → `https://wa.me/393401234567`),
         link "Chiama ora" (`tel:340 1234567`) e Instagram della bottega corretti, card del listino
         mostra lo slogan. Dati di test ripuliti dopo la verifica
+      - **Sezione Contatti in card (2026-07-31)**: da lista verticale con icona a griglia di
+        card (`grid sm:grid-cols-2`, componente locale `ContactCard` in
+        `app/botteghe/[slug]/page.tsx`) — stesso stile `rounded border border-ink/10 bg-white
+        shadow-sm` già usato per il box del modulo di contatto in `/contatti`, icona in un
+        cerchietto `bg-brick/10 text-brick`. Verificato visivamente desktop e mobile
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

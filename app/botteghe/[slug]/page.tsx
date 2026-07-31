@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faImage, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faPhone, faGlobe, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
@@ -18,6 +19,28 @@ function initials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]!.toUpperCase())
     .join("");
+}
+
+function ContactCard({
+  icon,
+  label,
+  children,
+}: {
+  icon: IconDefinition;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded border border-ink/10 bg-white p-4 shadow-sm">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brick/10 text-brick">
+        <FontAwesomeIcon icon={icon} className="h-4 w-4" aria-hidden="true" />
+      </div>
+      <div className="min-w-0">
+        <p className="font-mono text-[0.7rem] font-semibold tracking-wide text-ink-soft uppercase">{label}</p>
+        <p className="mt-0.5 text-sm text-ink">{children}</p>
+      </div>
+    </div>
+  );
 }
 
 export async function generateMetadata({
@@ -155,42 +178,42 @@ export default async function ShopDetailPage({
         {hasContacts && (
           <div className="mt-10 border-t border-ink/10 pt-6">
             <p className="eyebrow text-brick">Contatti</p>
-            <div className="mt-3 space-y-2 text-base text-ink-soft">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {shop.address && (
-                <p className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faLocationDot} className="h-4 w-4 text-brick" aria-hidden="true" />
+                <ContactCard icon={faLocationDot} label="Indirizzo">
                   {shop.address}
-                </p>
+                </ContactCard>
               )}
               {shop.hours && (
-                <p className="flex items-start gap-2">
-                  <FontAwesomeIcon icon={faClock} className="mt-1 h-4 w-4 shrink-0 text-brick" aria-hidden="true" />
+                <ContactCard icon={faClock} label="Orari">
                   <span className="whitespace-pre-wrap">{shop.hours}</span>
-                </p>
+                </ContactCard>
               )}
               {shop.email && (
-                <p className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 text-brick" aria-hidden="true" />
+                <ContactCard icon={faEnvelope} label="Email">
                   <a href={`mailto:${shop.email}`} className="hover:text-brick">
                     {shop.email}
                   </a>
-                </p>
+                </ContactCard>
               )}
               {shop.website && (
-                <p className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-brick" aria-hidden="true" />
-                  <a href={shop.website} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+                <ContactCard icon={faGlobe} label="Sito web">
+                  <a
+                    href={shop.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="break-all hover:text-brick"
+                  >
                     {shop.website}
                   </a>
-                </p>
+                </ContactCard>
               )}
               {shop.instagram && (
-                <p className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faInstagram} className="h-4 w-4 text-brick" aria-hidden="true" />
+                <ContactCard icon={faInstagram} label="Instagram">
                   <a href={shop.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
-                    Instagram
+                    Apri il profilo →
                   </a>
-                </p>
+                </ContactCard>
               )}
             </div>
           </div>
