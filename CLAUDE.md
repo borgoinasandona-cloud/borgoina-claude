@@ -380,6 +380,12 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         richiesto altrimenti. Testato end-to-end: un iscritto non-admin non può aprire la pagina
         (redirect a `/admin/login`), l'admin apre da `/admin/botteghe`, modifica nome e
         descrizione di una bottega altrui, la modifica si riflette subito sulla pagina pubblica
+- [x] **Header "scheda unica" nelle pagine di dettaglio community/botteghe (2026-07-31)**: in
+      `app/community/[slug]/page.tsx` e `app/botteghe/[slug]/page.tsx` l'header (back-link, badge,
+      titolo, autore) aveva `bg-cream-deep`/`border-b` e molto padding, leggibile come un blocco
+      separato dal corpo sotto. Tolti sfondo e bordo, ridotto il padding (`pt-16 pb-2` sull'header,
+      `pt-4 pb-12` sul corpo) così l'insieme si legge come un'unica scheda bianca — verificato
+      visivamente su contenuti reali di produzione, desktop e mobile
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

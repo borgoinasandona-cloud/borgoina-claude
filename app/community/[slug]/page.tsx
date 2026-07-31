@@ -51,7 +51,7 @@ export default async function CommunityPostDetailPage({
 
   return (
     <article>
-      <header className="border-b border-ink/10 bg-cream-deep px-4 py-16">
+      <header className="px-4 pt-16 pb-2">
         <div className="mx-auto max-w-3xl wide:max-w-4xl">
           <Link
             href="/community"
@@ -87,7 +87,7 @@ export default async function CommunityPostDetailPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-4 py-12 wide:max-w-4xl">
+      <div className="mx-auto max-w-3xl px-4 pt-4 pb-12 wide:max-w-4xl">
         {post.coverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
