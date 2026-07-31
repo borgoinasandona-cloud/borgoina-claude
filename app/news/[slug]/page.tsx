@@ -33,7 +33,7 @@ export default async function NewsDetailPage({
 
   return (
     <article>
-      <header className="border-b border-ink/10 bg-cream-deep px-4 py-16">
+      <header className="px-4 pt-16 pb-2">
         <div className="mx-auto max-w-3xl wide:max-w-4xl">
           <Link
             href="/news"
@@ -64,7 +64,7 @@ export default async function NewsDetailPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-4 py-12 text-lg leading-relaxed text-ink wide:max-w-4xl wide:text-xl">
+      <div className="mx-auto max-w-3xl px-4 pt-4 pb-12 text-lg leading-relaxed text-ink wide:max-w-4xl wide:text-xl">
         {post.coverImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
