@@ -69,6 +69,23 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   privacy dei commenti senza threading) e un bug di sessione trovato/corretto durante il testing:
   vedi CLAUDE.md
 
+### Fase 4 — Botteghe (non prevista nel planning originale, aggiunta il 2026-07-31)
+- Ogni iscritto può creare **una pagina di presentazione** della propria attività/bottega (modello
+  `Shop`, `authorId` `@unique` → relazione 1:1), separata da `CommunityPost`: nome, categoria
+  (`ShopCategory`: artigianato/negozio/ristorazione/servizi/altro), descrizione, contatti
+  (telefono/email/sito), indirizzo, copertina, galleria (`ShopImage`)
+- Stessa moderazione di `CommunityPost`: nasce `visibility: PENDING`, l'admin approva/rifiuta da
+  `/admin/botteghe` prima che compaia sulla pagina pubblica `/botteghe`. A differenza degli annunci
+  Bacheca, una bottega è pensata per restare nel tempo: modificarla **non** la rimanda in
+  moderazione una volta approvata (solo la creazione iniziale parte `PENDING`)
+- **Implementata end-to-end il 2026-07-31**: gestione personale in `/community/bottega`
+  (crea/modifica/elimina la propria pagina, `components/ShopForm.tsx`), listino pubblico con
+  filtro categoria e dettaglio in `/botteghe` e `/botteghe/[slug]`, moderazione admin in
+  `/admin/botteghe`. Testato end-to-end con Playwright (creazione → PENDING non pubblica →
+  approvazione admin → pubblica con filtro categoria → modifica da parte dell'autore resta
+  pubblica senza tornare in moderazione → eliminazione), dati di test ripuliti dal DB di
+  produzione dopo la verifica. Dettagli implementativi: vedi CLAUDE.md
+
 ## Data model (bozza Prisma)
 
 ```prisma

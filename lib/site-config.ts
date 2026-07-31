@@ -8,7 +8,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 };
 
-export const navLinks: { href: string; label: string; accent?: "sky" | "sage" }[] = [
+export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | "brick" }[] = [
   // Pagine del sito
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
@@ -17,10 +17,12 @@ export const navLinks: { href: string; label: string; accent?: "sky" | "sage" }[
   // Header/Footer). Instagram resta a parte, non in questo elenco.
   { href: "/news", label: "Bacheca", accent: "sky" },
   { href: "/community", label: "Community", accent: "sage" },
+  { href: "/botteghe", label: "Botteghe", accent: "brick" },
 ];
 
-/** Classi Tailwind per il fondino colorato dei link "servizio" (Bacheca/Community) nel menù. */
-export const navLinkAccentClasses: Record<"sky" | "sage", string> = {
+/** Classi Tailwind per il fondino colorato dei link "servizio" (Bacheca/Community/Botteghe) nel menù. */
+export const navLinkAccentClasses: Record<"sky" | "sage" | "brick", string> = {
   sky: "bg-sky text-white hover:bg-sky-dark",
   sage: "bg-sage text-white hover:bg-sage-dark",
+  brick: "bg-brick text-white hover:bg-brick-dark",
 };

@@ -42,6 +42,14 @@ enum CommentVisibility {
   AUTHOR_ONLY
 }
 
+enum ShopCategory {
+  CRAFTS // artigianato
+  SHOP // negozio/commercio
+  FOOD // ristorazione/alimentari
+  SERVICES // servizi
+  OTHER
+}
+
 model User {
   id             String          @id @default(cuid())
   email          String          @unique
@@ -54,6 +62,7 @@ model User {
   sessions       Session[]
   communityPosts CommunityPost[]
   comments       Comment[]
+  shop           Shop?
   createdAt      DateTime        @default(now())
 }
 
@@ -146,6 +155,37 @@ model Comment {
   author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   content         String        @db.Text
   createdAt       DateTime      @default(now())
+}
+
+// Pagina di presentazione di un'attività/bottega di un iscritto: separata da CommunityPost
+// (annunci) — un utente ne ha al massimo una (authorId @unique), moderata dall'admin come gli
+// annunci community (visibility PENDING/PUBLIC/PRIVATE).
+model Shop {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  description String       @db.Text // testo semplice, come CommunityPost.content (non HTML)
+  category    ShopCategory
+  coverImage  String? // Cloudinary secure_url, come CommunityPost.coverImage
+  phone       String?
+  email       String?
+  website     String?
+  address     String?
+  authorId    String       @unique // 1:1 — un utente ha al massimo una bottega
+  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  images      ShopImage[]
+  visibility  Visibility   @default(PENDING)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ShopImage {
+  id     String  @id @default(cuid())
+  shopId String
+  shop   Shop    @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  url    String
+  alt    String?
+  order  Int     @default(0)
 }
 
 model Category {

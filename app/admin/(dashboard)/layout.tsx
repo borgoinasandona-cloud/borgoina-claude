@@ -25,7 +25,10 @@ const adminNav: AdminNavItem[] = [
   },
   {
     group: "Community",
-    items: [{ href: "/admin/community", label: "Annunci" }],
+    items: [
+      { href: "/admin/community", label: "Annunci" },
+      { href: "/admin/botteghe", label: "Botteghe" },
+    ],
   },
 ];
 

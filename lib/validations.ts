@@ -77,6 +77,26 @@ export const commentSchema = z.object({
   content: z.string().trim().min(1, "Il commento è obbligatorio").max(2000),
 });
 
+const SHOP_CATEGORIES = ["CRAFTS", "SHOP", "FOOD", "SERVICES", "OTHER"] as const;
+
+export const shopImageSchema = z.object({
+  url: z.string().trim().min(1),
+  alt: z.string().trim().max(200).optional(),
+  order: z.number().int().min(0).default(0),
+});
+
+export const shopSchema = z.object({
+  name: z.string().trim().min(1, "Il nome è obbligatorio").max(120),
+  description: z.string().trim().min(1, "La descrizione è obbligatoria").max(3000),
+  category: z.enum(SHOP_CATEGORIES),
+  coverImage: z.string().trim().optional().or(z.literal("")),
+  phone: z.string().trim().max(40).optional().or(z.literal("")),
+  email: z.string().trim().email("Email non valida").optional().or(z.literal("")),
+  website: z.string().trim().url("URL non valida").optional().or(z.literal("")),
+  address: z.string().trim().max(200).optional().or(z.literal("")),
+  images: z.array(shopImageSchema).default([]),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().trim().email("Email non valida"),
 });
@@ -110,3 +130,4 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type CommunityPostInput = z.infer<typeof communityPostSchema>;
 export type CommentInput = z.infer<typeof commentSchema>;
 export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
+export type ShopInput = z.infer<typeof shopSchema>;

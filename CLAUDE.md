@@ -271,6 +271,49 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         dopo un nuovo login → rimozione foto → torna a `null` nel DB. Dati e immagine di test
         ripuliti dopo la verifica (l'immagine caricata su Cloudinary durante il test resta, è un
         1x1 px trascurabile — nessuna pipeline di pulizia Cloudinary in questo progetto)
+- [x] **Header/menù ridisegnati (2026-07-30/31)**: hamburger sempre visibile a tutti i breakpoint
+      (prima solo sotto `md`) invece della nav desktop — apre lo stesso modale a tutta larghezza,
+      ora su 2 colonne (Home/Il Borgo/Chi siamo/Contatti/Botteghe a sinistra, Bacheca/Community/
+      Instagram con pillole colorate a destra, filo verticale color cielo a dividerle), voci in
+      font display (Big Shoulders) invece del mono maiuscolo piccolo, focus da tastiera visibile.
+      "Accedi" è ora una pillola piena `rounded-full` color brick (CTA vera, distinta dagli altri
+      bottoni squadrati del sito); l'account già loggato (avatar+nome) resta un link semplice.
+      Font Awesome (stile regular, `lib/fontawesome.ts`) adottato come famiglia di icone al posto
+      di emoji/SVG custom: commento (`f075`), immagine/galleria, hamburger/chiudi (solo in solid,
+      non esistono in regular) e Instagram (solo nel set brands) — restano emoji solo negli editor
+      admin (`RichTextEditor.tsx`, `PostForm.tsx`), non toccati. Footer: aggiunto "credits: TeroTero"
+      (link a terotero.it) accanto al copyright
+- [x] **Botteghe (2026-07-31)**: pagina di presentazione della propria attività per gli iscritti —
+      vedi PLANNING.md "Fase 4" per la descrizione funzionale. Note implementative:
+      - Modelli `Shop`/`ShopImage` + enum `ShopCategory` in `prisma/schema.prisma` (migration
+        `20260731090741_add_shop`), riusa l'enum `Visibility` esistente — nessun problema di
+        "nuovo valore enum usato subito" incontrato con `CommentVisibility` in Fase 3, perché qui
+        non si aggiunge un valore nuovo, solo nuove tabelle che referenziano l'enum già presente
+      - `authorId String @unique` su `Shop` applica "una bottega per utente" a livello DB, non solo
+        in app
+      - `lib/shops.ts` e `app/community/bottega/actions.ts` rispecchiano quasi 1:1 `lib/community.ts`
+        e le action di `CommunityPost` (stesso `requireUser()`/`requireAdmin()`, stesso schema di
+        moderazione PENDING→PUBLIC/PRIVATE in `/admin/botteghe`). La galleria immagini (`ShopImage`)
+        segue invece il pattern di `PostImage`/`app/admin/(dashboard)/posts/actions.ts`: stato locale
+        `images` nel form, hidden input `imagesJson`, sostituzione con transazione `deleteMany` +
+        `create` lato server
+      - **Scelta deliberata**: modificare una bottega già `PUBLIC` non la rimanda in moderazione
+        (solo la creazione iniziale nasce `PENDING`) — coerente con `updateOwnPostStatusAction` che
+        oggi non re-innesca moderazione sui cambi di stato di `CommunityPost`
+      - Categoria (`ShopCategory`: `CRAFTS`/`SHOP`/`FOOD`/`SERVICES`/`OTHER`) è un enum fisso come
+        `CommunityPostType`, non un modello `Category` gestibile da admin come per `Post` — scelta
+        per coerenza con l'unico altro precedente di categorizzazione "generata dagli iscritti"
+      - "Botteghe" inizialmente lasciata come link semplice nel menù; spostata su richiesta
+        nella colonna "Partecipa" come terza pillola colorata accanto a Bacheca/Community
+        (`navLinkAccentClasses` esteso con un terzo accent `"brick"`, `bg-brick text-white
+        hover:bg-brick-dark` — stesso `brick` del bottone Accedi ma `text-white` invece di
+        `text-cream` per restare leggermente distinta, non c'è una quarta tinta libera in
+        palette)
+      - Testato end-to-end con Playwright: creazione (nasce `PENDING`, 404 pubblico per visitatore
+        anonimo, visibile solo ad autore/admin) → approvazione admin da `/admin/botteghe` →
+        compare su `/botteghe` e nel filtro categoria corretto → dettaglio pubblico mostra
+        contatti/indirizzo/galleria → modifica dell'autore resta `PUBLIC` → eliminazione. Dati di
+        test ripuliti dal DB di produzione dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
