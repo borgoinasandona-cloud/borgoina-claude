@@ -292,14 +292,28 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       - `authorId String @unique` su `Shop` applica "una bottega per utente" a livello DB, non solo
         in app
       - `lib/shops.ts` e `app/community/bottega/actions.ts` rispecchiano quasi 1:1 `lib/community.ts`
-        e le action di `CommunityPost` (stesso `requireUser()`/`requireAdmin()`, stesso schema di
-        moderazione PENDING→PUBLIC/PRIVATE in `/admin/botteghe`). La galleria immagini (`ShopImage`)
-        segue invece il pattern di `PostImage`/`app/admin/(dashboard)/posts/actions.ts`: stato locale
-        `images` nel form, hidden input `imagesJson`, sostituzione con transazione `deleteMany` +
-        `create` lato server
-      - **Scelta deliberata**: modificare una bottega già `PUBLIC` non la rimanda in moderazione
-        (solo la creazione iniziale nasce `PENDING`) — coerente con `updateOwnPostStatusAction` che
-        oggi non re-innesca moderazione sui cambi di stato di `CommunityPost`
+        e le action di `CommunityPost` (stesso `requireUser()`/`requireAdmin()`). La galleria
+        immagini (`ShopImage`) segue invece il pattern di `PostImage`/
+        `app/admin/(dashboard)/posts/actions.ts`: stato locale `images` nel form, hidden input
+        `imagesJson`, sostituzione con transazione `deleteMany` + `create` lato server
+      - **Niente moderazione preventiva (cambiato il 2026-07-31)**: la prima versione nasceva
+        `visibility: PENDING` con approvazione admin, come `CommunityPost` — tolta su richiesta
+        esplicita. `Shop.visibility` ora ha `@default(PUBLIC)` (migration
+        `20260731095028_shop_public_by_default`, nessuna riga reale da migrare: la feature era
+        appena stata rilasciata, zero bottege create da utenti veri). Il campo `visibility` resta
+        nel modello e nell'enum condiviso `Visibility` solo per dare all'admin un modo non
+        distruttivo di nascondere contenuti inappropriati a posteriori (`/admin/botteghe` →
+        pulsanti "Nascondi"/"Pubblica", azioni `hideShopAction`/`publishShopAction` in
+        `app/admin/(dashboard)/botteghe/actions.ts`, rinominate da `rejectShopAction`/
+        `approveShopAction`) — `PENDING` non viene più impostato da nessun percorso applicativo
+      - Modificare una bottega già pubblica non la nasconde né la tocca in alcun modo lato
+        visibilità (nessuna moderazione da re-innescare, a differenza di quanto valutato per
+        `CommunityPost`)
+      - Autore **in evidenza** sulla pagina pubblica: blocco "Gestita da" con avatar
+        (`User.image`, la stessa foto profilo di Fase 2) o iniziali come fallback, subito sotto il
+        titolo in `app/botteghe/[slug]/page.tsx` — riflette la logica esplicita del prodotto: chi
+        si iscrive alla community può avere anche una pagina della propria attività, e la pagina
+        deve restare visibilmente legata a quella persona
       - Categoria (`ShopCategory`: `CRAFTS`/`SHOP`/`FOOD`/`SERVICES`/`OTHER`) è un enum fisso come
         `CommunityPostType`, non un modello `Category` gestibile da admin come per `Post` — scelta
         per coerenza con l'unico altro precedente di categorizzazione "generata dagli iscritti"
@@ -309,11 +323,12 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         hover:bg-brick-dark` — stesso `brick` del bottone Accedi ma `text-white` invece di
         `text-cream` per restare leggermente distinta, non c'è una quarta tinta libera in
         palette)
-      - Testato end-to-end con Playwright: creazione (nasce `PENDING`, 404 pubblico per visitatore
-        anonimo, visibile solo ad autore/admin) → approvazione admin da `/admin/botteghe` →
-        compare su `/botteghe` e nel filtro categoria corretto → dettaglio pubblico mostra
-        contatti/indirizzo/galleria → modifica dell'autore resta `PUBLIC` → eliminazione. Dati di
-        test ripuliti dal DB di produzione dopo la verifica
+      - Testato end-to-end con Playwright (due giri, prima e dopo la rimozione della moderazione):
+        creazione → subito `PUBLIC` e visibile su `/botteghe` senza alcun intervento admin →
+        blocco "Gestita da" presente con nome/iniziali corretti → filtro categoria funziona →
+        dettaglio pubblico mostra contatti/indirizzo/galleria → admin nasconde (404 pubblico
+        immediato) e ripubblica da `/admin/botteghe` → modifica dell'autore non cambia la
+        visibilità → eliminazione. Dati di test ripuliti dal DB di produzione dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

@@ -10,7 +10,7 @@ export const shopCategoryLabels: Record<ShopCategory, string> = {
 };
 
 const shopInclude = {
-  author: { select: { id: true, name: true, email: true } },
+  author: { select: { id: true, name: true, email: true, image: true } },
   images: { orderBy: { order: "asc" } },
 } as const;
 

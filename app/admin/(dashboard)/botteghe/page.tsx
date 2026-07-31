@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { getAllShopsForAdmin, shopCategoryLabels } from "@/lib/shops";
-import { approveShopAction, rejectShopAction, deleteShopAction } from "./actions";
+import { publishShopAction, hideShopAction, deleteShopAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 const VISIBILITY_LABELS: Record<string, string> = {
-  PENDING: "In moderazione",
   PUBLIC: "Pubblico",
-  PRIVATE: "Rifiutato",
+  PRIVATE: "Nascosto",
+  PENDING: "Nascosto",
 };
 
 export default async function AdminShopsPage() {
@@ -19,8 +19,8 @@ export default async function AdminShopsPage() {
         <h1 className="text-2xl font-semibold text-neutral-900">Botteghe</h1>
       </div>
       <p className="mt-2 text-sm text-neutral-500">
-        Pagine di presentazione create dagli iscritti. Vanno approvate prima di comparire sulla
-        pagina pubblica Botteghe.
+        Pagine di presentazione create dagli iscritti. Sono pubblicate subito, senza moderazione:
+        da qui puoi solo nascondere o eliminare un contenuto inappropriato.
       </p>
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
@@ -31,11 +31,9 @@ export default async function AdminShopsPage() {
                 {shop.name}
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    shop.visibility === "PENDING"
-                      ? "bg-amber-100 text-amber-800"
-                      : shop.visibility === "PUBLIC"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-neutral-200 text-neutral-600"
+                    shop.visibility === "PUBLIC"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-neutral-200 text-neutral-600"
                   }`}
                 >
                   {VISIBILITY_LABELS[shop.visibility]}
@@ -55,17 +53,16 @@ export default async function AdminShopsPage() {
               >
                 Vedi
               </Link>
-              {shop.visibility !== "PUBLIC" && (
-                <form action={approveShopAction.bind(null, shop.id)}>
-                  <button type="submit" className="text-sm text-green-700 hover:underline">
-                    Approva
+              {shop.visibility === "PUBLIC" ? (
+                <form action={hideShopAction.bind(null, shop.id)}>
+                  <button type="submit" className="text-sm text-neutral-500 hover:text-amber-700">
+                    Nascondi
                   </button>
                 </form>
-              )}
-              {shop.visibility !== "PRIVATE" && (
-                <form action={rejectShopAction.bind(null, shop.id)}>
-                  <button type="submit" className="text-sm text-neutral-500 hover:text-amber-700">
-                    Rifiuta
+              ) : (
+                <form action={publishShopAction.bind(null, shop.id)}>
+                  <button type="submit" className="text-sm text-green-700 hover:underline">
+                    Pubblica
                   </button>
                 </form>
               )}

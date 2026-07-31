@@ -158,8 +158,10 @@ model Comment {
 }
 
 // Pagina di presentazione di un'attività/bottega di un iscritto: separata da CommunityPost
-// (annunci) — un utente ne ha al massimo una (authorId @unique), moderata dall'admin come gli
-// annunci community (visibility PENDING/PUBLIC/PRIVATE).
+// (annunci) — un utente ne ha al massimo una (authorId @unique). Pubblicata subito, senza
+// moderazione admin (a differenza degli annunci community): visibility resta nel modello solo
+// per permettere all'admin di nascondere contenuti inappropriati a posteriori (PUBLIC/PRIVATE),
+// PENDING non viene più usato qui.
 model Shop {
   id          String       @id @default(cuid())
   slug        String       @unique
@@ -174,7 +176,7 @@ model Shop {
   authorId    String       @unique // 1:1 — un utente ha al massimo una bottega
   author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   images      ShopImage[]
-  visibility  Visibility   @default(PENDING)
+  visibility  Visibility   @default(PUBLIC)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }

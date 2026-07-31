@@ -12,11 +12,6 @@ export const metadata: Metadata = {
   title: "La mia bottega",
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "In attesa di moderazione",
-  PRIVATE: "Non pubblica",
-};
-
 export default async function MyShopPage() {
   const session = await auth();
   if (!session?.user?.id) {
@@ -36,14 +31,14 @@ export default async function MyShopPage() {
         <>
           <p className="mt-3 text-sm text-ink-soft">
             {shop.visibility === "PUBLIC"
-              ? "La tua pagina è pubblica."
-              : "Aggiorna i dati della tua pagina. Le modifiche a una pagina già approvata restano subito visibili, senza tornare in moderazione."}
+              ? "La tua pagina è pubblica. Le modifiche restano subito visibili."
+              : "Un admin ha nascosto la tua pagina: non è al momento visibile su Botteghe."}
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             {shop.visibility !== "PUBLIC" ? (
               <span className="font-mono inline-block rounded-sm bg-ink px-2 py-1 text-[0.7rem] font-semibold tracking-wide text-cream uppercase">
-                {STATUS_LABELS[shop.visibility]}
+                Nascosta
               </span>
             ) : (
               <Link
@@ -69,8 +64,8 @@ export default async function MyShopPage() {
       ) : (
         <>
           <p className="mt-3 text-sm text-ink-soft">
-            Crea la pagina di presentazione della tua attività o dei tuoi servizi. Dopo la
-            pubblicazione, un admin la controlla prima che compaia su{" "}
+            Crea la pagina di presentazione della tua attività o dei tuoi servizi: è subito
+            visibile a tutti su{" "}
             <Link href="/botteghe" className="font-semibold text-brick hover:text-brick-dark">
               Botteghe
             </Link>

@@ -74,17 +74,20 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   `Shop`, `authorId` `@unique` → relazione 1:1), separata da `CommunityPost`: nome, categoria
   (`ShopCategory`: artigianato/negozio/ristorazione/servizi/altro), descrizione, contatti
   (telefono/email/sito), indirizzo, copertina, galleria (`ShopImage`)
-- Stessa moderazione di `CommunityPost`: nasce `visibility: PENDING`, l'admin approva/rifiuta da
-  `/admin/botteghe` prima che compaia sulla pagina pubblica `/botteghe`. A differenza degli annunci
-  Bacheca, una bottega è pensata per restare nel tempo: modificarla **non** la rimanda in
-  moderazione una volta approvata (solo la creazione iniziale parte `PENDING`)
+- **Nessuna moderazione preventiva**: la pagina è pubblica non appena l'iscritto la crea
+  (`visibility: PUBLIC` di default). L'admin può comunque nascondere/ripubblicare o eliminare da
+  `/admin/botteghe` un contenuto inappropriato a posteriori (deciso così dopo una prima versione
+  con moderazione admin, poi tolta il 2026-07-31 — vedi CLAUDE.md)
+- Sulla pagina pubblica della bottega è **in evidenza chi è l'iscritto collegato** (avatar/iniziali
+  + nome, sezione "Gestita da"): la logica è che chi si iscrive alla community può poi avere anche
+  una pagina della propria attività, e la pagina resta sempre visibilmente legata a quella persona
 - **Implementata end-to-end il 2026-07-31**: gestione personale in `/community/bottega`
   (crea/modifica/elimina la propria pagina, `components/ShopForm.tsx`), listino pubblico con
-  filtro categoria e dettaglio in `/botteghe` e `/botteghe/[slug]`, moderazione admin in
-  `/admin/botteghe`. Testato end-to-end con Playwright (creazione → PENDING non pubblica →
-  approvazione admin → pubblica con filtro categoria → modifica da parte dell'autore resta
-  pubblica senza tornare in moderazione → eliminazione), dati di test ripuliti dal DB di
-  produzione dopo la verifica. Dettagli implementativi: vedi CLAUDE.md
+  filtro categoria e dettaglio in `/botteghe` e `/botteghe/[slug]`, gestione admin in
+  `/admin/botteghe`. Testato end-to-end con Playwright (creazione → subito pubblica e visibile nel
+  listino senza alcun intervento admin → autore in evidenza sulla pagina → admin nasconde/
+  ripubblica → eliminazione), dati di test ripuliti dal DB di produzione dopo la verifica. Dettagli
+  implementativi: vedi CLAUDE.md
 
 ## Data model (bozza Prisma)
 

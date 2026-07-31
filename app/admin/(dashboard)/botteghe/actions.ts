@@ -11,7 +11,10 @@ async function requireAdmin() {
   }
 }
 
-export async function approveShopAction(id: string) {
+// Le bottege sono pubblicate subito dagli iscritti, senza moderazione preventiva: questi due
+// pulsanti servono solo all'admin per nascondere/ripubblicare a posteriori un contenuto
+// inappropriato, non per approvare una pubblicazione in attesa.
+export async function publishShopAction(id: string) {
   await requireAdmin();
   const shop = await prisma.shop.update({
     where: { id },
@@ -22,7 +25,7 @@ export async function approveShopAction(id: string) {
   revalidatePath(`/botteghe/${shop.slug}`);
 }
 
-export async function rejectShopAction(id: string) {
+export async function hideShopAction(id: string) {
   await requireAdmin();
   const shop = await prisma.shop.update({
     where: { id },

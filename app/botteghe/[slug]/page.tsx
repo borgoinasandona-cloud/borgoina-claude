@@ -9,6 +9,15 @@ import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
 
 export const dynamic = "force-dynamic";
 
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]!.toUpperCase())
+    .join("");
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -51,7 +60,7 @@ export default async function ShopDetailPage({
 
           {shop.visibility !== "PUBLIC" && (isAuthor || isAdmin) && (
             <p className="font-mono mb-3 inline-block rounded-sm bg-ink px-2 py-1 text-[0.7rem] font-semibold tracking-wide text-cream uppercase">
-              {shop.visibility === "PENDING" ? "In attesa di moderazione" : "Non pubblica"}
+              Nascosta dall&apos;admin
             </p>
           )}
 
@@ -62,7 +71,27 @@ export default async function ShopDetailPage({
           <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {shop.name}
           </h1>
-          <p className="font-mono mt-3 text-sm text-ink-soft">{shop.author.name ?? "Socio"}</p>
+
+          <div className="mt-5 flex items-center gap-3">
+            {shop.author.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={shop.author.image}
+                alt=""
+                className="h-12 w-12 rounded-full border-2 border-cream object-cover shadow-sm"
+              />
+            ) : (
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink/10 text-sm font-semibold text-ink-soft">
+                {initials(shop.author.name ?? "Socio")}
+              </div>
+            )}
+            <div>
+              <p className="font-mono text-[0.7rem] font-semibold tracking-wide text-ink-soft uppercase">
+                Gestita da
+              </p>
+              <p className="font-semibold text-ink">{shop.author.name ?? "Socio"}</p>
+            </div>
+          </div>
         </div>
       </header>
 
