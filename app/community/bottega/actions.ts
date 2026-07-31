@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { shopSchema } from "@/lib/validations";
 import { slugifyWithSuffix } from "@/lib/slugify";
+import { parseShopFormData } from "@/lib/shops";
 
 export type ShopFormState = {
-  status: "idle" | "error";
+  status: "idle" | "success" | "error";
   message?: string;
 };
 
@@ -18,35 +18,6 @@ async function requireUser() {
     redirect("/community/login");
   }
   return session.user;
-}
-
-function parseShopFormData(formData: FormData) {
-  const imagesRaw = formData.get("imagesJson");
-  let images: unknown[] = [];
-  if (typeof imagesRaw === "string" && imagesRaw.length > 0) {
-    try {
-      images = JSON.parse(imagesRaw);
-    } catch {
-      images = [];
-    }
-  }
-
-  return shopSchema.safeParse({
-    name: formData.get("name"),
-    category: formData.get("category"),
-    slogan: formData.get("slogan") || "",
-    description: formData.get("description"),
-    history: formData.get("history") || "",
-    whyChooseUs: formData.get("whyChooseUs") || "",
-    address: formData.get("address") || "",
-    phone: formData.get("phone") || "",
-    email: formData.get("email") || "",
-    website: formData.get("website") || "",
-    instagram: formData.get("instagram") || "",
-    hours: formData.get("hours") || "",
-    coverImage: formData.get("coverImage") || "",
-    images,
-  });
 }
 
 export async function saveShopAction(

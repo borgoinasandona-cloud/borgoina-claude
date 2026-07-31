@@ -17,9 +17,18 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   return <p className="eyebrow border-t border-ink/10 pt-6 text-brick">{children}</p>;
 }
 
-export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
+export function ShopForm({
+  shop,
+  action = saveShopAction,
+}: {
+  shop?: Shop & { images: ShopImage[] };
+  // Di default il proprietario salva la propria bottega (saveShopAction). L'admin passa invece
+  // adminUpdateShopAction legata all'id specifico, per modificare i contenuti di una bottega
+  // altrui da /admin/botteghe — vedi app/admin/(dashboard)/botteghe/[id]/edit/page.tsx.
+  action?: (prevState: ShopFormState, formData: FormData) => Promise<ShopFormState>;
+}) {
   const isEdit = Boolean(shop);
-  const [state, formAction, pending] = useActionState(saveShopAction, initialState);
+  const [state, formAction, pending] = useActionState(action, initialState);
 
   const [coverImage, setCoverImage] = useState(shop?.coverImage ?? "");
   const [images, setImages] = useState<GalleryImage[]>(
@@ -259,6 +268,9 @@ export function ShopForm({ shop }: { shop?: Shop & { images: ShopImage[] } }) {
         {pending ? "Salvataggio…" : isEdit ? "Salva modifiche" : "Pubblica la pagina"}
       </button>
 
+      {state.status === "success" && state.message && (
+        <p className="text-sm font-medium text-sage-dark">{state.message}</p>
+      )}
       {state.status === "error" && state.message && (
         <p className="text-sm font-medium text-brick-dark">{state.message}</p>
       )}

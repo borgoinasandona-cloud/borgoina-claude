@@ -20,7 +20,7 @@ export default async function AdminShopsPage() {
       </div>
       <p className="mt-2 text-sm text-neutral-500">
         Pagine di presentazione create dagli iscritti. Sono pubblicate subito, senza moderazione:
-        da qui puoi solo nascondere o eliminare un contenuto inappropriato.
+        da qui puoi modificarne i contenuti, nasconderle o eliminarle.
       </p>
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
@@ -52,6 +52,9 @@ export default async function AdminShopsPage() {
                 className="text-sm text-green-700 hover:underline"
               >
                 Vedi
+              </Link>
+              <Link href={`/admin/botteghe/${shop.id}/edit`} className="text-sm text-green-700 hover:underline">
+                Modifica
               </Link>
               {shop.visibility === "PUBLIC" ? (
                 <form action={hideShopAction.bind(null, shop.id)}>

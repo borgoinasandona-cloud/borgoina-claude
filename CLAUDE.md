@@ -363,6 +363,23 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         `app/botteghe/[slug]/page.tsx`) — stesso stile `rounded border border-ink/10 bg-white
         shadow-sm` già usato per il box del modulo di contatto in `/contatti`, icona in un
         cerchietto `bg-brick/10 text-brick`. Verificato visivamente desktop e mobile
+      - **Admin può modificare i contenuti di una bottega altrui (2026-07-31)**: nuova pagina
+        `/admin/botteghe/[id]/edit` (link "Modifica" in `/admin/botteghe`), riusa `ShopForm.tsx`
+        — reso generico con una prop `action` opzionale (default `saveShopAction` per l'iscritto),
+        l'admin passa `adminUpdateShopAction.bind(null, shop.id)` che opera sull'`id` invece che su
+        `authorId === utente loggato`. Il parsing del form (`parseShopFormData`) è stato spostato
+        da `app/community/bottega/actions.ts` a `lib/shops.ts` per essere condiviso dalle due
+        action: un file con `"use server"` in cima richiede che **ogni** export sia una funzione
+        async (build error altrimenti — `parseShopFormData` è sync), quindi non poteva restare in
+        un file azioni. `ShopFormState` ora ha anche `"success"` (prima solo `idle`/`error`, perché
+        il salvataggio dell'iscritto fa sempre redirect e non tornava mai "success"; il salvataggio
+        admin invece resta sulla pagina e mostra conferma inline, come `updatePostAction`).
+        Modificare non tocca `visibility` né lo `slug`. `ShopForm` riusato così com'è (stile
+        brand pubblico, cream/brick) dentro il layout admin (grigio neutro) — visivamente un po'
+        diverso dal resto di `/admin` ma nessuna duplicazione del form; accettabile, non
+        richiesto altrimenti. Testato end-to-end: un iscritto non-admin non può aprire la pagina
+        (redirect a `/admin/login`), l'admin apre da `/admin/botteghe`, modifica nome e
+        descrizione di una bottega altrui, la modifica si riflette subito sulla pagina pubblica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
