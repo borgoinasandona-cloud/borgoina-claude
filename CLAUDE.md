@@ -380,6 +380,42 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         richiesto altrimenti. Testato end-to-end: un iscritto non-admin non può aprire la pagina
         (redirect a `/admin/login`), l'admin apre da `/admin/botteghe`, modifica nome e
         descrizione di una bottega altrui, la modifica si riflette subito sulla pagina pubblica
+      - **`authorId` reso opzionale, admin crea bottege senza account collegato (2026-08-01)**:
+        richiesta esplicita di Dario — l'admin raccoglie i dati da un titolare non ancora iscritto
+        e crea la pagina lui stesso, senza dover prima far registrare quella persona. Migration
+        `20260801150944_shop_optional_author`: `Shop.authorId`/`author` diventano opzionali
+        (`String? @unique` — più righe con `authorId NULL` restano ammesse da Postgres, il vincolo
+        "una bottega per utente" si applica solo a quelle collegate) e aggiunto `Shop.ownerName`
+        (nome libero, usato per "Gestita da" finché non c'è un account collegato: la risoluzione è
+        `shop.author?.name ?? shop.ownerName` in `app/botteghe/[slug]/page.tsx`, e il blocco
+        "Gestita da" ora non renderizza affatto se sono entrambi assenti — capita solo su righe
+        create prima di questa modifica senza mai passare dal form, quindi mai in pratica)
+      - Nuova pagina `/admin/botteghe/new` (pulsante "+ Nuova bottega" nella lista), stesso
+        `ShopForm` esteso con due campi visibili solo in "adminMode" (attivato passando la prop
+        `assignableUsers`, non un booleano a parte): "Nome del gestore" (`ownerName`) e "Utente
+        collegato" (`<select>` — `authorId`, parsato a parte da `parseLinkedAuthorId` in
+        `app/admin/(dashboard)/botteghe/actions.ts`, non fa parte di `shopSchema`/
+        `parseShopFormData` perché è una relazione, non un campo di contenuto). Validazione
+        applicativa (non nello zod schema, solo lato action): serve almeno uno tra `ownerName` e
+        utente collegato, altrimenti "Gestita da" non avrebbe nulla da mostrare
+      - `lib/shops.ts` → `getAssignableUsers(currentAuthorId?)`: esclude chi ha già una bottega
+        collegata (`authorId` è `@unique`, un utente ne gestisce al massimo una), tranne l'utente
+        già collegato alla bottega che si sta modificando (altrimenti sparirebbe dalla select
+        mentre la si guarda). Effetto pratico verificato: un utente già collegato non compare più
+        tra le opzioni per una bottega *nuova* — la select stessa previene il doppio collegamento,
+        non solo il controllo server-side (`Prisma.PrismaClientKnownRequestError` con
+        `code === "P2002"` → messaggio dedicato, difesa in profondità per un eventuale bypass)
+      - `/admin/botteghe` (lista) e la pagina di modifica mostrano un avviso quando manca un
+        account collegato (`shop.ownerName ... (nessun account collegato)`, colore ambra) per
+        rendere visibile a colpo d'occhio quali bottege vanno ancora collegate
+      - Testato end-to-end con Playwright: validazione (nessun nome né utente → errore) →
+        creazione con solo `ownerName` → non richiede alcun account → pagina pubblica mostra
+        "Gestita da" col nome libero e iniziali come avatar → un iscritto vero si registra →
+        admin lo collega dalla select → pagina pubblica passa a mostrare nome (e foto, se
+        presente) dell'account reale → l'iscritto già collegato non compare più tra gli
+        assegnabili per una bottega nuova. Dati di test ripuliti dal DB di produzione dopo la
+        verifica (compreso un residuo di un test di una sessione precedente, notato per caso in
+        uno screenshot e ripulito a parte)
 - [x] **Header "scheda unica" nelle pagine di dettaglio community/botteghe/bacheca (2026-07-31)**:
       in `app/community/[slug]/page.tsx`, `app/botteghe/[slug]/page.tsx` e poi anche
       `app/news/[slug]/page.tsx` (stessa richiesta, estesa alla Bacheca) l'header (back-link,

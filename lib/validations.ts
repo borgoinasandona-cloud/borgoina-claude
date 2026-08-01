@@ -101,6 +101,9 @@ export const shopSchema = z.object({
   instagram: z.string().trim().url("URL non valida").optional().or(z.literal("")),
   hours: z.string().trim().max(500).optional().or(z.literal("")),
   coverImage: z.string().trim().optional().or(z.literal("")),
+  // Nome del gestore da mostrare finché non c'è un account collegato — solo l'admin lo valorizza,
+  // vedi ShopForm.tsx (campo mostrato solo in adminMode) e adminCreateShopAction/adminUpdateShopAction.
+  ownerName: z.string().trim().max(120).optional().or(z.literal("")),
   images: z.array(shopImageSchema).default([]),
 });
 

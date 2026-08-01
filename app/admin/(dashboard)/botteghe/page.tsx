@@ -17,10 +17,17 @@ export default async function AdminShopsPage() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-neutral-900">Botteghe</h1>
+        <Link
+          href="/admin/botteghe/new"
+          className="rounded-md bg-green-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-800"
+        >
+          + Nuova bottega
+        </Link>
       </div>
       <p className="mt-2 text-sm text-neutral-500">
-        Pagine di presentazione create dagli iscritti. Sono pubblicate subito, senza moderazione:
-        da qui puoi modificarne i contenuti, nasconderle o eliminarle.
+        Pagine di presentazione create dagli iscritti (o dall&apos;admin per conto di un titolare
+        non ancora iscritto). Sono pubblicate subito, senza moderazione: da qui puoi modificarne i
+        contenuti, nasconderle o eliminarle.
       </p>
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
@@ -41,8 +48,14 @@ export default async function AdminShopsPage() {
               </p>
               <p className="text-xs text-neutral-500">
                 /{shop.slug} · {shopCategoryLabels[shop.category]} ·{" "}
-                {shop.author.name ?? shop.author.email} ·{" "}
-                {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(shop.createdAt)}
+                {shop.author ? (
+                  (shop.author.name ?? shop.author.email)
+                ) : (
+                  <span className="text-amber-700">
+                    {shop.ownerName ?? "senza nome"} (nessun account collegato)
+                  </span>
+                )}{" "}
+                · {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(shop.createdAt)}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">

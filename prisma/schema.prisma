@@ -162,6 +162,13 @@ model Comment {
 // moderazione admin (a differenza degli annunci community): visibility resta nel modello solo
 // per permettere all'admin di nascondere contenuti inappropriati a posteriori (PUBLIC/PRIVATE),
 // PENDING non viene più usato qui.
+//
+// authorId è opzionale (2026-08-01): l'admin può creare una bottega per conto di un titolare che
+// non si è ancora registrato come iscritto, inserendo ownerName come nome da mostrare in "Gestita
+// da" finché non collega la bottega a un account reale — a quel punto author.name/image prendono
+// il sopravvento (vedi la risoluzione in app/botteghe/[slug]/page.tsx). authorId resta @unique:
+// più righe con authorId NULL sono ammesse da Postgres, il vincolo "una bottega per utente" si
+// applica solo a quelle effettivamente collegate.
 model Shop {
   id          String       @id @default(cuid())
   slug        String       @unique
@@ -183,8 +190,9 @@ model Shop {
   hours       String?      @db.Text // "orari", testo libero multi-riga
 
   coverImage  String? // Cloudinary secure_url, come CommunityPost.coverImage
-  authorId    String       @unique // 1:1 — un utente ha al massimo una bottega
-  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  ownerName   String? // nome del gestore inserito dall'admin, usato finché non c'è un account collegato
+  authorId    String?      @unique // 1:1 opzionale — un utente ha al massimo una bottega
+  author      User?        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   images      ShopImage[]
   visibility  Visibility   @default(PUBLIC)
   createdAt   DateTime     @default(now())

@@ -73,6 +73,10 @@ export default async function ShopDetailPage({
   }
 
   const hasContacts = shop.address || shop.hours || shop.email || shop.website || shop.instagram;
+  // Finché non c'è un account collegato, il nome scritto dall'admin (ownerName) fa da segnaposto:
+  // appena la bottega viene collegata a un utente, nome e foto del profilo prendono il sopravvento.
+  const managerName = shop.author?.name ?? shop.ownerName;
+  const managerImage = shop.author?.image ?? null;
 
   return (
     <article>
@@ -102,26 +106,28 @@ export default async function ShopDetailPage({
             <p className="mt-2 max-w-2xl text-lg text-brick-dark italic wide:text-xl">{shop.slogan}</p>
           )}
 
-          <div className="mt-5 flex items-center gap-3">
-            {shop.author.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={shop.author.image}
-                alt=""
-                className="h-12 w-12 rounded-full border-2 border-cream object-cover shadow-sm"
-              />
-            ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink/10 text-sm font-semibold text-ink-soft">
-                {initials(shop.author.name ?? "Socio")}
+          {managerName && (
+            <div className="mt-5 flex items-center gap-3">
+              {managerImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={managerImage}
+                  alt=""
+                  className="h-12 w-12 rounded-full border-2 border-cream object-cover shadow-sm"
+                />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ink/10 text-sm font-semibold text-ink-soft">
+                  {initials(managerName)}
+                </div>
+              )}
+              <div>
+                <p className="font-mono text-[0.7rem] font-semibold tracking-wide text-ink-soft uppercase">
+                  Gestita da
+                </p>
+                <p className="font-semibold text-ink">{managerName}</p>
               </div>
-            )}
-            <div>
-              <p className="font-mono text-[0.7rem] font-semibold tracking-wide text-ink-soft uppercase">
-                Gestita da
-              </p>
-              <p className="font-semibold text-ink">{shop.author.name ?? "Socio"}</p>
             </div>
-          </div>
+          )}
         </div>
       </header>
 

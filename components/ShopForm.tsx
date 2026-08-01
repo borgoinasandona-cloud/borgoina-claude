@@ -17,15 +17,21 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   return <p className="eyebrow border-t border-ink/10 pt-6 text-brick">{children}</p>;
 }
 
+type AssignableUser = { id: string; name: string | null; email: string };
+
 export function ShopForm({
   shop,
   action = saveShopAction,
+  assignableUsers,
 }: {
   shop?: Shop & { images: ShopImage[] };
   // Di default il proprietario salva la propria bottega (saveShopAction). L'admin passa invece
-  // adminUpdateShopAction legata all'id specifico, per modificare i contenuti di una bottega
-  // altrui da /admin/botteghe — vedi app/admin/(dashboard)/botteghe/[id]/edit/page.tsx.
+  // adminCreateShopAction/adminUpdateShopAction — vedi app/admin/(dashboard)/botteghe/.
   action?: (prevState: ShopFormState, formData: FormData) => Promise<ShopFormState>;
+  // Presente solo quando il form è usato dall'admin: mostra i campi "nome del gestore" e "utente
+  // collegato", assenti nel form che l'iscritto usa per la propria bottega (dove l'autore è
+  // sempre e solo la sessione corrente).
+  assignableUsers?: AssignableUser[];
 }) {
   const isEdit = Boolean(shop);
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -73,6 +79,44 @@ export function ShopForm({
           ))}
         </select>
       </div>
+
+      {assignableUsers && (
+        <>
+          <SectionHeading>Gestita da (solo admin)</SectionHeading>
+
+          <div>
+            <label htmlFor="ownerName" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+              Nome del gestore
+            </label>
+            <input
+              id="ownerName"
+              name="ownerName"
+              type="text"
+              placeholder="Es. Mario Rossi — usato finché non colleghi un account qui sotto"
+              defaultValue={shop?.ownerName ?? ""}
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="authorId" className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
+              Utente collegato (facoltativo)
+            </label>
+            <select id="authorId" name="authorId" defaultValue={shop?.authorId ?? ""} className={inputClass}>
+              <option value="">— Nessuno —</option>
+              {assignableUsers.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name ? `${user.name} (${user.email})` : user.email}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-ink-soft">
+              Se lo colleghi, &quot;Gestita da&quot; mostrerà nome e foto profilo di questo account
+              al posto del nome scritto sopra.
+            </p>
+          </div>
+        </>
+      )}
 
       <SectionHeading>Chi siamo</SectionHeading>
 

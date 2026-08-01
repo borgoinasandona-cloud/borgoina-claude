@@ -90,6 +90,11 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   listino senza alcun intervento admin → autore in evidenza sulla pagina → admin nasconde/
   ripubblica → eliminazione), dati di test ripuliti dal DB di produzione dopo la verifica. Dettagli
   implementativi: vedi CLAUDE.md
+- **L'admin può creare una bottega per conto di un titolare non ancora iscritto (2026-08-01)**:
+  `/admin/botteghe/new`, con un nome del gestore (`ownerName`) al posto di un account. Quando quel
+  titolare si registra, l'admin collega la bottega al suo account da `/admin/botteghe/[id]/edit`
+  scegliendolo da un elenco — a quel punto "Gestita da" passa a mostrare nome e foto del profilo
+  reale. `authorId` è quindi diventato opzionale (era obbligatorio). Dettagli: vedi CLAUDE.md
 
 ## Data model (bozza Prisma)
 

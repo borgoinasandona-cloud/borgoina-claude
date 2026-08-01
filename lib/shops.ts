@@ -44,7 +44,7 @@ export function getShopByIdForAdmin(id: string) {
   return prisma.shop.findUnique({
     where: { id },
     include: {
-      author: { select: { id: true, name: true, email: true } },
+      author: { select: { id: true, name: true, email: true, image: true } },
       images: { orderBy: { order: "asc" } },
     },
   });
@@ -54,6 +54,21 @@ export function getAllShopsForAdmin() {
   return prisma.shop.findMany({
     orderBy: { createdAt: "desc" },
     include: shopInclude,
+  });
+}
+
+/**
+ * Utenti collegabili a una bottega dall'admin: chi non ne ha già una (authorId è @unique, un
+ * utente può gestirne al massimo una), più eventualmente l'utente già collegato alla bottega che
+ * si sta modificando (altrimenti sparirebbe dalla select mentre la si guarda).
+ */
+export function getAssignableUsers(currentAuthorId?: string | null) {
+  return prisma.user.findMany({
+    where: {
+      OR: [{ shop: null }, ...(currentAuthorId ? [{ id: currentAuthorId }] : [])],
+    },
+    select: { id: true, name: true, email: true },
+    orderBy: { name: "asc" },
   });
 }
 
@@ -86,6 +101,7 @@ export function parseShopFormData(formData: FormData) {
     instagram: formData.get("instagram") || "",
     hours: formData.get("hours") || "",
     coverImage: formData.get("coverImage") || "",
+    ownerName: formData.get("ownerName") || "",
     images,
   });
 }
