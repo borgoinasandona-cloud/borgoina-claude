@@ -9,17 +9,9 @@ import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
 import { toWhatsAppNumber } from "@/lib/phone";
+import { initials } from "@/lib/initials";
 
 export const dynamic = "force-dynamic";
-
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0]!.toUpperCase())
-    .join("");
-}
 
 function ContactCard({
   icon,

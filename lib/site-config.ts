@@ -12,15 +12,17 @@ export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | 
   // Pagine del sito
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
+  { href: "/news", label: "Bacheca" },
   { href: "/contatti", label: "Contatti" },
   // Servizi: fondino colorato per distinguerli dalle pagine (vedi navLinkAccentClasses in
-  // Header/Footer). Instagram resta a parte, non in questo elenco.
-  { href: "/news", label: "Bacheca", accent: "sky" },
-  { href: "/community", label: "Community", accent: "sage" },
+  // Header/Footer). Instagram resta a parte, non in questo elenco. "Mercatino" è la stessa
+  // funzionalità di prima (route /community invariata, solo l'etichetta nel menù è cambiata).
+  { href: "/community", label: "Mercatino", accent: "sage" },
   { href: "/botteghe", label: "Botteghe", accent: "brick" },
+  { href: "/soci", label: "Soci", accent: "sky" },
 ];
 
-/** Classi Tailwind per il fondino colorato dei link "servizio" (Bacheca/Community/Botteghe) nel menù. */
+/** Classi Tailwind per il fondino colorato dei link "servizio" (Mercatino/Botteghe/Soci) nel menù. */
 export const navLinkAccentClasses: Record<"sky" | "sage" | "brick", string> = {
   sky: "bg-sky text-white hover:bg-sky-dark",
   sage: "bg-sage text-white hover:bg-sage-dark",

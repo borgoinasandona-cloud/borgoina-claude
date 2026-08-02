@@ -189,25 +189,31 @@ export function Header({ session }: { session: Session | null }) {
                   </div>
                 </div>
 
-                {/* Colonna 2: spazi da usare (fondino colorato) + Instagram. Il filo verticale
-                    color cielo richiama le linee di malta chiara tra i mattoni del logo/palette
-                    (vedi il commento in globals.css) — la stessa idea del bordo dei blockquote
-                    in .prose-content, non un divisore generico. */}
-                <div className="flex flex-col items-start gap-5 border-l-2 border-sky/25 pl-6 md:pl-10">
-                  <p className="eyebrow text-sky-dark">Partecipa</p>
-                  <div className="flex flex-col items-start gap-3 md:gap-4">
-                    {navLinks
-                      .filter((link) => link.accent)
-                      .map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className={`font-mono rounded-sm px-4 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-200 hover:translate-x-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-base ${navLinkAccentClasses[link.accent!]}`}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    {siteConfig.instagramUrl && (
+                {/* Colonna 2: spazi da usare (fondino colorato) + un gruppo separato "Social".
+                    Il filo verticale color cielo richiama le linee di malta chiara tra i mattoni
+                    del logo/palette (vedi il commento in globals.css) — la stessa idea del bordo
+                    dei blockquote in .prose-content, non un divisore generico. */}
+                <div className="flex flex-col items-start gap-6 border-l-2 border-sky/25 pl-6 md:pl-10">
+                  <div className="flex flex-col items-start gap-5">
+                    <p className="eyebrow text-sky-dark">Partecipa</p>
+                    <div className="flex flex-col items-start gap-3 md:gap-4">
+                      {navLinks
+                        .filter((link) => link.accent)
+                        .map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className={`font-mono rounded-sm px-4 py-2 text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-200 hover:translate-x-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brick md:text-base ${navLinkAccentClasses[link.accent!]}`}
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+
+                  {siteConfig.instagramUrl && (
+                    <div className="flex flex-col items-start gap-5">
+                      <p className="eyebrow text-sky-dark">Social</p>
                       <a
                         href={siteConfig.instagramUrl}
                         target="_blank"
@@ -217,8 +223,8 @@ export function Header({ session }: { session: Session | null }) {
                         <InstagramIcon />
                         Instagram
                       </a>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </nav>

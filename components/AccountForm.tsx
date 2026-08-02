@@ -4,20 +4,12 @@ import { useState } from "react";
 import { useActionState } from "react";
 import { updateAccountAction, type UpdateAccountState } from "@/app/community/account/actions";
 import { ImageUploader } from "@/components/ImageUploader";
+import { initials } from "@/lib/initials";
 
 const initialState: UpdateAccountState = { status: "idle" };
 
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
-
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0]!.toUpperCase())
-    .join("");
-}
 
 export function AccountForm({
   name,

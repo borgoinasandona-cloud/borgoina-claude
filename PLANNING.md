@@ -95,6 +95,10 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   titolare si registra, l'admin collega la bottega al suo account da `/admin/botteghe/[id]/edit`
   scegliendolo da un elenco — a quel punto "Gestita da" passa a mostrare nome e foto del profilo
   reale. `authorId` è quindi diventato opzionale (era obbligatorio). Dettagli: vedi CLAUDE.md
+- **Pagina pubblica "Soci" (2026-08-02)**: elenco di tutti gli iscritti in `/soci` (nome, avatar o
+  iniziali, "socio dal" mese/anno di iscrizione, link alla propria bottega se ne ha una pubblica).
+  Nessuna email mostrata (dato sensibile, non serve per una directory pubblica). Dettagli: vedi
+  CLAUDE.md
 
 ## Data model (bozza Prisma)
 
