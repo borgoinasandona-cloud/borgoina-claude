@@ -100,6 +100,13 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   Nessuna email mostrata (dato sensibile, non serve per una directory pubblica). Dettagli: vedi
   CLAUDE.md
 
+### Fase 5 — QR code identificativo (non prevista nel planning originale, aggiunta il 2026-08-03)
+- In `/community/account` ogni iscritto vede un proprio QR code identificativo (nome utente + firma
+  HMAC-SHA256, generato server-side, secret in `QR_SECRET`). Nessuna nuova tabella: la firma si
+  ricalcola al volo dall'`id` esistente, non c'è nulla da salvare. Non ancora usato per verificare
+  nulla (nessuna route di scansione/controllo) — solo la generazione, come richiesto. Dettagli e
+  scelte di scope: vedi CLAUDE.md
+
 ## Data model (bozza Prisma)
 
 ```prisma

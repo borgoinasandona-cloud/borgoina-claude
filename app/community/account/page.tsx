@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateUserQrCode } from "@/lib/qr";
 import { AccountForm } from "@/components/AccountForm";
+import { UserQrCode } from "@/components/UserQrCode";
 import { logoutAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +28,7 @@ export default async function CommunityAccountPage() {
   }
 
   const hasPassword = Boolean(user.password);
+  const qrCodeDataUrl = await generateUserQrCode(session.user.id);
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16">
@@ -38,6 +41,13 @@ export default async function CommunityAccountPage() {
           ? "Aggiorna i tuoi dati o cambia password. Per salvare qualsiasi modifica devi confermare con la password attuale."
           : "Aggiorna i tuoi dati. Ti sei registrato con Google, quindi non hai una password da confermare — puoi impostarne una qui per poter accedere anche con email e password."}
       </p>
+
+      <div className="mt-8 border-t border-ink/10 pt-6">
+        <p className="eyebrow text-brick">Il mio QR code</p>
+        <div className="mt-3">
+          <UserQrCode dataUrl={qrCodeDataUrl} />
+        </div>
+      </div>
 
       <AccountForm
         name={user.name ?? ""}
