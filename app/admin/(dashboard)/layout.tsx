@@ -17,9 +17,9 @@ const adminNav: AdminNavItem[] = [
     ],
   },
   {
-    group: "Articoli",
+    group: "Bacheca",
     items: [
-      { href: "/admin/posts", label: "Bacheca" },
+      { href: "/admin/posts", label: "Articoli" },
       { href: "/admin/categories", label: "Categorie" },
     ],
   },
