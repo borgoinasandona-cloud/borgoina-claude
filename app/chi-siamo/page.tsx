@@ -35,11 +35,11 @@ export default async function ChiSiamoPage() {
           <div className="absolute inset-0 z-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={withCloudinaryTransform(intro.image, "f_auto,q_auto:best,e_sharpen:40")}
+              src={withCloudinaryTransform(intro.image, "f_auto,q_auto:best")}
               alt={staticPageTitles["chi-siamo"]}
-              className="h-full w-full scale-105 object-cover opacity-65 blur-[1px]"
+              className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/30 to-ink/35" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/45 to-ink/40" />
           </div>
         )}
         <div className="relative z-10 mx-auto max-w-4xl space-y-4 text-center wide:max-w-5xl">

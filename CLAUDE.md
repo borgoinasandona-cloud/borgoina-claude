@@ -503,29 +503,32 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       → `withCloudinaryTransform(url, transformation)`, inserisce una trasformazione in un URL di
       consegna Cloudinary già completo (l'`<img src>` incollato nel contenuto HTML della pagina,
       salvato come `secure_url` intero via `RichTextEditor`, non come `public_id` — a differenza di
-      `cloudinaryPreviewUrl()` che parte da un `public_id`). Usato in `app/il-borgo/page.tsx` e
-      `app/chi-siamo/page.tsx` sull'immagine hero: `f_auto,q_auto:best,e_sharpen:40` (formato
-      migliore per browser, qualità automatica più alta, leggero sharpen per contrastare la
-      sfocatura introdotta dallo stretch di `object-cover` su schermi larghi)
-      - **Causa reale, verificata prima di intervenire**: le due foto sorgente su Cloudinary sono
-        1920×1280 (controllato via Cloudinary Admin API, `cloudinary.api.resource()`) — non
-        immagini minuscole. Il problema è che l'hero è a piena larghezza (`w-full h-full
-        object-cover`, nessun `max-width`) mentre l'altezza resta fissa e modesta (360–460px):
-        su monitor larghi il rapporto contenitore diventa molto più "panoramico" del rapporto
-        1.5:1 della foto, quindi `object-cover` deve ingrandire l'immagine oltre la sua risoluzione
-        nativa per coprire la larghezza — verificato con Playwright: a 1920px di viewport l'`<img>`
-        viene già renderizzato leggermente più largo del nativo (~2016px, per via anche dello
-        `scale-105` esistente), a 2560px arriva a ~2688px (upscale ~1.4×) — la sfocatura percepita
-        cresce con la larghezza dello schermo
-      - **Limite onestamente non risolvibile solo da codice**: la trasformazione Cloudinary
-        migliora formato/qualità di codifica e aggiunge un contrasto percepito (sharpen), ma non
-        aggiunge dettaglio reale oltre i 1920×1280 nativi — su monitor ultra-wide (>1920px di
-        viewport) l'immagine resterà comunque leggermente ingrandita oltre la risoluzione
-        sorgente. Se serve nitidezza perfetta anche lì, servono foto sorgente a risoluzione
-        maggiore da ricaricare in admin — segnalato a Dario, non assunto risolto del tutto
-      - Verificato: build/tsc/lint puliti, URL trasformato risolve con status 200, screenshot
-        locali (1400px) di entrambe le pagine mostrano l'hero correttamente renderizzato con il
-        nuovo URL
+      `cloudinaryPreviewUrl()` che parte da un `public_id`), usato per chiedere `f_auto,q_auto:best`
+      (formato/qualità migliori per browser) sull'immagine hero in `app/il-borgo/page.tsx` e
+      `app/chi-siamo/page.tsx`
+      - **Prima diagnosi sbagliata, corretta con le prove dell'inspector di Dario**: il primo
+        tentativo (stessa sessione) partiva dall'ipotesi che l'`object-cover` a piena larghezza
+        stirasse l'immagine oltre la sua risoluzione nativa (1920×1280, verificato via Cloudinary
+        Admin API) sui monitor larghi, e aggiungeva solo `e_sharpen` per compensare — non ha
+        risolto nulla. Dario ha poi controllato l'inspector del browser: "rendered size" 640×360
+        contro "intrinsic size" 1920×1280 — l'immagine veniva **rimpicciolita** (downscale ~3×),
+        non ingrandita: zero perdita di risoluzione, la causa era altrove
+      - **Causa reale**: `className="scale-105 object-cover opacity-65 blur-[1px]"` più un
+        overlay sfumato — un filtro di sfocatura reale (`blur-[1px]`) sommato a un'opacità ridotta
+        (65%) sulla foto stessa, applicato deliberatamente in origine (probabilmente per leggibilità
+        del testo sopra) ma percepito giustamente come "foto degradata". L'hero della home
+        (`components/home/Hero.tsx`) usa invece il pattern corretto già in uso nel resto del sito:
+        nessun blur, nessuna riduzione di opacità sull'immagine, solo un overlay sfumato scuro
+        (`bg-gradient-to-t from-ink/90 via-ink/55 to-ink/20`) per il contrasto del testo
+      - **Fix**: rimossi `blur-[1px]`, `opacity-65` e `scale-105` (quest'ultimo esisteva solo per
+        coprire gli artefatti ai bordi del blur, non più necessario) — resta solo `object-cover`.
+        Overlay rinforzato da `from-ink/75 via-ink/30 to-ink/35` a `from-ink/85 via-ink/45 to-ink/40`
+        per mantenere la leggibilità del testo (qui centrato verticalmente, non ancorato in basso
+        come nella home) senza più il "crutch" della sfocatura/opacità sulla foto. Tolto anche
+        `e_sharpen` dalla trasformazione Cloudinary (serviva solo a contrastare il blur CSS, ora
+        assente — su una foto già nitida rischiava di risultare artificiale)
+      - Verificato visivamente con screenshot locali (1400px, entrambe le pagine): foto nettamente
+        più nitide, testo ancora leggibile sopra l'overlay rinforzato. Build/tsc/lint puliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
