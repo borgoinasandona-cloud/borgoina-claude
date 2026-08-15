@@ -19,10 +19,10 @@ export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | 
   // funzionalità di prima (route /community invariata, solo l'etichetta nel menù è cambiata).
   { href: "/community", label: "Mercatino", accent: "sage" },
   { href: "/botteghe", label: "Botteghe", accent: "brick" },
-  { href: "/soci", label: "Soci", accent: "sky" },
+  { href: "/soci", label: "Iscritti", accent: "sky" },
 ];
 
-/** Classi Tailwind per il fondino colorato dei link "servizio" (Mercatino/Botteghe/Soci) nel menù. */
+/** Classi Tailwind per il fondino colorato dei link "servizio" (Mercatino/Botteghe/Iscritti) nel menù. */
 export const navLinkAccentClasses: Record<"sky" | "sage" | "brick", string> = {
   sky: "bg-sky text-white hover:bg-sky-dark",
   sage: "bg-sage text-white hover:bg-sage-dark",

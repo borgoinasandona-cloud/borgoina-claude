@@ -5,7 +5,7 @@ import { MemberCard } from "@/components/MemberCard";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Soci",
+  title: "Iscritti",
 };
 
 export default async function SociPage() {
@@ -17,7 +17,7 @@ export default async function SociPage() {
         <div className="mx-auto max-w-5xl wide:max-w-6xl">
           <p className="eyebrow text-brick wide:text-sm">Tra vicini</p>
           <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
-            Soci
+            Iscritti
           </h1>
           <p className="mt-3 max-w-2xl text-lg text-ink-soft wide:text-xl">
             Le persone iscritte alla community del Borgo INA.

@@ -493,6 +493,12 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         testo, poi confrontato byte-per-byte con `userId + "." + HMAC-SHA256(userId, QR_SECRET)`
         ricalcolato indipendentemente nel test. Verificato anche che sia deterministico (stesso
         risultato a un refresh) e diverso da utente a utente. Dati di test ripuliti dopo la verifica
+- [x] **Voce di menù "Soci" rinominata in "Iscritti" (2026-08-15)**: stessa etichetta cambiata sia
+      in `lib/site-config.ts` (`navLinks`) sia nel titolo effettivo della pagina (`app/soci/page.tsx`
+      → `metadata.title` e `<h1>`, non solo il menù). Route invariata (resta `/soci`, stesso pattern
+      già usato per "Community" → "Mercatino": rinominare l'etichetta non richiede rinominare anche
+      URL/file/funzione). Non toccato apposta il resto del testo che usa "socio/soci" (es. "Socio dal
+      ..." in `components/MemberCard.tsx`) — non richiesto, solo menù e titolo pagina
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
