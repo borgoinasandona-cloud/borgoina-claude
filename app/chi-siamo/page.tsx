@@ -4,6 +4,7 @@ import { getPage, staticPageTitles } from "@/lib/pages";
 import { StaticPageView } from "@/components/StaticPageView";
 import { HtmlContent } from "@/components/HtmlContent";
 import { parseIntro, parseSections } from "@/lib/html-sections";
+import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ export default async function ChiSiamoPage() {
           <div className="absolute inset-0 z-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={intro.image}
+              src={withCloudinaryTransform(intro.image, "f_auto,q_auto:best,e_sharpen:40")}
               alt={staticPageTitles["chi-siamo"]}
               className="h-full w-full scale-105 object-cover opacity-65 blur-[1px]"
             />

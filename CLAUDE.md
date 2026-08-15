@@ -499,6 +499,33 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       già usato per "Community" → "Mercatino": rinominare l'etichetta non richiede rinominare anche
       URL/file/funzione). Non toccato apposta il resto del testo che usa "socio/soci" (es. "Socio dal
       ..." in `components/MemberCard.tsx`) — non richiesto, solo menù e titolo pagina
+- [x] **Qualità foto hero "Il Borgo"/"Chi siamo" migliorata (2026-08-15)**: `lib/cloudinary-client.ts`
+      → `withCloudinaryTransform(url, transformation)`, inserisce una trasformazione in un URL di
+      consegna Cloudinary già completo (l'`<img src>` incollato nel contenuto HTML della pagina,
+      salvato come `secure_url` intero via `RichTextEditor`, non come `public_id` — a differenza di
+      `cloudinaryPreviewUrl()` che parte da un `public_id`). Usato in `app/il-borgo/page.tsx` e
+      `app/chi-siamo/page.tsx` sull'immagine hero: `f_auto,q_auto:best,e_sharpen:40` (formato
+      migliore per browser, qualità automatica più alta, leggero sharpen per contrastare la
+      sfocatura introdotta dallo stretch di `object-cover` su schermi larghi)
+      - **Causa reale, verificata prima di intervenire**: le due foto sorgente su Cloudinary sono
+        1920×1280 (controllato via Cloudinary Admin API, `cloudinary.api.resource()`) — non
+        immagini minuscole. Il problema è che l'hero è a piena larghezza (`w-full h-full
+        object-cover`, nessun `max-width`) mentre l'altezza resta fissa e modesta (360–460px):
+        su monitor larghi il rapporto contenitore diventa molto più "panoramico" del rapporto
+        1.5:1 della foto, quindi `object-cover` deve ingrandire l'immagine oltre la sua risoluzione
+        nativa per coprire la larghezza — verificato con Playwright: a 1920px di viewport l'`<img>`
+        viene già renderizzato leggermente più largo del nativo (~2016px, per via anche dello
+        `scale-105` esistente), a 2560px arriva a ~2688px (upscale ~1.4×) — la sfocatura percepita
+        cresce con la larghezza dello schermo
+      - **Limite onestamente non risolvibile solo da codice**: la trasformazione Cloudinary
+        migliora formato/qualità di codifica e aggiunge un contrasto percepito (sharpen), ma non
+        aggiunge dettaglio reale oltre i 1920×1280 nativi — su monitor ultra-wide (>1920px di
+        viewport) l'immagine resterà comunque leggermente ingrandita oltre la risoluzione
+        sorgente. Se serve nitidezza perfetta anche lì, servono foto sorgente a risoluzione
+        maggiore da ricaricare in admin — segnalato a Dario, non assunto risolto del tutto
+      - Verificato: build/tsc/lint puliti, URL trasformato risolve con status 200, screenshot
+        locali (1400px) di entrambe le pagine mostrano l'hero correttamente renderizzato con il
+        nuovo URL
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
