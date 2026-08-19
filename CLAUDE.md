@@ -529,6 +529,12 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         assente — su una foto già nitida rischiava di risultare artificiale)
       - Verificato visivamente con screenshot locali (1400px, entrambe le pagine): foto nettamente
         più nitide, testo ancora leggibile sopra l'overlay rinforzato. Build/tsc/lint puliti
+- [x] **Link "Partecipa" in `/community/account` (2026-08-19)**: aggiunta una sezione con due link,
+      "Crea un annuncio nel Mercatino" (`/community/new`) e "Crea la tua bottega"/"Gestisci la tua
+      bottega" (`/community/bottega`, testo condizionale in base a `getShopByAuthorId()` — la
+      pagina di destinazione gestisce già da sola sia la creazione sia la modifica, nessuna nuova
+      route). Testato end-to-end con Playwright (login reale come utente esistente, verificato che
+      entrambi i link siano presenti e puntino alle route corrette)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

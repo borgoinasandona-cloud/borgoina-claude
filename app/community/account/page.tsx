@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateUserQrCode } from "@/lib/qr";
+import { getShopByAuthorId } from "@/lib/shops";
 import { AccountForm } from "@/components/AccountForm";
 import { UserQrCode } from "@/components/UserQrCode";
 import { logoutAction } from "./actions";
@@ -29,6 +31,7 @@ export default async function CommunityAccountPage() {
 
   const hasPassword = Boolean(user.password);
   const qrCodeDataUrl = await generateUserQrCode(session.user.id);
+  const shop = await getShopByAuthorId(session.user.id);
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16">
@@ -55,6 +58,24 @@ export default async function CommunityAccountPage() {
         image={user.image}
         hasPassword={hasPassword}
       />
+
+      <div className="mt-8 border-t border-ink/10 pt-6">
+        <p className="eyebrow text-brick">Partecipa</p>
+        <div className="mt-3 flex flex-col gap-2">
+          <Link
+            href="/community/new"
+            className="text-sm font-semibold text-ink transition-colors hover:text-brick-dark"
+          >
+            Crea un annuncio nel Mercatino →
+          </Link>
+          <Link
+            href="/community/bottega"
+            className="text-sm font-semibold text-ink transition-colors hover:text-brick-dark"
+          >
+            {shop ? "Gestisci la tua bottega →" : "Crea la tua bottega →"}
+          </Link>
+        </div>
+      </div>
 
       <form action={logoutAction} className="mt-8 border-t border-ink/10 pt-6">
         <button
