@@ -21,9 +21,9 @@ export default async function HomePage() {
       <Hero />
       <VerdePopolare />
       <BachecaHighlight post={featuredPost ?? latestPosts[0] ?? null} />
-      <CommunityHighlight post={featuredCommunityPost} />
       <Iniziative />
       <BachecaPreview posts={latestPosts} />
+      <CommunityHighlight post={featuredCommunityPost} />
     </div>
   );
 }
