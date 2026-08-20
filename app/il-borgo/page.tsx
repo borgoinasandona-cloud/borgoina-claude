@@ -87,7 +87,7 @@ export default async function IlBorgoPage() {
                 </div>
               </div>
               {section.images[0] && (
-                <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+                <div className="relative mt-4 aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={section.images[0].src}
@@ -106,7 +106,7 @@ export default async function IlBorgoPage() {
           <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="order-2 md:order-1">
               {section3.images[0] && (
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={section3.images[0].src}
@@ -145,7 +145,7 @@ export default async function IlBorgoPage() {
                   </div>
                   <div className={isEven ? "order-2" : "order-2 md:order-1"}>
                     {section.images[0] && (
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={section.images[0].src}

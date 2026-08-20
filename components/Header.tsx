@@ -74,7 +74,7 @@ export function Header({ session }: { session: Session | null }) {
   return (
     <header
       className={`sticky top-0 z-30 transition-colors duration-300 ${
-        overlay ? "bg-transparent" : "border-b border-ink/10 bg-cream/95 backdrop-blur"
+        overlay ? "bg-transparent" : "border-b border-ink/20 bg-cream/95 backdrop-blur"
       }`}
     >
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 wide:max-w-6xl">
@@ -153,7 +153,7 @@ export function Header({ session }: { session: Session | null }) {
                 L'offset dall'alto segue l'altezza dell'header, che cresce con il logo ai
                 breakpoint più larghi (vedi le classi h-11/md:h-14/wide:h-16 sul logo). */}
             <nav
-              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/10 bg-cream shadow-xl transition-all duration-300 ease-out md:top-[88px] wide:top-[96px] ${
+              className={`fixed inset-x-0 top-[76px] z-30 border-t border-ink/20 bg-cream shadow-xl transition-all duration-300 ease-out md:top-[88px] wide:top-[96px] ${
                 mobileOpen
                   ? "translate-y-0 opacity-100"
                   : "pointer-events-none -translate-y-3 opacity-0"

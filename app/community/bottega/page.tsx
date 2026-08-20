@@ -52,7 +52,7 @@ export default async function MyShopPage() {
 
           <ShopForm shop={shop} />
 
-          <form action={deleteMyShopAction} className="mt-8 border-t border-ink/10 pt-6">
+          <form action={deleteMyShopAction} className="mt-8 border-t border-ink/20 pt-6">
             <button
               type="submit"
               className="text-sm font-semibold text-ink-soft transition-colors hover:text-brick-dark"

@@ -9,7 +9,7 @@ export function StaticPageView({
 }) {
   return (
     <div>
-      <div className="border-b border-ink/10 bg-cream-deep py-16 px-4">
+      <div className="border-b border-ink/20 bg-cream-deep py-16 px-4">
         <div className="mx-auto max-w-3xl wide:max-w-4xl">
           <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {title}

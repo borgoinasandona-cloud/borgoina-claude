@@ -15,7 +15,7 @@ export default async function ContattiPage() {
 
   return (
     <div>
-      <div className="border-b border-ink/10 bg-cream-deep px-4 py-16">
+      <div className="border-b border-ink/20 bg-cream-deep px-4 py-16">
         <div className="mx-auto max-w-5xl wide:max-w-6xl">
           <p className="eyebrow text-brick wide:text-sm">Scrivici</p>
           <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
@@ -40,7 +40,7 @@ export default async function ContattiPage() {
             )}
           </div>
           <div className="lg:col-span-2">
-            <div className="rounded border border-ink/10 bg-white p-6 shadow-sm">
+            <div className="rounded border border-ink/20 bg-white p-6 shadow-sm">
               <p className="eyebrow text-brick wide:text-sm">Modulo di contatto</p>
               <h2 className="font-display mt-2 text-xl font-bold text-ink wide:text-2xl">Inviaci un messaggio</h2>
               <ContactForm />

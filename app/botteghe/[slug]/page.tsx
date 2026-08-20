@@ -23,7 +23,7 @@ function ContactCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded border border-ink/10 bg-white p-4 shadow-sm">
+    <div className="flex items-start gap-3 rounded border border-ink/20 bg-white p-4 shadow-sm">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brick/10 text-brick">
         <FontAwesomeIcon icon={icon} className="h-4 w-4" aria-hidden="true" />
       </div>
@@ -129,7 +129,7 @@ export default async function ShopDetailPage({
           <img
             src={shop.coverImage}
             alt={shop.name}
-            className="mb-8 w-full rounded border border-ink/10 object-cover shadow-sm"
+            className="mb-8 w-full rounded border border-ink/20 object-cover shadow-sm"
           />
         )}
 
@@ -174,7 +174,7 @@ export default async function ShopDetailPage({
         )}
 
         {hasContacts && (
-          <div className="mt-10 border-t border-ink/10 pt-6">
+          <div className="mt-10 border-t border-ink/20 pt-6">
             <p className="eyebrow text-brick">Contatti</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {shop.address && (
@@ -230,7 +230,7 @@ export default async function ShopDetailPage({
                   key={image.id}
                   src={image.url}
                   alt={image.alt ?? shop.name}
-                  className="aspect-square w-full rounded border border-ink/10 object-cover"
+                  className="aspect-square w-full rounded border border-ink/20 object-cover"
                 />
               ))}
             </div>

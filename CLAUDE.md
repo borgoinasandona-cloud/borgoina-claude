@@ -554,6 +554,14 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       con `bg-cream/30 border-y`. Il placeholder di sfondo della cover in `BachecaHighlight` è stato
       cambiato da `bg-cream-deep` a `bg-cream` per restare visibile sopra il nuovo sfondo di sezione
       identico. Verificato visivamente con screenshot locale a piena pagina (1400px)
+- [x] **Bordo `border-ink` scurito nel sito pubblico (2026-08-20)**: `border-ink/10` → `border-ink/20`
+      in tutti i componenti/pagine pubblici (card Bacheca/Community/Botteghe, header, sezioni con
+      `border-t`/`border-b`, box vari) — non toccato `app/admin/**`, che non usava `border-ink/10`.
+      Nei 5 punti dove il bordo base coesisteva con un `hover:border-ink/20` (card `PostCard`,
+      `CommunityPostCard`, `ShopCard`, e i blocchi `BachecaHighlight`/`CommunityHighlight` in home)
+      l'hover è stato spostato a `border-ink/30`, altrimenti l'hover sarebbe diventato uguale al
+      bordo di riposo, perdendo l'effetto. Verificato visivamente con screenshot locale (home,
+      1400px) e caricamento di tutte le pagine pubbliche principali senza errori
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

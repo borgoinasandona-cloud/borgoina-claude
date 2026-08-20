@@ -85,7 +85,7 @@ export function AccountForm({
       </div>
 
       {hasPassword && (
-        <div className="border-t border-ink/10 pt-4">
+        <div className="border-t border-ink/20 pt-4">
           <label
             htmlFor="currentPassword"
             className="text-xs font-semibold tracking-wide text-ink-soft uppercase"

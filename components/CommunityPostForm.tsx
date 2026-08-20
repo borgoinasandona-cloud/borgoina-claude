@@ -70,7 +70,7 @@ export function CommunityPostForm() {
           <img
             src={coverImage.secureUrl}
             alt=""
-            className="mt-3 h-32 w-32 rounded border border-ink/10 object-cover"
+            className="mt-3 h-32 w-32 rounded border border-ink/20 object-cover"
           />
         )}
       </div>

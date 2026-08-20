@@ -12,7 +12,7 @@ export function PostCard({
   return (
     <Link
       href={`/news/${post.slug}`}
-      className="group block overflow-hidden rounded border border-ink/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-lg"
+      className="group block overflow-hidden rounded border border-ink/20 bg-white transition duration-300 hover:-translate-y-1 hover:border-ink/30 hover:shadow-lg"
     >
       <div className="relative aspect-video w-full overflow-hidden bg-cream-deep">
         {post.coverImage && (

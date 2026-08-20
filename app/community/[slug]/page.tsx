@@ -93,7 +93,7 @@ export default async function CommunityPostDetailPage({
           <img
             src={post.coverImage}
             alt={post.title}
-            className="mb-8 w-full rounded border border-ink/10 object-cover shadow-sm"
+            className="mb-8 w-full rounded border border-ink/20 object-cover shadow-sm"
           />
         )}
 
@@ -102,7 +102,7 @@ export default async function CommunityPostDetailPage({
         </p>
 
         {isAuthor && (
-          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-ink/10 pt-6">
+          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-ink/20 pt-6">
             {isObject && (
               <form action={updateOwnPostStatusAction.bind(null, slug)} className="flex items-center gap-2">
                 <select
@@ -135,7 +135,7 @@ export default async function CommunityPostDetailPage({
           </div>
         )}
 
-        <div className="mt-12 border-t border-ink/10 pt-8">
+        <div className="mt-12 border-t border-ink/20 pt-8">
           <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
             <FontAwesomeIcon icon={faComment} className="h-3.5 w-3.5" aria-hidden="true" />
             Commenti
@@ -149,7 +149,7 @@ export default async function CommunityPostDetailPage({
 
           <div className="mt-4 space-y-4">
             {visibleComments.map((comment) => (
-              <div key={comment.id} className="rounded border border-ink/10 bg-cream-deep p-4">
+              <div key={comment.id} className="rounded border border-ink/20 bg-cream-deep p-4">
                 <p className="font-mono text-xs font-semibold tracking-wide text-ink-soft uppercase">
                   {comment.author.name ?? "Socio"} ·{" "}
                   {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(comment.createdAt)}

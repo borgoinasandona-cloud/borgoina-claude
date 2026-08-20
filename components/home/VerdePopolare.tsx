@@ -29,7 +29,7 @@ export function VerdePopolare() {
       <div className="mt-10 grid gap-10 sm:grid-cols-3">
         {blocks.map((block) => (
           <div key={block.title} className="group">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
               <Image
                 src={block.image}
                 alt={block.title}

@@ -17,7 +17,7 @@ export function BachecaHighlight({ post }: { post: FeaturedPost | null }) {
         {post ? (
           <Link
             href={`/news/${post.slug}`}
-            className="group mt-8 flex flex-col overflow-hidden rounded border border-ink/10 bg-white transition duration-300 hover:border-ink/20 hover:shadow-lg sm:flex-row"
+            className="group mt-8 flex flex-col overflow-hidden rounded border border-ink/20 bg-white transition duration-300 hover:border-ink/30 hover:shadow-lg sm:flex-row"
           >
             <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-cream sm:w-[400px]">
               {post.coverImage && (

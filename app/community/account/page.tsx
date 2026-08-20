@@ -36,7 +36,7 @@ export default async function CommunityAccountPage() {
   return (
     <div className="bg-cream/20 min-h-screen">
       {/* Page Header */}
-      <div className="border-b border-ink/10 bg-cream-deep px-4 py-12">
+      <div className="border-b border-ink/20 bg-cream-deep px-4 py-12">
         <div className="mx-auto max-w-5xl wide:max-w-6xl flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <p className="eyebrow text-brick wide:text-sm">Il mio profilo</p>
@@ -68,7 +68,7 @@ export default async function CommunityAccountPage() {
           
           {/* Section 1: Account (Form) */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="rounded border border-ink/10 bg-white p-6 md:p-8 shadow-sm">
+            <div className="rounded border border-ink/20 bg-white p-6 md:p-8 shadow-sm">
               <h2 className="font-display text-2xl font-bold text-ink mb-1">
                 Dati personali
               </h2>
@@ -88,7 +88,7 @@ export default async function CommunityAccountPage() {
           <div className="space-y-8">
             
             {/* Section 2: QR Code */}
-            <div className="rounded border border-ink/10 bg-white p-6 md:p-8 shadow-sm">
+            <div className="rounded border border-ink/20 bg-white p-6 md:p-8 shadow-sm">
               <h2 className="font-display text-2xl font-bold text-ink mb-1">
                 Tessera digitale
               </h2>
@@ -99,7 +99,7 @@ export default async function CommunityAccountPage() {
             </div>
 
             {/* Section 3: Community Actions */}
-            <div className="rounded border border-ink/10 bg-white p-6 md:p-8 shadow-sm">
+            <div className="rounded border border-ink/20 bg-white p-6 md:p-8 shadow-sm">
               <h2 className="font-display text-2xl font-bold text-ink mb-1">
                 Community
               </h2>
@@ -122,7 +122,7 @@ export default async function CommunityAccountPage() {
                   </Link>
                 </div>
 
-                <div className="border-t border-ink/10 pt-6 flex flex-col gap-2">
+                <div className="border-t border-ink/20 pt-6 flex flex-col gap-2">
                   <span className="text-xs font-semibold tracking-wide text-ink-soft uppercase font-mono">
                     Botteghe del Borgo
                   </span>

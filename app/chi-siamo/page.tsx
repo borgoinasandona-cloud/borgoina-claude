@@ -82,7 +82,7 @@ export default async function ChiSiamoPage() {
                       <img
                         src={images[0].src}
                         alt={images[0].alt || title}
-                        className="h-auto max-w-full rounded border border-ink/10 shadow-sm"
+                        className="h-auto max-w-full rounded border border-ink/20 shadow-sm"
                       />
                     </div>
                   )}
@@ -110,7 +110,7 @@ export default async function ChiSiamoPage() {
                   </div>
                   <div className={imageColClass}>
                     {images[0] && (
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/10 shadow-sm">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={images[0].src}
