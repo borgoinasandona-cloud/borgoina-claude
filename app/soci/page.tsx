@@ -27,7 +27,7 @@ export default async function SociPage() {
 
       <div className="mx-auto max-w-5xl px-4 py-12 wide:max-w-6xl">
         {members.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 wide:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {members.map((member) => (
               <MemberCard key={member.id} member={member} />
             ))}
