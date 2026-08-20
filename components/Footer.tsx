@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
 
 export function Footer() {
@@ -20,21 +22,38 @@ export function Footer() {
             <p className="eyebrow mt-5 text-cream/50">Comitato civico di quartiere</p>
           </div>
           <div className="space-y-3 text-sm wide:text-base">
-            <p className="eyebrow text-brick-light">Menù</p>
+            <p className="eyebrow text-brick-light">Pagine</p>
             <div className="flex flex-col items-start gap-1.5">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={
-                    link.accent
-                      ? `font-mono rounded-sm px-2.5 py-1 text-xs font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent]}`
-                      : "transition-colors hover:text-white"
-                  }
-                >
-                  {link.label}
-                </Link>
-              ))}
+              <Link href="/" className="transition-colors hover:text-white">
+                Home
+              </Link>
+              {navLinks
+                .filter((link) => !link.accent)
+                .map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+            </div>
+          </div>
+          <div className="space-y-3 text-sm wide:text-base">
+            <p className="eyebrow text-brick-light">Partecipa</p>
+            <div className="flex flex-col items-start gap-1.5">
+              {navLinks
+                .filter((link) => link.accent)
+                .map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`font-mono rounded-sm px-2.5 py-1 text-xs font-semibold tracking-[0.08em] uppercase transition-colors ${navLinkAccentClasses[link.accent!]}`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
             </div>
           </div>
           <div className="space-y-3 text-sm sm:text-right wide:text-base">
@@ -49,21 +68,22 @@ export function Footer() {
               <br />
               30027 San Donà di Piave (VE)
             </p>
-            <div className="flex flex-col gap-1 sm:items-end">
-              {siteConfig.instagramUrl && (
-                <a
-                  href={siteConfig.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-white"
-                >
-                  Instagram
-                </a>
-              )}
-              <Link href="/contatti" className="transition-colors hover:text-white">
-                Scrivici →
-              </Link>
-            </div>
+            {siteConfig.instagramUrl && (
+              <div className="pt-2 space-y-2">
+                <p className="eyebrow text-brick-light">Social</p>
+                <div className="flex flex-col gap-1 sm:items-end">
+                  <a
+                    href={siteConfig.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono inline-flex items-center gap-1.5 rounded-sm text-xs font-semibold tracking-[0.08em] uppercase transition-colors hover:text-white"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} className="h-3.5 w-3.5" />
+                    Instagram
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t border-cream/15 pt-6 text-xs text-cream/50 sm:flex-row sm:items-center sm:justify-between">
