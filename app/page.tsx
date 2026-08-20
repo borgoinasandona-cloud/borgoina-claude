@@ -2,7 +2,6 @@ import { Hero } from "@/components/home/Hero";
 import { VerdePopolare } from "@/components/home/VerdePopolare";
 import { BachecaHighlight } from "@/components/home/BachecaHighlight";
 import { CommunityHighlight } from "@/components/home/CommunityHighlight";
-import { Iniziative } from "@/components/home/Iniziative";
 import { BachecaPreview } from "@/components/home/BachecaPreview";
 import { getFeaturedPost, getLatestPublishedPosts } from "@/lib/posts";
 import { getFeaturedCommunityPost } from "@/lib/community";
@@ -21,7 +20,6 @@ export default async function HomePage() {
       <Hero />
       <VerdePopolare />
       <BachecaHighlight post={featuredPost ?? latestPosts[0] ?? null} />
-      <Iniziative />
       <BachecaPreview posts={latestPosts} />
       <CommunityHighlight post={featuredCommunityPost} />
     </div>

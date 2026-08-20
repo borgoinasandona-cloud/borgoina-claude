@@ -544,6 +544,16 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       - Aggiunto il campo `featured Boolean @default(false)` al modello `CommunityPost` ed eseguita la migrazione Postgres su Neon
       - Fornita la possibilità solo all'admin di evidenziare/rimuovere l'evidenza di un post pubblico dalla dashboard `/admin/community` tramite pulsanti a stella (`★ Evidenziato` / `☆ Evidenzia`) e relativi badge grafici, gestendo l'azione con mutua esclusione (massimo un post evidenziato alla volta)
       - Creata la sezione "In evidenza nella community" in fondo alla homepage pubblica (sopra il footer) che renderizza l'annuncio in evidenza tramite il nuovo componente `CommunityHighlight` (con stile *sage*, didascalie, autore, data e commenti), nascondendosi se non ci sono elementi in evidenza
+- [x] **Rimossa sezione "Iniziative" dalla home, sezioni in evidenza edge-to-edge (2026-08-20)**:
+      eliminato `components/home/Iniziative.tsx` (non più referenziato altrove) e la sua riga in
+      `app/page.tsx`. "Il Borgo utile" (`BachecaHighlight`) e "In evidenza nella community"
+      (`CommunityHighlight`) ora condividono lo stesso pattern edge-to-edge: `<section>` a piena
+      larghezza con `bg-cream-deep`, contenuto racchiuso in un `<div className="mx-auto max-w-5xl
+      ...">` interno — prima `BachecaHighlight` aveva il contenitore `max-w-5xl` direttamente sulla
+      `<section>` (niente sfondo a piena larghezza), `CommunityHighlight` era già edge-to-edge ma
+      con `bg-cream/30 border-y`. Il placeholder di sfondo della cover in `BachecaHighlight` è stato
+      cambiato da `bg-cream-deep` a `bg-cream` per restare visibile sopra il nuovo sfondo di sezione
+      identico. Verificato visivamente con screenshot locale a piena pagina (1400px)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

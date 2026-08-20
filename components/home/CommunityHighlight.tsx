@@ -13,7 +13,7 @@ export function CommunityHighlight({ post }: { post: FeaturedCommunityPost | nul
   if (!post) return null;
 
   return (
-    <section className="bg-cream/30 border-y border-ink/5 py-16 md:py-24">
+    <section className="bg-cream-deep py-16 md:py-24">
       <div className="mx-auto max-w-5xl px-4 wide:max-w-6xl">
         <p className="eyebrow text-sage wide:text-sm">Dal Mercatino</p>
         <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl wide:text-5xl">
