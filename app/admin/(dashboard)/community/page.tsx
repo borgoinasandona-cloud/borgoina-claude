@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { getAllCommunityPostsForAdmin, communityPostTypeLabels, communityPostStatusLabels } from "@/lib/community";
-import { approveCommunityPostAction, rejectCommunityPostAction, deleteCommunityPostAction } from "./actions";
+import {
+  approveCommunityPostAction,
+  rejectCommunityPostAction,
+  deleteCommunityPostAction,
+  toggleFeaturedCommunityPostAction,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +29,7 @@ export default async function AdminCommunityPage() {
       </p>
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
-        {posts.map((post) => (
+        {posts.map((post: any) => (
           <li key={post.id} className="flex items-center justify-between gap-4 py-3">
             <div>
               <p className="flex items-center gap-2 font-medium text-neutral-900">
@@ -40,6 +45,11 @@ export default async function AdminCommunityPage() {
                 >
                   {VISIBILITY_LABELS[post.visibility]}
                 </span>
+                {post.featured && (
+                  <span className="font-mono rounded bg-amber-100 px-2 py-0.5 text-[0.65rem] font-semibold text-amber-800 uppercase">
+                    ★ In evidenza
+                  </span>
+                )}
               </p>
               <p className="text-xs text-neutral-500">
                 /{post.slug} · {communityPostTypeLabels[post.type]}
@@ -57,6 +67,18 @@ export default async function AdminCommunityPage() {
               >
                 Vedi
               </Link>
+              {post.visibility === "PUBLIC" && (
+                <form action={toggleFeaturedCommunityPostAction.bind(null, post.id)}>
+                  <button
+                    type="submit"
+                    className={`text-sm hover:underline cursor-pointer ${
+                      post.featured ? "text-amber-600 font-semibold" : "text-neutral-500"
+                    }`}
+                  >
+                    {post.featured ? "★ Evidenziato" : "☆ Evidenzia"}
+                  </button>
+                </form>
+              )}
               {post.visibility !== "PUBLIC" && (
                 <form action={approveCommunityPostAction.bind(null, post.id)}>
                   <button type="submit" className="text-sm text-green-700 hover:underline">

@@ -143,6 +143,7 @@ model CommunityPost {
   visibility           Visibility           @default(PENDING)
   visibilityOfComments CommentVisibility    @default(PUBLIC)
   comments             Comment[]
+  featured             Boolean              @default(false)
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
 }

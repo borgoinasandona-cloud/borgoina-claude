@@ -94,3 +94,11 @@ export function filterVisibleComments(
 
   return comments.filter((c) => c.authorId === viewerId || c.authorId === post.authorId);
 }
+
+export function getFeaturedCommunityPost() {
+  return prisma.communityPost.findFirst({
+    where: { visibility: "PUBLIC", featured: true },
+    orderBy: { createdAt: "desc" },
+    include: communityPostInclude,
+  });
+}
