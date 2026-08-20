@@ -529,12 +529,21 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         assente — su una foto già nitida rischiava di risultare artificiale)
       - Verificato visivamente con screenshot locali (1400px, entrambe le pagine): foto nettamente
         più nitide, testo ancora leggibile sopra l'overlay rinforzato. Build/tsc/lint puliti
-- [x] **Link "Partecipa" in `/community/account` (2026-08-19)**: aggiunta una sezione con due link,
-      "Crea un annuncio nel Mercatino" (`/community/new`) e "Crea la tua bottega"/"Gestisci la tua
-      bottega" (`/community/bottega`, testo condizionale in base a `getShopByAuthorId()` — la
-      pagina di destinazione gestisce già da sola sia la creazione sia la modifica, nessuna nuova
-      route). Testato end-to-end con Playwright (login reale come utente esistente, verificato che
-      entrambi i link siano presenti e puntino alle route corrette)
+- [x] **Redesign pagina `/community/account` (2026-08-19)**: riorganizzata la pagina del profilo in tre tessere distinte in una griglia reattiva (1 colonna su mobile, 3 colonne su desktop):
+      - **Dati personali** (form `AccountForm`)
+      - **Tessera digitale** (codice QR `UserQrCode` ridisegnato per evitare doppi bordi e integrato con effetto card)
+      - **Community / Partecipa**: i due link precedenti sono stati convertiti in pulsanti d'azione colorati (colore *sage* per il Mercatino e *brick* per la Bottega) corredati ciascuno da didascalie descrittive
+      - La testata della pagina è stata uniformata a quella del Mercatino (sfondo `bg-cream-deep`) e accoglie il pulsante "Esci dall'account" in alto a destra
+- [x] **Miglioramento layout `/soci` (2026-08-20)**: esteso il numero di colonne per la griglia degli iscritti da 3 a 4 a partire dal breakpoint desktop `lg` (`lg:grid-cols-4`)
+- [x] **Redesign del footer (2026-08-20)**:
+      - Suddiviso il menu di navigazione in due colonne distinte: **Pagine** (Home, Il Borgo, Chi siamo, Bacheca, Contatti) e **Partecipa** (Mercatino, Botteghe, Iscritti)
+      - Rimosso il link di testo "Scrivici"
+      - Inserita una sezione social dedicata a Instagram, evidenziata con l'icona del brand caricata da FontAwesome (`faInstagram`) sotto l'eyebrow "Social"
+      - Rimosso il padding verticale superfluo tra l'indirizzo email e la via fisica
+- [x] **Messa in evidenza annunci community (2026-08-20)**:
+      - Aggiunto il campo `featured Boolean @default(false)` al modello `CommunityPost` ed eseguita la migrazione Postgres su Neon
+      - Fornita la possibilità solo all'admin di evidenziare/rimuovere l'evidenza di un post pubblico dalla dashboard `/admin/community` tramite pulsanti a stella (`★ Evidenziato` / `☆ Evidenzia`) e relativi badge grafici, gestendo l'azione con mutua esclusione (massimo un post evidenziato alla volta)
+      - Creata la sezione "In evidenza nella community" in fondo alla homepage pubblica (sopra il footer) che renderizza l'annuncio in evidenza tramite il nuovo componente `CommunityHighlight` (con stile *sage*, didascalie, autore, data e commenti), nascondendosi se non ci sono elementi in evidenza
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
