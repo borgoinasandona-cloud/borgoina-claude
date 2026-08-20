@@ -62,8 +62,7 @@ export function Footer() {
               <a href={`mailto:${siteConfig.contactEmail}`} className="transition-colors hover:text-white">
                 {siteConfig.contactEmail}
               </a>
-            </p>
-            <p>
+              <br />
               Via Luigi Cadorna 33
               <br />
               30027 San Donà di Piave (VE)
