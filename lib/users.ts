@@ -18,3 +18,11 @@ export function getPublicMembers() {
     orderBy: { name: "asc" },
   });
 }
+
+export async function getAdminEmails() {
+  const admins = await prisma.user.findMany({
+    where: { role: "ADMIN" },
+    select: { email: true },
+  });
+  return admins.map((admin) => admin.email);
+}

@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import { communityPostSchema } from "@/lib/validations";
 import { defaultCommentVisibilityFor } from "@/lib/community";
 import { slugifyWithSuffix } from "@/lib/slugify";
+import { sendNewCommunityPostNotification } from "@/lib/resend";
 
 export type NewCommunityPostState = {
   status: "idle" | "error";
@@ -50,6 +51,12 @@ export async function createCommunityPostAction(
       visibilityOfComments: defaultCommentVisibilityFor(type),
     },
   });
+
+  try {
+    await sendNewCommunityPostNotification({ title: post.title, authorName: user.name ?? "Un iscritto" });
+  } catch (error) {
+    console.error("Notifica admin nuovo annuncio fallita:", error);
+  }
 
   revalidatePath("/community");
   redirect(`/community/${post.slug}`);

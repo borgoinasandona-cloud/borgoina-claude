@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations";
 import { createEmailVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/resend";
+import { sendVerificationEmail, sendNewMemberNotification } from "@/lib/resend";
 import { siteConfig } from "@/lib/site-config";
 
 export type RegisterState = {
@@ -44,6 +44,12 @@ export async function registerAction(
     name,
     url: `${siteConfig.url}/community/verify-email?token=${token}`,
   });
+
+  try {
+    await sendNewMemberNotification({ name, email });
+  } catch (error) {
+    console.error("Notifica admin nuovo iscritto fallita:", error);
+  }
 
   return {
     status: "success",

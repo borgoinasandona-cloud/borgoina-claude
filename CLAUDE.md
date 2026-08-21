@@ -562,6 +562,29 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       l'hover è stato spostato a `border-ink/30`, altrimenti l'hover sarebbe diventato uguale al
       bordo di riposo, perdendo l'effetto. Verificato visivamente con screenshot locale (home,
       1400px) e caricamento di tutte le pagine pubbliche principali senza errori
+- [x] **Email di notifica admin su nuovi iscritti/annunci/botteghe (2026-08-21)**:
+      `lib/users.ts` → `getAdminEmails()` (query `User` con `role: "ADMIN"`, non un env var statico —
+      in produzione ci sono già 2 account ADMIN). `lib/resend.ts` → helper interno
+      `sendAdminNotification(subject, text)` (salta l'invio se non ci sono admin) più tre funzioni
+      pubbliche: `sendNewMemberNotification`, `sendNewCommunityPostNotification`,
+      `sendNewShopNotification`. Collegate in coda a: `app/community/register/actions.ts`
+      (`registerAction`, dopo la creazione utente), `app/community/new/actions.ts`
+      (`createCommunityPostAction`, ogni post nasce già `visibility: PENDING`), `app/community/bottega/actions.ts`
+      (`saveShopAction`, **solo nel ramo `else` di creazione**, non quando un iscritto modifica una
+      bottega già esistente — l'admin non va notificato ad ogni modifica)
+      - Ogni chiamata è avvolta in un `try/catch` con `console.error` (stesso pattern già usato in
+        `app/contatti/actions.ts` per `sendContactEmail`): un fallimento dell'invio non deve mai
+        bloccare la registrazione/pubblicazione/creazione dell'utente, che restano l'azione
+        primaria — la notifica admin è un side-effect informativo
+      - Testato end-to-end con Playwright contro un dev server locale riavviato di fresco (il
+        processo precedente aveva un Prisma Client stantio, non rigenerato dopo l'ultima migration
+        — bug preesistente non legato a questa feature, risolto incidentalmente con `npx prisma
+        generate` + restart, non ha mai riguardato l'ambiente Vercel che rigenera sempre il client
+        in build): registrazione → verifica email via token letto dal DB → login → creazione
+        annuncio Mercatino → creazione bottega. Con un log temporaneo (poi rimosso) verificato che
+        tutte e tre le chiamate a Resend siano state accettate con un id reale e `error: null`,
+        inviate a entrambi gli indirizzi admin in produzione. Dati di test (utente + annuncio +
+        bottega, cascata su `onDelete: Cascade`) ripuliti dal DB di produzione dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { slugifyWithSuffix } from "@/lib/slugify";
 import { parseShopFormData } from "@/lib/shops";
+import { sendNewShopNotification } from "@/lib/resend";
 
 export type ShopFormState = {
   status: "idle" | "success" | "error";
@@ -57,6 +58,12 @@ export async function saveShopAction(
           images: { create: images.map((img, index) => ({ ...img, order: img.order ?? index })) },
         },
       });
+
+      try {
+        await sendNewShopNotification({ shopName: data.name, ownerName: user.name ?? "Un iscritto" });
+      } catch (error) {
+        console.error("Notifica admin nuova bottega fallita:", error);
+      }
     }
   } catch {
     return { status: "error", message: "Errore di salvataggio. Riprova." };
