@@ -8,9 +8,25 @@ import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: staticPageTitles["il-borgo"],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage("il-borgo");
+  const intro = page?.content ? parseIntro(page.content) : null;
+  const images = intro?.image
+    ? [{ url: withCloudinaryTransform(intro.image, "w_1200,h_630,c_fill") }]
+    : undefined;
+
+  return {
+    title: staticPageTitles["il-borgo"],
+    description: intro?.text ?? undefined,
+    openGraph: { title: staticPageTitles["il-borgo"], description: intro?.text ?? undefined, images },
+    twitter: {
+      card: "summary_large_image",
+      title: staticPageTitles["il-borgo"],
+      description: intro?.text ?? undefined,
+      images: images?.map((i) => i.url),
+    },
+  };
+}
 
 export default async function IlBorgoPage() {
   const page = await getPage("il-borgo");

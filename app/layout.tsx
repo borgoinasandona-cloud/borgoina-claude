@@ -25,12 +25,33 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
 });
 
+const defaultDescription = `Sito del comitato di quartiere ${siteConfig.name}`;
+// Foto hero della home, usata come anteprima di default per le pagine senza una propria foto
+// principale (l'og:image, non solo il favicon, che è quanto vedevano finora i link condivisi
+// su WhatsApp/social prima di questa metadata).
+const defaultOgImage = "/images/home/home-slide-borgo1.jpg";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
     template: `%s · ${siteConfig.name}`,
   },
-  description: `Sito del comitato di quartiere ${siteConfig.name}`,
+  description: defaultDescription,
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    locale: "it_IT",
+    title: siteConfig.name,
+    description: defaultDescription,
+    images: [{ url: defaultOgImage }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: defaultDescription,
+    images: [defaultOgImage],
+  },
 };
 
 export default async function RootLayout({

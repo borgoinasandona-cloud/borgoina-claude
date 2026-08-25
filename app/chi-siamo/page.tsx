@@ -8,9 +8,25 @@ import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: staticPageTitles["chi-siamo"],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage("chi-siamo");
+  const intro = page?.content ? parseIntro(page.content) : null;
+  const images = intro?.image
+    ? [{ url: withCloudinaryTransform(intro.image, "w_1200,h_630,c_fill") }]
+    : undefined;
+
+  return {
+    title: staticPageTitles["chi-siamo"],
+    description: intro?.text ?? undefined,
+    openGraph: { title: staticPageTitles["chi-siamo"], description: intro?.text ?? undefined, images },
+    twitter: {
+      card: "summary_large_image",
+      title: staticPageTitles["chi-siamo"],
+      description: intro?.text ?? undefined,
+      images: images?.map((i) => i.url),
+    },
+  };
+}
 
 const EYEBROWS = ["Il quartiere", "L'associazione", "Le persone", "La struttura"];
 

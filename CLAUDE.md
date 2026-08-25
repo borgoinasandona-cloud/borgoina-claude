@@ -658,6 +658,34 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       di modifica invece di toccare ogni file. Verificato con
       `getComputedStyle(el).maxWidth` via Playwright (1152px → 1344px) e screenshot locale a
       1920px di viewport (Bacheca)
+- [x] **Anteprima link (Open Graph/Twitter Card) per WhatsApp e social (2026-08-21)**: prima non
+      c'era nessun `openGraph`/`twitter` in nessuna pagina — i link condivisi mostravano solo il
+      favicon (`app/icon.jpg`), mai una foto. `app/layout.tsx` ora imposta `metadataBase` (richiesto
+      da Next per risolvere immagini relative) e un `openGraph`/`twitter` di default (foto hero
+      statica `/images/home/home-slide-borgo1.jpg`, la stessa della home) — copre tutte le pagine
+      senza una propria foto principale (home, listino Bacheca/Community/Botteghe, Contatti, Soci,
+      login/registrazione). Le pagine con una vera "foto principale" hanno ora un `generateMetadata`
+      dedicato con titolo/descrizione/immagine specifici:
+      - `/news/[slug]`: `post.coverImage` (public_id) via `cloudinaryUrl(..., {width:1200,
+        height:630, crop:"fill"})`
+      - `/community/[slug]` e `/botteghe/[slug]`: `coverImage` è già un secure_url Cloudinary
+        completo, ritagliato con `withCloudinaryTransform(url, "w_1200,h_630,c_fill")`
+        (`lib/cloudinary-client.ts`, già usata per l'hero di Il Borgo/Chi siamo — nessuna dipendenza
+        nuova). **Metadata omessi (fallback al titolo generico) se il post/bottega non è
+        `visibility: PUBLIC`**: altrimenti un post `PENDING` o una bottega nascosta dall'admin
+        avrebbe esposto titolo/foto/descrizione a chiunque scansioni il link, anche prima
+        dell'approvazione o dopo essere stata nascosta — comportamento nuovo, non richiesto
+        esplicitamente ma coerente con l'enforcement di visibilità già fatto nel corpo di quelle
+        pagine
+      - `/il-borgo` e `/chi-siamo`: erano `export const metadata` statico (solo title), convertiti
+        in `generateMetadata` per riusare `getPage()`/`parseIntro()` già presenti nel componente e
+        prendere la foto hero della pagina (stesso campo Cloudinary mostrato nell'header)
+      - Non toccate: pagine senza un concetto di "foto principale" (`/contatti`) — restano sul
+        fallback di default
+      - Testato con Playwright leggendo i meta tag renderizzati (`og:title`/`og:description`/
+        `og:image`/`twitter:image`) su home, listini, un articolo Bacheca reale, un annuncio
+        community reale e una bottega reale — URL immagine verificati anche con una richiesta HTTP
+        diretta (200 sia sul fallback statico sia su un URL Cloudinary trasformato)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

@@ -16,7 +16,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPublishedPostBySlug(slug);
-  return { title: post?.title ?? "Articolo" };
+  if (!post) return { title: "Articolo" };
+
+  const description = post.excerpt ?? undefined;
+  const images = post.coverImage
+    ? [{ url: cloudinaryUrl(post.coverImage, { width: 1200, height: 630, crop: "fill" }) }]
+    : undefined;
+
+  return {
+    title: post.title,
+    description,
+    openGraph: { title: post.title, description, images },
+    twitter: { card: "summary_large_image", title: post.title, description, images: images?.map((i) => i.url) },
+  };
 }
 
 export default async function NewsDetailPage({

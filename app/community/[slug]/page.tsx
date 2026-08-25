@@ -12,6 +12,7 @@ import {
   isObjectPostType,
 } from "@/lib/community";
 import { CommentForm } from "@/components/CommentForm";
+import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 import { updateOwnPostStatusAction, deleteOwnPostAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getCommunityPostBySlug(slug);
-  return { title: post?.title ?? "Annuncio" };
+  if (!post || post.visibility !== "PUBLIC") return { title: "Annuncio" };
+
+  const description = post.content.slice(0, 200);
+  const images = post.coverImage
+    ? [{ url: withCloudinaryTransform(post.coverImage, "w_1200,h_630,c_fill") }]
+    : undefined;
+
+  return {
+    title: post.title,
+    description,
+    openGraph: { title: post.title, description, images },
+    twitter: { card: "summary_large_image", title: post.title, description, images: images?.map((i) => i.url) },
+  };
 }
 
 export default async function CommunityPostDetailPage({

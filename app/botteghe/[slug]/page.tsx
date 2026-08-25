@@ -9,6 +9,7 @@ import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
 import { toWhatsAppNumber } from "@/lib/phone";
+import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 import { initials } from "@/lib/initials";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const shop = await getShopBySlug(slug);
-  return { title: shop?.name ?? "Bottega" };
+  if (!shop || shop.visibility !== "PUBLIC") return { title: "Bottega" };
+
+  const description = shop.slogan ?? shop.description.slice(0, 200);
+  const images = shop.coverImage
+    ? [{ url: withCloudinaryTransform(shop.coverImage, "w_1200,h_630,c_fill") }]
+    : undefined;
+
+  return {
+    title: shop.name,
+    description,
+    openGraph: { title: shop.name, description, images },
+    twitter: { card: "summary_large_image", title: shop.name, description, images: images?.map((i) => i.url) },
+  };
 }
 
 export default async function ShopDetailPage({
