@@ -585,6 +585,20 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         tutte e tre le chiamate a Resend siano state accettate con un id reale e `error: null`,
         inviate a entrambi gli indirizzi admin in produzione. Dati di test (utente + annuncio +
         bottega, cascata su `onDelete: Cascade`) ripuliti dal DB di produzione dopo la verifica
+- [x] **Palette cream più calda, sfondo pagina di default nel sito pubblico (2026-08-21)**:
+      `--color-cream` da `#f4f2f2` a `#fff8f4`, `--color-cream-deep` da `#f3efef` a `#f9f2ef` in
+      `app/globals.css`. La regola non-layered `body { background: ... }` (quella che vince sempre
+      sulle utility Tailwind, vedi nota più sopra sulla cascata CSS) è passata da `#ffffff` fisso a
+      `var(--color-cream)`: da qui in poi lo sfondo di default di **tutte** le pagine (body è
+      condiviso, non c'è un layout pubblico separato da quello admin) è cream, non più bianco.
+      Per lasciare l'area admin bianca/neutra come prima (per scelta deliberata, vedi nota
+      "grigio neutro" più sopra su `ShopForm` riusato in admin), aggiunto un wrapper
+      `min-h-screen bg-white` nei due punti di ingresso dell'admin che non erano già dentro un
+      contenitore con sfondo esplicito: `app/admin/(dashboard)/layout.tsx` (l'unico layout che
+      copre già tutte le pagine sotto `/admin` tranne il login) e `app/admin/login/page.tsx`.
+      Verificato visivamente con screenshot locali (home, Bacheca, login admin) e leggendo
+      `getComputedStyle(document.body).backgroundColor` via Playwright: `rgb(255, 248, 244)` su
+      pagine pubbliche, area admin resta visivamente bianca nonostante il body sotto sia cream
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

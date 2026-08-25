@@ -12,8 +12,8 @@
   --color-brick-light: #e2793f;
   --color-sky: #4e8fa6;
   --color-sky-dark: #386e81;
-  --color-cream: #f4f2f2;
-  --color-cream-deep: #f3efef;
+  --color-cream: #fff8f4;
+  --color-cream-deep: #f9f2ef;
   --color-ink: #2a2019;
   --color-ink-soft: #5c5148;
   --color-sage: #6e7b4f;
@@ -38,7 +38,7 @@
 }
 
 body {
-  background: #ffffff;
+  background: var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 1.0625rem;
