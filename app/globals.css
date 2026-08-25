@@ -35,6 +35,7 @@
   --font-sans: var(--font-sans);
   /* Breakpoint extra per monitor larghi: contenitori e testo crescono ancora oltre md/lg. */
   --breakpoint-wide: 1570px;
+  --container-6xl: 84rem;
 }
 
 body {

@@ -650,6 +650,14 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       invariato). Non toccato l'admin (non usava `border-ink/20`). Verificato con `grep` che non
       restasse nessun `border-ink/20` piatto e che tutti gli `hover:border-ink/20` fossero intatti,
       più screenshot locali (Bacheca, Contatti)
+- [x] **Container `6xl` allargato (2026-08-21)**: aggiunto `--container-6xl: 84rem;` in `@theme
+      inline` (`app/globals.css`) — prima non era mai stato sovrascritto, quindi usava il default
+      Tailwind (72rem/1152px). Il token alimenta direttamente `max-w-6xl`/`wide:max-w-6xl`, già
+      usato come contenitore principale in quasi tutte le pagine pubbliche (Bacheca, Community,
+      Botteghe, Soci, Il Borgo, Chi siamo, Contatti, Header, Footer, blocchi home) — un solo punto
+      di modifica invece di toccare ogni file. Verificato con
+      `getComputedStyle(el).maxWidth` via Playwright (1152px → 1344px) e screenshot locale a
+      1920px di viewport (Bacheca)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
