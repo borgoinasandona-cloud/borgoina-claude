@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
         Inserisci l&apos;email del tuo account: ti mandiamo un link per scegliere una nuova password.
       </p>
 
-      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+      <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
         <ForgotPasswordForm />
 
         <p className="mt-6 text-sm text-ink-soft">

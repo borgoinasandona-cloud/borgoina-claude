@@ -17,7 +17,7 @@ export default function CommunityRegisterPage() {
         gli annunci degli altri iscritti.
       </p>
 
-      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+      <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
         <GoogleSignInButton />
         <div className="my-5 flex items-center gap-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
           <span className="h-px flex-1 bg-ink/10" />

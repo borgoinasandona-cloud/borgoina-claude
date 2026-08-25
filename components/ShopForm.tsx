@@ -14,7 +14,7 @@ const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-white px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <p className="eyebrow border-t border-ink/20 pt-6 text-brick">{children}</p>;
+  return <p className="eyebrow border-t border-ink/5 pt-6 text-brick">{children}</p>;
 }
 
 type AssignableUser = { id: string; name: string | null; email: string };
@@ -257,14 +257,14 @@ export function ShopForm({
         />
       </div>
 
-      <div className="border-t border-ink/20 pt-6">
+      <div className="border-t border-ink/5 pt-6">
         <span className="text-xs font-semibold tracking-wide text-ink-soft uppercase">
           Immagine di copertina
         </span>
         <div className="mt-2 flex items-center gap-4">
           {coverImage && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={coverImage} alt="" className="h-20 w-32 rounded border border-ink/20 object-cover" />
+            <img src={coverImage} alt="" className="h-20 w-32 rounded border border-ink/5 object-cover" />
           )}
           <ImageUploader
             label={coverImage ? "Sostituisci copertina" : "Carica copertina"}
@@ -283,7 +283,7 @@ export function ShopForm({
           {images.map((image, index) => (
             <div key={image.url + index} className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={image.url} alt={image.alt} className="aspect-square w-full rounded border border-ink/20 object-cover" />
+              <img src={image.url} alt={image.alt} className="aspect-square w-full rounded border border-ink/5 object-cover" />
               <button
                 type="button"
                 onClick={() => removeGalleryImage(index)}

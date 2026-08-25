@@ -26,7 +26,7 @@ export default async function NewCommunityPostPage() {
         lavoretto. Prima di comparire pubblicamente, ogni annuncio viene controllato da un
         amministratore.
       </p>
-      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+      <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
         <CommunityPostForm />
       </div>
     </div>

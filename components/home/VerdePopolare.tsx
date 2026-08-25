@@ -28,8 +28,11 @@ export function VerdePopolare() {
       </h2>
       <div className="mt-10 grid gap-10 sm:grid-cols-3">
         {blocks.map((block) => (
-          <div key={block.title} className="group">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-ink/20 shadow-sm">
+          <div
+            key={block.title}
+            className="group overflow-hidden rounded-xl border border-ink/10 bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-xl"
+          >
+            <div className="relative aspect-[4/3] w-full overflow-hidden">
               <Image
                 src={block.image}
                 alt={block.title}
@@ -38,10 +41,12 @@ export function VerdePopolare() {
               />
               <div className="absolute inset-x-0 bottom-0 h-1 bg-sage" />
             </div>
-            <h3 className="mt-4 text-xl font-bold text-ink transition-colors duration-200 group-hover:text-sage-dark wide:text-2xl">
-              {block.title}
-            </h3>
-            <p className="mt-2 text-base leading-relaxed text-ink-soft wide:text-lg">{block.text}</p>
+            <div className="p-5">
+              <h3 className="text-xl font-bold text-ink transition-colors duration-200 group-hover:text-sage-dark wide:text-2xl">
+                {block.title}
+              </h3>
+              <p className="mt-2 text-base leading-relaxed text-ink-soft wide:text-lg">{block.text}</p>
+            </div>
           </div>
         ))}
       </div>

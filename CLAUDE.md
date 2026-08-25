@@ -619,6 +619,37 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       `bg-cream` non pertinenti (label upload immagine stile bottone, pannello menu mobile,
       placeholder cover in `BachecaHighlight`, `UserQrCode`). Ora i campi si distinguono solo per il
       bordo, non per lo sfondo. Verificato visivamente con screenshot locali
+- [x] **Stile "elevated card" su tutte le card del sito pubblico (2026-08-21)**: bordo più tenue
+      (`border-ink/20` → `border-ink/10`, hover `/30` → `/20` dove presente), radius maggiore
+      (`rounded` → `rounded-xl`), ombra a riposo aggiunta (prima c'era solo `hover:shadow-lg`/
+      `shadow-sm` su alcune, ora `shadow-md` di base ovunque, `hover:shadow-xl` sulle card
+      cliccabili). Applicato a: card cliccabili (`PostCard`, `CommunityPostCard`, `ShopCard`,
+      i blocchi `BachecaHighlight`/`CommunityHighlight` in home), `MemberCard` (Iscritti),
+      `ContactCard` (riquadri contatto in `/botteghe/[slug]`), e tutte le card bianche dei moduli
+      di data-entry aggiunte nella sessione precedente (`/contatti`, `/community/account`,
+      `/community/new`, `/community/bottega`, `/community/register`, `/community/login`,
+      `/community/forgot-password`, `/community/reset-password`, `/community/verify-email`) —
+      stessa stringa di classe duplicata in questi file, aggiornata con replace mirati. Non
+      toccati: cornici foto decorative dentro il corpo degli articoli (Il Borgo/Chi siamo/Bacheca),
+      la bolla dei singoli commenti su `/community/[slug]` (sfondo `cream-deep`, non `bg-white`,
+      trattata come marcatore di contenuto annidato e non come card a sé), `UserQrCode` (usa
+      `shadow-inner` deliberatamente per un effetto "incassato", non un'elevazione). Verificato
+      visivamente con screenshot locali di home, Bacheca, Iscritti, Botteghe (listino e dettaglio),
+      Contatti. **Estesa subito dopo** ai 3 blocchi "Verde popolare" in home
+      (`components/home/VerdePopolare.tsx`): prima erano solo una foto incorniciata (`rounded
+      border shadow-sm`) con titolo/testo fuori dalla cornice, sotto — non una vera card. Ristrutturato
+      in una card unica (immagine edge-to-edge in alto, testo in un `div` con padding sotto, stesso
+      pattern di `PostCard`), stessa formula bordo/radius/elevazione delle altre card, mantenuta la
+      barra `bg-sage` in fondo alla foto. Verificato visivamente con screenshot locale
+- [x] **Bordo `border-ink/20` ammorbidito al 5% nel sito pubblico (2026-08-21)**: gli usi "piatti"
+      (non `hover:`) di `border-ink/20` rimasti dopo il giro sulle card — separatori tra header e
+      corpo pagina (`border-b`), divisori `border-t`, cornici foto negli articoli, la bolla dei
+      commenti su `/community/[slug]`, il pannello menu mobile in `Header.tsx` — passati a
+      `border-ink/5`. Sostituzione mirata via sed con placeholder temporaneo per non toccare gli
+      `hover:border-ink/20` introdotti nel punto precedente (bordo di hover delle card, resta
+      invariato). Non toccato l'admin (non usava `border-ink/20`). Verificato con `grep` che non
+      restasse nessun `border-ink/20` piatto e che tutti gli `hover:border-ink/20` fossero intatti,
+      più screenshot locali (Bacheca, Contatti)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

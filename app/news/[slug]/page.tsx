@@ -70,7 +70,7 @@ export default async function NewsDetailPage({
           <img
             src={cloudinaryUrl(post.coverImage, { width: 1200, crop: "limit" })}
             alt={post.title}
-            className="mb-8 w-full rounded border border-ink/20 object-cover shadow-sm"
+            className="mb-8 w-full rounded border border-ink/5 object-cover shadow-sm"
           />
         )}
 
@@ -103,7 +103,7 @@ export default async function NewsDetailPage({
                   key={image.id}
                   src={image.url}
                   alt={image.alt ?? post.title}
-                  className="aspect-square w-full rounded border border-ink/20 object-cover"
+                  className="aspect-square w-full rounded border border-ink/5 object-cover"
                 />
               ))}
             </div>

@@ -27,7 +27,7 @@ export default async function BotteghePage({
 
   return (
     <div>
-      <div className="border-b border-ink/20 bg-cream-deep px-4 py-16">
+      <div className="border-b border-ink/5 bg-cream-deep px-4 py-16">
         <div className="mx-auto max-w-5xl wide:max-w-6xl">
           <p className="eyebrow text-brick wide:text-sm">Tra vicini</p>
           <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">

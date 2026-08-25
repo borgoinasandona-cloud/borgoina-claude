@@ -50,10 +50,10 @@ export default async function MyShopPage() {
             )}
           </div>
 
-          <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+          <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
             <ShopForm shop={shop} />
 
-            <form action={deleteMyShopAction} className="mt-8 border-t border-ink/20 pt-6">
+            <form action={deleteMyShopAction} className="mt-8 border-t border-ink/5 pt-6">
               <button
                 type="submit"
                 className="text-sm font-semibold text-ink-soft transition-colors hover:text-brick-dark"
@@ -73,7 +73,7 @@ export default async function MyShopPage() {
             </Link>
             .
           </p>
-          <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+          <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
             <ShopForm />
           </div>
         </>
