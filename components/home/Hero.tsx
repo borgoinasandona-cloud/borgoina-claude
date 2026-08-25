@@ -23,7 +23,7 @@ export function Hero() {
             San Donà
           </h1>
           <p className="mt-5 max-w-xl text-lg text-cream/85 sm:text-xl wide:max-w-2xl wide:text-2xl">
-            Il quartiere si racconta: notizie, iniziative e vita di comunità del Borgo INA.
+            Da quartiere a ecosistema civico: notizie, iniziative e vita di comunità diffusa del Borgo INA.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link

@@ -34,7 +34,7 @@ export default async function BotteghePage({
             Botteghe
           </h1>
           <p className="mt-3 max-w-2xl text-lg text-ink-soft wide:text-xl">
-            Le attività e i servizi degli iscritti che vivono nel Borgo.
+            Le attività e i servizi degli amici che orbitano nel Borgo.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link
