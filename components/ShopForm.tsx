@@ -11,7 +11,7 @@ type GalleryImage = { url: string; alt: string; order: number };
 const initialState: ShopFormState = { status: "idle" };
 
 const inputClass =
-  "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
+  "mt-1 w-full rounded border border-ink/15 bg-white px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <p className="eyebrow border-t border-ink/20 pt-6 text-brick">{children}</p>;

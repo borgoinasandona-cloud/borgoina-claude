@@ -17,22 +17,22 @@ export default function CommunityRegisterPage() {
         gli annunci degli altri iscritti.
       </p>
 
-      <div className="mt-5">
+      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
         <GoogleSignInButton />
-      </div>
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
-        <span className="h-px flex-1 bg-ink/10" />
-        oppure
-        <span className="h-px flex-1 bg-ink/10" />
-      </div>
+        <div className="my-5 flex items-center gap-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          <span className="h-px flex-1 bg-ink/10" />
+          oppure
+          <span className="h-px flex-1 bg-ink/10" />
+        </div>
 
-      <RegisterForm />
-      <p className="mt-6 text-sm text-ink-soft">
-        Hai già un account?{" "}
-        <Link href="/community/login" className="font-semibold text-brick hover:text-brick-dark">
-          Accedi
-        </Link>
-      </p>
+        <RegisterForm />
+        <p className="mt-6 text-sm text-ink-soft">
+          Hai già un account?{" "}
+          <Link href="/community/login" className="font-semibold text-brick hover:text-brick-dark">
+            Accedi
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

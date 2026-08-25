@@ -9,7 +9,7 @@ import { initials } from "@/lib/initials";
 const initialState: UpdateAccountState = { status: "idle" };
 
 const inputClass =
-  "mt-1 w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
+  "mt-1 w-full rounded border border-ink/15 bg-white px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
 export function AccountForm({
   name,

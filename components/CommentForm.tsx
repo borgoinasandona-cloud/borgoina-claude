@@ -16,7 +16,7 @@ export function CommentForm({ slug }: { slug: string }) {
         rows={3}
         required
         placeholder="Scrivi un commento…"
-        className="w-full rounded border border-ink/15 bg-cream px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none"
+        className="w-full rounded border border-ink/15 bg-white px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none"
       />
       <button
         type="submit"

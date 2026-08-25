@@ -599,6 +599,26 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       Verificato visivamente con screenshot locali (home, Bacheca, login admin) e leggendo
       `getComputedStyle(document.body).backgroundColor` via Playwright: `rgb(255, 248, 244)` su
       pagine pubbliche, area admin resta visivamente bianca nonostante il body sotto sia cream
+- [x] **Sfondo bianco per i moduli di data-entry nel sito pubblico (2026-08-21)**: conseguenza
+      diretta del punto sopra — con lo sfondo pagina ora cream, i form isolati (non già dentro una
+      card, a differenza di `/contatti` e di `/community/account`) risultavano "nudi" contro il
+      body. Aggiunto un wrapper `rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8`
+      (stessa classe già usata in `/community/account` e `/contatti`) intorno al form in:
+      `/community/new`, `/community/bottega` (entrambi gli stati, bottega esistente/da creare),
+      `/community/register`, `/community/login`, `/community/forgot-password`,
+      `/community/reset-password` e `/community/verify-email` (in questi ultimi due, in entrambi
+      gli stati — link valido/non valido). Non toccati: form inline dentro pagine di contenuto
+      (es. il box commenti su `/community/[slug]`) — restano nel loro contesto, non sono "moduli"
+      a sé stanti; `/contatti` e `/community/account`, che avevano già una card bianca. Verificato
+      visivamente con screenshot locali di tutte le pagine elencate (incluse `/community/new` e
+      `/community/bottega` da loggato). **Seguito subito dopo**: i singoli campi (`input`/`select`/
+      `textarea`) di tutto il sito pubblico usavano `bg-cream` — quasi invisibile contro le nuove
+      card bianche. Cambiata a `bg-white` la classe `inputClass` condivisa (10 file: `AccountForm`,
+      `CommentForm`, `CommunityLoginForm`, `CommunityPostForm`, `ContactForm`, `ForgotPasswordForm`,
+      `RegisterForm`, `ResendVerificationForm`, `ResetPasswordForm`, `ShopForm`) — non toccati i
+      `bg-cream` non pertinenti (label upload immagine stile bottone, pannello menu mobile,
+      placeholder cover in `BachecaHighlight`, `UserQrCode`). Ora i campi si distinguono solo per il
+      bordo, non per lo sfondo. Verificato visivamente con screenshot locali
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

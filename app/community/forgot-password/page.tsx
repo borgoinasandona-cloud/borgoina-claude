@@ -17,13 +17,15 @@ export default function ForgotPasswordPage() {
         Inserisci l&apos;email del tuo account: ti mandiamo un link per scegliere una nuova password.
       </p>
 
-      <ForgotPasswordForm />
+      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+        <ForgotPasswordForm />
 
-      <p className="mt-6 text-sm text-ink-soft">
-        <Link href="/community/login" className="font-semibold text-brick hover:text-brick-dark">
-          Torna al login
-        </Link>
-      </p>
+        <p className="mt-6 text-sm text-ink-soft">
+          <Link href="/community/login" className="font-semibold text-brick hover:text-brick-dark">
+            Torna al login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

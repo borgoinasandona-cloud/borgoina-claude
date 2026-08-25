@@ -24,23 +24,27 @@ export default async function ResetPasswordPage({
           <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink">
             Scegli una nuova password
           </h1>
-          <ResetPasswordForm token={token} />
+          <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+            <ResetPasswordForm token={token} />
+          </div>
         </>
       ) : (
         <>
           <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink">
             Link non valido
           </h1>
-          <p className="mt-3 text-sm text-ink-soft">
-            Questo link di reset non è valido o è scaduto (i link durano 1 ora). Puoi richiederne
-            uno nuovo.
-          </p>
-          <Link
-            href="/community/forgot-password"
-            className="mt-5 inline-block rounded bg-brick px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-brick-dark"
-          >
-            Richiedi un nuovo link
-          </Link>
+          <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
+            <p className="text-sm text-ink-soft">
+              Questo link di reset non è valido o è scaduto (i link durano 1 ora). Puoi richiederne
+              uno nuovo.
+            </p>
+            <Link
+              href="/community/forgot-password"
+              className="mt-5 inline-block rounded bg-brick px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-brick-dark"
+            >
+              Richiedi un nuovo link
+            </Link>
+          </div>
         </>
       )}
     </div>

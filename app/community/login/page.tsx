@@ -13,27 +13,27 @@ export default function CommunityLoginPage() {
       <p className="eyebrow text-brick wide:text-sm">Community</p>
       <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink">Accedi</h1>
 
-      <div className="mt-5">
+      <div className="mt-6 rounded border border-ink/20 bg-white p-6 shadow-sm md:p-8">
         <GoogleSignInButton />
-      </div>
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
-        <span className="h-px flex-1 bg-ink/10" />
-        oppure
-        <span className="h-px flex-1 bg-ink/10" />
-      </div>
+        <div className="my-5 flex items-center gap-3 text-xs font-semibold tracking-wide text-ink-soft uppercase">
+          <span className="h-px flex-1 bg-ink/10" />
+          oppure
+          <span className="h-px flex-1 bg-ink/10" />
+        </div>
 
-      <CommunityLoginForm />
-      <p className="mt-4 text-sm text-ink-soft">
-        <Link href="/community/forgot-password" className="font-semibold text-brick hover:text-brick-dark">
-          Password dimenticata?
-        </Link>
-      </p>
-      <p className="mt-6 text-sm text-ink-soft">
-        Non hai ancora un account?{" "}
-        <Link href="/community/register" className="font-semibold text-brick hover:text-brick-dark">
-          Registrati
-        </Link>
-      </p>
+        <CommunityLoginForm />
+        <p className="mt-4 text-sm text-ink-soft">
+          <Link href="/community/forgot-password" className="font-semibold text-brick hover:text-brick-dark">
+            Password dimenticata?
+          </Link>
+        </p>
+        <p className="mt-6 text-sm text-ink-soft">
+          Non hai ancora un account?{" "}
+          <Link href="/community/register" className="font-semibold text-brick hover:text-brick-dark">
+            Registrati
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
