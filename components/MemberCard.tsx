@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { initials } from "@/lib/initials";
 
 type Member = {
@@ -33,9 +35,10 @@ export function MemberCard({ member }: { member: Member }) {
       {hasPublicShop && (
         <Link
           href={`/botteghe/${member.shop!.slug}`}
-          className="text-sm font-semibold text-brick hover:text-brick-dark"
+          className="inline-flex items-center gap-1 text-sm font-semibold text-brick hover:text-brick-dark"
         >
-          Vedi la sua bottega →
+          Vedi la sua bottega
+          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
         </Link>
       )}
     </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTag, faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faTag, faCamera, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopByAuthorId } from "@/lib/shops";
 import { getTokensForShopAdmin } from "@/lib/discounts";
@@ -47,9 +47,10 @@ export default async function MyShopPage() {
             ) : (
               <Link
                 href={`/botteghe/${shop.slug}`}
-                className="text-sm font-semibold text-brick hover:text-brick-dark"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-brick hover:text-brick-dark"
               >
-                Vedi la pagina pubblica →
+                Vedi la pagina pubblica
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
               </Link>
             )}
           </div>

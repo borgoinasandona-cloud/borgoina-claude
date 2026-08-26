@@ -826,6 +826,58 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         riscatto su 20) e un token disattivato (30%) vede entrambi elencati correttamente col
         conteggio giusto e il link a `/scan`; un iscritto con bottega ma senza alcun token non vede
         il riquadro né il link. Dati di test ripuliti dal DB di produzione dopo la verifica
+- [x] **Testi con "token" e terza card home sostituita (2026-08-26)**: aggiunto il termine "token"
+      (accanto a "sconto") nei testi di `/come-funzionano-gli-sconti`, hero inclusa (eyebrow "Guida"
+      → "Guida ai token sconto", troppo corta da sola). In home, la terza card di
+      `components/home/VerdePopolare.tsx` ("Vita di vicinato", puramente illustrativa, nessun link)
+      è stata sostituita con una card cliccabile verso `/come-funzionano-gli-sconti` — stessa foto
+      `comefunziona.jpg` già usata per l'hero della guida, accento `bg-brick` invece di `bg-sage`
+      per distinguerla dalle altre due (tema "verde", non pertinente qui). Le prime due card
+      restano invariate, il titolo di sezione "Verde popolare" non è stato cambiato (richiesto solo
+      di sostituire la terza card, non la sezione). **Aggiunto subito dopo un CTA testuale** ("Scopri
+      come funziona →", colore brick, freccia che si sposta in hover) in fondo alla terza card, per
+      differenziarla dalle prime due che restano blocchi puramente illustrativi senza CTA. **Le
+      prime due card mantengono il riquadro bianco/bordo/ombra** (un primo tentativo di toglierlo
+      del tutto è stato scartato), ma senza più alcun effetto hover (`group`, `hover:-translate-y-1`,
+      `hover:border-ink/20`, `hover:shadow-xl`, zoom immagine e cambio colore titolo in hover
+      rimossi) — non essendo cliccabili, non devono più dare l'impressione di esserlo. La terza
+      card (link) resta l'unica con `group`/hover attivi. Verificato anche misurando la bounding
+      box della prima card prima/dopo un hover simulato: identica, nessun sollevamento residuo.
+      **Testi delle prime due card allungati** per bilanciare l'altezza con la terza (più alta per
+      via della riga CTA in più) — verificato misurando l'altezza reale delle tre card via
+      Playwright: 418px tutte e tre, identiche
+- [x] **Frecce delle CTA sostituite con l'icona FontAwesome `faArrowRight` (2026-08-26)**: prima
+      erano il carattere unicode "→" incorporato nel testo del link — sostituito ovunque un link/
+      bottone sia una call to action con freccia, in 8 punti: `components/home/VerdePopolare.tsx`
+      (card token), `components/home/BachecaPreview.tsx` ("Vedi tutte"), `components/MemberCard.tsx`
+      ("Vedi la sua bottega"), `app/botteghe/page.tsx` ("La mia bottega"),
+      `app/botteghe/[slug]/page.tsx` ("Apri il profilo" Instagram), `app/community/page.tsx`
+      ("Il mio account"), `app/community/bottega/page.tsx` ("Vedi la pagina pubblica"),
+      `app/community/account/page.tsx` (i due bottoni "Crea un annuncio"/"Gestisci la tua bottega").
+      Ogni link diventato `inline-flex items-center gap-1` (o `gap-1.5` dov'era già così) con
+      `<FontAwesomeIcon icon={faArrowRight} />` come figlio separato, non più testo con `→` in coda.
+      **Non toccati deliberatamente** i due usi di "→" che non sono CTA ma indicano un percorso di
+      navigazione dentro una frase (`Il mio account → Tessera digitale`, in
+      `app/come-funzionano-gli-sconti/page.tsx` e nel riquadro sconti di `/botteghe/[slug]`) — l'icona
+      lì stonerebbe (richiesta iniziale specifica su "arrow-right", i "←" dei link "Torna a…" sono
+      stati convertiti subito dopo — vedi voce successiva). Verificato con `tsc`/`eslint` puliti,
+      smoke test di tutte le pagine coinvolte (200, nessun errore JS) e screenshot su home
+      (Bacheca/Verde popolare) e una card socio con bottega collegata
+- [x] **Frecce "Torna a…" sostituite con `faArrowLeft` (2026-08-26)**: stesso trattamento delle CTA
+      in avanti, applicato ai 3 back-link del sito pubblico (`app/botteghe/[slug]/page.tsx`,
+      `app/community/[slug]/page.tsx`, `app/news/[slug]/page.tsx`). **Non toccati i 3 back-link
+      analoghi nell'admin** (`/admin/botteghe/[id]/tokens`, `/edit`, `/new`): l'admin non ha mai
+      importato FontAwesome, resta deliberatamente "grigio neutro" e distinto dal sito brandizzato
+      (vedi note precedenti su `ShopForm` in admin) — introdurre icone lì sarebbe fuori dal pattern
+      esistente e non richiesto. Verificato con `tsc`/`eslint` puliti e screenshot sui back-link di
+      Bacheca e Botteghe
+- [x] **"+" sostituito con `faPlus` nei bottoni CTA del sito pubblico (2026-08-26)**: i due bottoni
+      brick pieni "+ Crea la tua pagina" (`app/botteghe/page.tsx`) e "+ Nuovo annuncio"
+      (`app/community/page.tsx`) ora usano `<FontAwesomeIcon icon={faPlus} />` al posto del
+      carattere `+` letterale. **Non toccati** "+ Nuova bottega" in
+      `app/admin/(dashboard)/botteghe/page.tsx` e "+ Nuovo token" in `components/TokenForm.tsx`,
+      stesso motivo dei back-link sopra: sono pulsanti dell'area admin, mai stata toccata dal
+      lavoro sulle icone FontAwesome fatto in questa sessione
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

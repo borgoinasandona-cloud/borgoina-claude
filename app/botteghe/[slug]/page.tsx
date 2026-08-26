@@ -4,7 +4,14 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faImage, faClock } from "@fortawesome/free-regular-svg-icons";
-import { faPhone, faGlobe, faLocationDot, faTag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPhone,
+  faGlobe,
+  faLocationDot,
+  faTag,
+  faArrowRight,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
@@ -94,7 +101,8 @@ export default async function ShopDetailPage({
               href="/botteghe"
               className="inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
             >
-              ← Torna a Botteghe
+              <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="h-3 w-3" />
+              Torna a Botteghe
             </Link>
 
             {shop.visibility !== "PUBLIC" && (isAuthor || isAdmin) && (
@@ -251,8 +259,14 @@ export default async function ShopDetailPage({
               )}
               {shop.instagram && (
                 <ContactCard icon={faInstagram} label="Instagram">
-                  <a href={shop.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
-                    Apri il profilo →
+                  <a
+                    href={shop.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 hover:text-brick"
+                  >
+                    Apri il profilo
+                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
                   </a>
                 </ContactCard>
               )}

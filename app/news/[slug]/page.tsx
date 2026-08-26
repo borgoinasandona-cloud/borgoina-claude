@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { getPublishedPostBySlug } from "@/lib/posts";
 import { HtmlContent } from "@/components/HtmlContent";
 import { cloudinaryUrl } from "@/lib/cloudinary";
@@ -51,7 +52,8 @@ export default async function NewsDetailPage({
             href="/news"
             className="mb-6 inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
           >
-            ← Torna alla Bacheca
+            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="h-3 w-3" />
+            Torna alla Bacheca
           </Link>
 
           <div className="flex flex-wrap gap-1.5">

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { PostCard } from "@/components/PostCard";
 import type { Category, Post } from "@prisma/client";
 
@@ -16,9 +18,10 @@ export function BachecaPreview({ posts }: { posts: PreviewPost[] }) {
         </div>
         <Link
           href="/news"
-          className="text-base font-bold text-brick transition-colors hover:text-brick-dark wide:text-lg"
+          className="inline-flex items-center gap-1.5 text-base font-bold text-brick transition-colors hover:text-brick-dark wide:text-lg"
         >
-          Vedi tutte →
+          Vedi tutte
+          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3.5 w-3.5" />
         </Link>
       </div>
       {posts.length > 0 ? (

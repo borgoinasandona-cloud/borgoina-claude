@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "@/lib/auth";
 import { getPublicShops, shopCategoryLabels } from "@/lib/shops";
 import { ShopCard } from "@/components/ShopCard";
@@ -41,14 +43,16 @@ export default async function BotteghePage({
               href={session?.user ? "/community/bottega" : "/community/login"}
               className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
             >
-              + Crea la tua pagina
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="h-3 w-3" />
+              Crea la tua pagina
             </Link>
             {session?.user && (
               <Link
                 href="/community/bottega"
-                className="text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
               >
-                La mia bottega →
+                La mia bottega
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
               </Link>
             )}
           </div>

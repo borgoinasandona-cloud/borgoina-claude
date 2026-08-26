@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "@/lib/auth";
 import { getPublishedCommunityPosts, communityPostTypeLabels } from "@/lib/community";
 import { CommunityPostCard } from "@/components/CommunityPostCard";
@@ -39,14 +41,16 @@ export default async function CommunityPage({
               href={session?.user ? "/community/new" : "/community/login"}
               className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
             >
-              + Nuovo annuncio
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="h-3 w-3" />
+              Nuovo annuncio
             </Link>
             {session?.user && (
               <Link
                 href="/community/account"
-                className="text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
               >
-                Il mio account →
+                Il mio account
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
               </Link>
             )}
           </div>
