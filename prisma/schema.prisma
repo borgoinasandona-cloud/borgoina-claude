@@ -51,19 +51,20 @@ enum ShopCategory {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
+  id             String            @id @default(cuid())
+  email          String            @unique
   emailVerified  DateTime? // richiesto da @auth/prisma-adapter per gli utenti OAuth (Google)
   image          String? // avatar da provider OAuth, richiesto da @auth/prisma-adapter
   password       String? // hash bcrypt, null se solo OAuth
   name           String?
-  role           Role            @default(MEMBER)
+  role           Role              @default(MEMBER)
   accounts       Account[]
   sessions       Session[]
   communityPosts CommunityPost[]
   comments       Comment[]
   shop           Shop?
-  createdAt      DateTime        @default(now())
+  redemptions    TokenRedemption[]
+  createdAt      DateTime          @default(now())
 }
 
 // Account / Session / VerificationToken: modelli standard richiesti da Auth.js
@@ -171,33 +172,59 @@ model Comment {
 // più righe con authorId NULL sono ammesse da Postgres, il vincolo "una bottega per utente" si
 // applica solo a quelle effettivamente collegate.
 model Shop {
-  id          String       @id @default(cuid())
-  slug        String       @unique
-  name        String
-  category    ShopCategory
+  id       String       @id @default(cuid())
+  slug     String       @unique
+  name     String
+  category ShopCategory
 
   // Sezione "Chi siamo"
   slogan      String? // frase corta, mostrata come tagline sotto il nome
-  description String       @db.Text // "descrizione e servizi" — testo semplice, come CommunityPost.content (non HTML)
-  history     String?      @db.Text // "da quanti anni esiste / storia"
-  whyChooseUs String?      @db.Text // "perché sceglierci"
+  description String  @db.Text // "descrizione e servizi" — testo semplice, come CommunityPost.content (non HTML)
+  history     String? @db.Text // "da quanti anni esiste / storia"
+  whyChooseUs String? @db.Text // "perché sceglierci"
 
   // Sezione "Contatti"
-  address     String?
-  phone       String? // anche per il pulsante CTA WhatsApp in pubblico, non solo la chiamata
-  email       String?
-  website     String?
-  instagram   String? // canale Instagram della bottega, distinto da siteConfig.instagramUrl (del comitato)
-  hours       String?      @db.Text // "orari", testo libero multi-riga
+  address   String?
+  phone     String? // anche per il pulsante CTA WhatsApp in pubblico, non solo la chiamata
+  email     String?
+  website   String?
+  instagram String? // canale Instagram della bottega, distinto da siteConfig.instagramUrl (del comitato)
+  hours     String? @db.Text // "orari", testo libero multi-riga
 
-  coverImage  String? // Cloudinary secure_url, come CommunityPost.coverImage
-  ownerName   String? // nome del gestore inserito dall'admin, usato finché non c'è un account collegato
-  authorId    String?      @unique // 1:1 opzionale — un utente ha al massimo una bottega
-  author      User?        @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  images      ShopImage[]
-  visibility  Visibility   @default(PUBLIC)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  coverImage     String? // Cloudinary secure_url, come CommunityPost.coverImage
+  ownerName      String? // nome del gestore inserito dall'admin, usato finché non c'è un account collegato
+  authorId       String?         @unique // 1:1 opzionale — un utente ha al massimo una bottega
+  author         User?           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  images         ShopImage[]
+  discountTokens DiscountToken[]
+  visibility     Visibility      @default(PUBLIC)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// Fase 6 — token sconto, riscattati dal gestore della bottega scansionando il QR identificativo
+// dell'iscritto (lib/qr.ts, Fase 5). totalIssued è deciso dall'admin in base all'accordo con
+// l'attività; nessun limite per-utente sui riscatti, solo sul totale disponibile (vedi
+// lib/discounts.ts → redeemToken(), che usa un row lock esplicito invece di un vincolo @@unique
+// per garantire il limite sotto scansioni concorrenti).
+model DiscountToken {
+  id          String            @id @default(cuid())
+  shopId      String
+  shop        Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  discountPct Int // 10, 20, 30
+  totalIssued Int // deciso dall'admin in base all'accordo
+  redemptions TokenRedemption[]
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+}
+
+model TokenRedemption {
+  id      String        @id @default(cuid())
+  tokenId String
+  token   DiscountToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usedAt  DateTime      @default(now())
 }
 
 model ShopImage {

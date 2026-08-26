@@ -45,15 +45,18 @@ export default async function AdminShopsPage() {
                 >
                   {VISIBILITY_LABELS[shop.visibility]}
                 </span>
+                {!shop.author && (
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                    Non reclamata
+                  </span>
+                )}
               </p>
               <p className="text-xs text-neutral-500">
                 /{shop.slug} · {shopCategoryLabels[shop.category]} ·{" "}
                 {shop.author ? (
                   (shop.author.name ?? shop.author.email)
                 ) : (
-                  <span className="text-amber-700">
-                    {shop.ownerName ?? "senza nome"} (nessun account collegato)
-                  </span>
+                  <span className="text-amber-700">{shop.ownerName ?? "senza nome"}</span>
                 )}{" "}
                 · {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(shop.createdAt)}
               </p>
@@ -68,6 +71,9 @@ export default async function AdminShopsPage() {
               </Link>
               <Link href={`/admin/botteghe/${shop.id}/edit`} className="text-sm text-green-700 hover:underline">
                 Modifica
+              </Link>
+              <Link href={`/admin/botteghe/${shop.id}/tokens`} className="text-sm text-green-700 hover:underline">
+                Sconti
               </Link>
               {shop.visibility === "PUBLIC" ? (
                 <form action={hideShopAction.bind(null, shop.id)}>

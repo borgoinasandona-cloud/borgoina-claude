@@ -107,6 +107,31 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   nulla (nessuna route di scansione/controllo) — solo la generazione, come richiesto. Dettagli e
   scelte di scope: vedi CLAUDE.md
 
+### Fase 6 — Token sconto (non prevista nel planning originale, aggiunta il 2026-08-26)
+- Chiude il cerchio aperto dalla Fase 5: il QR identificativo ora serve a qualcosa. Un gestore di
+  `Shop` può scansionare il QR di un socio e assegnargli uno sconto concordato con l'admin
+  (percentuale + quantità totale disponibile, decisi caso per caso in base all'accordo commerciale)
+- Nessun modello `Business` separato e nessun ruolo `BUSINESS`: tutto si aggancia a `Shop`/`User`
+  già esistenti (un utente "è un'attività" se e solo se ha una `Shop` collegata, come già per la
+  Fase 4)
+- Due nuovi modelli: `DiscountToken` (uno sconto definito dall'admin per una bottega, con quantità
+  totale e stato attivo/disattivato) e `TokenRedemption` (un riscatto effettivo, socio + token +
+  timestamp). **Nessun limite di riscatti per singolo socio** su uno stesso token, per scelta
+  esplicita — solo la quantità totale (`totalIssued`) è vincolante, garantita con un row lock
+  (`SELECT ... FOR UPDATE`) invece che con un vincolo `@@unique`, perché un semplice recount dentro
+  una transazione non basterebbe sotto scansioni concorrenti (isolamento di default Postgres,
+  READ COMMITTED). Dettagli: vedi CLAUDE.md
+- `lib/qr.ts` si arricchisce di `verifySignedUserId()` (verifica della firma con
+  `crypto.timingSafeEqual`, a tempo costante) — la generazione (Fase 5) resta invariata
+- Solo l'ADMIN crea/gestisce i `DiscountToken` di una bottega, da `/admin/botteghe/[id]/tokens`
+  (nessuna pagina self-service per le attività sulla definizione degli sconti)
+- Il gestore della bottega riscatta i token per i propri clienti da `/scan` (lettore camera,
+  libreria `html5-qrcode`): accessibile solo a chi ha una `Shop` collegata al proprio account,
+  redirect a `/community` altrimenti — nessuna pagina di scansione per l'admin o per bottege non
+  reclamate (per definizione non hanno un `authorId`, quindi nessuno può autenticarsi su di esse)
+- Badge "Non reclamata" in `/admin/botteghe` per le bottege senza `authorId` collegato, per
+  individuare a colpo d'occhio quali attività non possono ancora usare `/scan`
+
 ## Data model (bozza Prisma)
 
 ```prisma

@@ -686,6 +686,72 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         `og:image`/`twitter:image`) su home, listini, un articolo Bacheca reale, un annuncio
         community reale e una bottega reale — URL immagine verificati anche con una richiesta HTTP
         diretta (200 sia sul fallback statico sia su un URL Cloudinary trasformato)
+- [x] **Fase 6 — Token sconto via QR (2026-08-26)**: chiude il cerchio aperto dalla Fase 5 (QR
+      identificativo, generazione soltanto) — un gestore di bottega può ora scansionare il QR di un
+      socio e assegnargli uno sconto concordato con l'admin. Nessun modello `Business`/ruolo
+      `BUSINESS` nuovo: aggancio a `Shop`/`User` esistenti, come esplicitamente richiesto.
+      **Attenzione al nome**: "Fase 2" nei documenti di progetto indica già una feature diversa e
+      ancora aperta ("contenuti riservati", vedi la voce subito sotto) — questa è la Fase 6, dopo la
+      Fase 5 di cui è il seguito naturale
+      - Schema: due modelli nuovi, `DiscountToken` (shopId, discountPct, totalIssued, active) e
+        `TokenRedemption` (tokenId, userId, usedAt) — migrazione `20260826085830_add_discount_tokens`.
+        Nessun vincolo `@@unique` su `TokenRedemption`: **scelta esplicita**, un socio può riscattare
+        più volte lo stesso token nella stessa bottega, l'unico limite reale è `totalIssued` (il
+        totale, non per-utente)
+      - **Race condition senza rete di sicurezza a DB**: senza un `@@unique` a bloccare i doppi
+        inserimenti, il limite `totalIssued` deve essere garantito interamente in app. Un semplice
+        recount (`count() < totalIssued` poi `create`) dentro una `$transaction` **non basta** sotto
+        l'isolamento di default di Postgres (READ COMMITTED): due riscatti concorrenti sullo stesso
+        token possono leggere lo stesso conteggio stantio e superare entrambi il limite. Risolto in
+        `lib/discounts.ts` → `redeemToken()` con un row lock esplicito (`SELECT ... FOR UPDATE` via
+        `tx.$queryRaw`, l'unico modo per ottenere un lock di riga con Prisma) sulla riga
+        `DiscountToken` prima del conteggio: una seconda `redeemToken()` sullo stesso `tokenId` si
+        mette in coda invece di leggere un conteggio non aggiornato. **Verificato con un test di
+        concorrenza reale** (non solo "il codice non lancia errori"): `Promise.allSettled` di due
+        `redeemToken()` simultanee su un token con `totalIssued: 1` → sempre esattamente 1 successo
+        e 1 fallimento, mai 2 successi, mai 0
+      - `lib/qr.ts` → aggiunta `verifySignedUserId(value)`: split `userId.firma`, ricalcola l'HMAC,
+        confronto con `crypto.timingSafeEqual` (non `===`, per non esporre un timing attack sulla
+        firma) — richiede buffer della stessa lunghezza, controllata prima per evitare un'eccezione
+        su firme malformate/troncate invece di un `null` pulito
+      - Admin: `/admin/botteghe/[id]/tokens` (non `/admin/shops/[slug]/tokens` come da bozza
+        iniziale — corretto per seguire la convenzione di routing già in uso per le altre pagine
+        admin botteghe, `[id]` non `[slug]`), lista token + form di creazione (percentuale 1-100,
+        quantità), toggle attivo/disattivato. Riuso di `requireAdmin()` (stesso pattern di
+        `app/admin/(dashboard)/botteghe/actions.ts`). Link "Sconti" aggiunto alla riga di ogni
+        bottega in `/admin/botteghe`
+      - **Badge "Non reclamata"**: in `/admin/botteghe` esisteva già un indicatore testuale ambra
+        per le bottege senza `author` collegato (dalla Fase 4, "nessun account collegato") —
+        aggiunto accanto un vero badge/pill "Non reclamata" (stesso stile dei badge
+        `Pubblico`/`Nascosto` già in quella riga), stesso dato già in query, nessuna nuova query
+      - `/scan` (route top-level, non sotto `/community`): `getShopByAuthorId(session.user.id)`
+        (funzione già esistente in `lib/shops.ts`, riusata) → se `null`, redirect a `/community` —
+        una bottega creata dall'admin ma non ancora reclamata (`authorId: null`) è esclusa
+        strutturalmente, nessun utente può autenticarsi su di essa
+      - `components/ScanClient.tsx` (client): lettura camera con **`html5-qrcode`** (nuova
+        dipendenza — nessuna libreria QR-reader era già presente nel progetto). Flusso: scansione →
+        `verifyAndListTokensAction` (verifica firma + nome socio + token attivi con posti residui) →
+        tap su un token → `redeemTokenAction` → conferma a video con nome socio e percentuale.
+        Riscatto rifiutato solo per "Posti esauriti" (mai un 500 grezzo), può capitare anche se il
+        token risultava ancora disponibile un istante prima nella lista mostrata
+      - **`playwright` rimosso per errore da `npm install html5-qrcode`**: non era mai stato un
+        `devDependency` dichiarato in `package.json` (solo installato ad-hoc in una sessione
+        precedente per i test E2E), quindi un normale `npm install <pkg>` lo ha rimosso come
+        "extraneous" insieme al suo `-core`. Reinstallato con `npm install playwright --no-save`
+        per non introdurlo come dipendenza dichiarata (resta ad-hoc/non versionato, come lo era
+        prima) — **promemoria per il futuro**: qualunque `npm install` di un nuovo pacchetto in
+        questo progetto rischia di far sparire di nuovo `playwright` da `node_modules`, va
+        reinstallato allo stesso modo se serve testare con Playwright dopo
+      - Testato end-to-end: script diretto (`tsx`) contro Prisma/Neon reali per `verifySignedUserId`
+        (round-trip valido, firma alterata rifiutata) e `redeemToken` (capacità rispettata, nessun
+        limite per-utente, shop-mismatch rifiutato, test di concorrenza — vedi sopra); Playwright
+        per la UI: creazione bottega da admin → badge "Non reclamata" → creazione token da
+        `/admin/botteghe/[id]/tokens` → toggle attivo/disattivato; controllo accessi `/scan` (utente
+        senza bottega → redirect `/community`, utente con bottega → resta su `/scan`, container
+        camera e nome bottega presenti). La scansione reale via camera **non è verificabile in
+        automatico** (nessuna camera reale in ambiente headless) — da provare a mano su un device
+        vero dopo il deploy. Dati di test (utenti, bottege, token) ripuliti dal DB di produzione
+        dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

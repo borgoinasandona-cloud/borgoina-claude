@@ -18,6 +18,23 @@ export function signUserId(userId: string) {
   return `${userId}.${sign(userId)}`;
 }
 
+/**
+ * Verifica una stringa "userId.firma" prodotta da signUserId(). Confronto a tempo costante con
+ * crypto.timingSafeEqual per non esporre un timing attack sulla firma (richiede buffer della
+ * stessa lunghezza, controllata prima per evitare che lanci un'eccezione su firme malformate).
+ */
+export function verifySignedUserId(value: string): string | null {
+  const [userId, signature] = value.split(".");
+  if (!userId || !signature) return null;
+
+  const expected = sign(userId);
+  const a = Buffer.from(signature);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+
+  return userId;
+}
+
 /** Data URL (PNG base64) del QR code identificativo di un utente, generato server-side. */
 export function generateUserQrCode(userId: string) {
   return QRCode.toDataURL(signUserId(userId), { margin: 1, width: 240 });

@@ -27,6 +27,7 @@
     "@tiptap/starter-kit": "^3.28.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",
+    "html5-qrcode": "^2.3.8",
     "next": "16.2.10",
     "next-auth": "^5.0.0-beta.31",
     "qrcode": "^1.5.4",
