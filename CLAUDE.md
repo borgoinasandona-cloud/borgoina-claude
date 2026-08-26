@@ -812,6 +812,22 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         posti, 1 riscattato) mostra correttamente "20% di sconto — 9 posti disponibili"; una
         bottega senza alcun token attivo (Musicanova) non mostra la sezione, verificato leggendo il
         testo della pagina renderizzata (non solo uno screenshot)
+- [x] **Blocco sconti in `/community/bottega` (2026-08-26)**: per il gestore di una bottega con
+      almeno un `DiscountToken` (attivo o disattivato — riepilogo completo, non solo quelli
+      attivi), aggiunto un riquadro (stesso stile brick/tag del riquadro sconti in
+      `/botteghe/[slug]`) con un CTA ben in evidenza verso `/scan` e l'elenco di tutti i token della
+      bottega (percentuale, badge "Disattivato" se non attivo, conteggio "N / M riscattati" via
+      `_count.redemptions`). Riusa `getTokensForShopAdmin()` già esistente in `lib/discounts.ts`
+      (nessuna nuova query — stesso nome "ForAdmin" della pagina admin token, ma la funzione non ha
+      alcun controllo di ruolo al suo interno, il gestore la usa per vedere solo la propria
+      bottega). Non renderizzato affatto se la bottega non ha ancora nessun token (nessun riquadro
+      vuoto, nessun link a `/scan` per chi non ha ancora sconti da assegnare)
+      - Testato con Playwright e dati reali: un iscritto con bottega + un token attivo (15%, 1
+        riscatto su 20) e un token disattivato (30%) vede entrambi elencati correttamente col
+        conteggio giusto e il link a `/scan`; un iscritto con bottega ma senza alcun token non vede
+        il riquadro né il link. Dati di test ripuliti dal DB di produzione dopo la verifica
+- [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
+      il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
 Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`
 al momento del seed — da cambiare prima di condividere l'accesso).

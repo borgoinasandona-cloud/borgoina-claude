@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTag, faCamera } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopByAuthorId } from "@/lib/shops";
+import { getTokensForShopAdmin } from "@/lib/discounts";
 import { ShopForm } from "@/components/ShopForm";
 import { deleteMyShopAction } from "./actions";
 
@@ -19,6 +22,7 @@ export default async function MyShopPage() {
   }
 
   const shop = await getShopByAuthorId(session.user.id);
+  const discountTokens = shop ? await getTokensForShopAdmin(shop.id) : [];
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
@@ -49,6 +53,49 @@ export default async function MyShopPage() {
               </Link>
             )}
           </div>
+
+          {discountTokens.length > 0 && (
+            <div className="mt-6 rounded-xl border border-brick/20 bg-brick/5 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
+                    <FontAwesomeIcon icon={faTag} className="h-3.5 w-3.5" aria-hidden="true" />
+                    Sconti attivati
+                  </p>
+                  <p className="mt-1 text-sm text-ink-soft">
+                    Scansiona il QR di un socio per assegnargli uno sconto.
+                  </p>
+                </div>
+                <Link
+                  href="/scan"
+                  className="inline-flex shrink-0 items-center gap-2 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
+                >
+                  <FontAwesomeIcon icon={faCamera} className="h-4 w-4" aria-hidden="true" />
+                  Vai a /scan
+                </Link>
+              </div>
+              <ul className="mt-4 space-y-2">
+                {discountTokens.map((token) => (
+                  <li
+                    key={token.id}
+                    className="flex items-center justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5 text-sm"
+                  >
+                    <span className="flex items-center gap-2 font-semibold text-ink">
+                      {token.discountPct}% di sconto
+                      {!token.active && (
+                        <span className="font-mono rounded-sm bg-ink/10 px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wide text-ink-soft uppercase">
+                          Disattivato
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-mono text-xs text-ink-soft uppercase">
+                      {token._count.redemptions} / {token.totalIssued} riscattati
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="mt-6 rounded-xl border border-ink/10 bg-white p-6 shadow-md md:p-8">
             <ShopForm shop={shop} />
