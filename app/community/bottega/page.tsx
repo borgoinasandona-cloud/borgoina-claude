@@ -71,7 +71,7 @@ export default async function MyShopPage() {
                   className="inline-flex shrink-0 items-center gap-2 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
                 >
                   <FontAwesomeIcon icon={faCamera} className="h-4 w-4" aria-hidden="true" />
-                  Vai a /scan
+                  Scansiona QR
                 </Link>
               </div>
               <ul className="mt-4 space-y-2">

@@ -43,12 +43,12 @@ export default function ComeFunzionanoGliScontiPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/45 to-ink/40" />
         </div>
         <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center wide:max-w-4xl">
-          <p className="eyebrow text-brick-light wide:text-sm">Guida</p>
+          <p className="eyebrow text-brick-light wide:text-sm">Guida ai token sconto</p>
           <h1 className="font-display text-4xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-5xl wide:text-6xl">
             Come funzionano gli sconti
           </h1>
           <p className="mx-auto max-w-3xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl">
-            Uno sconto per i soci, senza carte fedeltà o app da scaricare.
+            Un token sconto per i soci, senza carte fedeltà o app da scaricare.
           </p>
         </div>
       </div>
@@ -57,7 +57,8 @@ export default function ComeFunzionanoGliScontiPage() {
         <p className="text-lg leading-relaxed text-ink-soft wide:text-xl">
           Un modo semplice per le Botteghe del Borgo di offrire uno sconto ai soci della community,
           senza carte fedeltà o app da scaricare: basta il QR personale già presente
-          nell&apos;account di ogni iscritto.
+          nell&apos;account di ogni iscritto. Dietro le quinte, ogni sconto è un token digitale
+          collegato alla bottega che lo offre.
         </p>
 
         <section className="mt-12">
@@ -72,8 +73,8 @@ export default function ComeFunzionanoGliScontiPage() {
             <StepCard icon={faTag} title="2. Chiedi se c'è uno sconto attivo">
               Sul listino pubblico di{" "}
               <span className="font-semibold text-ink">Botteghe</span>{" "}
-              le attività con uno sconto disponibile hanno un&apos;etichetta ben visibile con il
-              numero di sconti ancora disponibili — non tutte le botteghe ne hanno uno attivo in
+              le attività con un token sconto disponibile hanno un&apos;etichetta ben visibile con
+              il numero di token ancora disponibili — non tutte le botteghe ne hanno uno attivo in
               ogni momento.
             </StepCard>
             <StepCard icon={faStore} title="3. Fatti scansionare il QR">
@@ -94,16 +95,16 @@ export default function ComeFunzionanoGliScontiPage() {
               {" "}— è la stessa pagina che ti rende visibile nel listino pubblico.
             </StepCard>
             <StepCard icon={faGear} title="2. L'associazione attiva lo sconto per te">
-              In base all&apos;accordo preso con il comitato, l&apos;associazione imposta per la tua
-              bottega una percentuale di sconto e una quantità totale di sconti disponibili (es.
-              &quot;20%, 10 sconti&quot;). Non devi configurare nulla tu.
+              In base all&apos;accordo preso con il comitato, l&apos;associazione crea per la tua
+              bottega un token sconto con una percentuale e una quantità totale disponibile (es.
+              &quot;20%, 10 token&quot;). Non devi configurare nulla tu.
             </StepCard>
             <StepCard icon={faCamera} title="3. Scansiona il QR del cliente da /scan">
               Quando un socio ti mostra il suo QR, apri{" "}
               <span className="font-mono">/scan</span>
               {" "}dal tuo telefono (visibile solo a chi ha una bottega collegata al proprio
-              account), inquadra il codice e scegli lo sconto da assegnare. Fatto: lo sconto è
-              registrato e il contatore dei posti residui si aggiorna subito.
+              account), inquadra il codice e scegli il token da assegnare. Fatto: il token è
+              riscattato e il contatore dei posti residui si aggiorna subito.
             </StepCard>
           </div>
         </section>
@@ -113,7 +114,7 @@ export default function ComeFunzionanoGliScontiPage() {
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-ink-soft">
             <li>
               Non c&apos;è un limite di utilizzi a persona: un socio può farsi applicare lo stesso
-              sconto più volte in occasioni diverse, finché per quella bottega restano posti
+              token sconto più volte in occasioni diverse, finché per quella bottega restano posti
               disponibili.
             </li>
             <li>
