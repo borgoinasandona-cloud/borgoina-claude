@@ -89,22 +89,24 @@ export default async function ShopDetailPage({
     <article>
       <header className="px-4 pt-16 pb-2">
         <div className="mx-auto max-w-3xl wide:max-w-4xl">
-          <Link
-            href="/botteghe"
-            className="mb-6 inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
-          >
-            ← Torna a Botteghe
-          </Link>
+          <div className="mb-6 flex flex-wrap items-center gap-4">
+            <Link
+              href="/botteghe"
+              className="inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
+            >
+              ← Torna a Botteghe
+            </Link>
 
-          {shop.visibility !== "PUBLIC" && (isAuthor || isAdmin) && (
-            <p className="font-mono mb-3 inline-block rounded-sm bg-ink px-2 py-1 text-[0.7rem] font-semibold tracking-wide text-cream uppercase">
-              Nascosta dall&apos;admin
-            </p>
-          )}
+            {shop.visibility !== "PUBLIC" && (isAuthor || isAdmin) && (
+              <p className="font-mono inline-block rounded-sm bg-ink px-2 py-1 text-[0.7rem] font-semibold tracking-wide text-cream uppercase">
+                Nascosta dall&apos;admin
+              </p>
+            )}
 
-          <span className="font-mono inline-block rounded-sm bg-brick/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-brick uppercase">
-            {shopCategoryLabels[shop.category]}
-          </span>
+            <span className="font-mono inline-block rounded-sm bg-brick/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-brick uppercase">
+              {shopCategoryLabels[shop.category]}
+            </span>
+          </div>
 
           <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {shop.name}

@@ -32,22 +32,35 @@ function StepCard({
 export default function ComeFunzionanoGliScontiPage() {
   return (
     <div>
-      <div className="border-b border-ink/5 bg-cream-deep px-4 py-16">
-        <div className="mx-auto max-w-3xl wide:max-w-4xl">
-          <p className="eyebrow text-brick wide:text-sm">Guida</p>
-          <h1 className="font-display mt-2 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl">
+      <div className="relative -mt-[76px] flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 pt-[76px] text-cream md:-mt-[88px] md:h-[460px] md:pt-[88px] wide:-mt-[96px] wide:pt-[96px]">
+        <div className="absolute inset-0 z-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/come-funzionano-gli-sconti/comefunziona.jpg"
+            alt="Una mano mostra la tessera digitale con QR code del Borgo INA su uno smartphone"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/45 to-ink/40" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center wide:max-w-4xl">
+          <p className="eyebrow text-brick-light wide:text-sm">Guida</p>
+          <h1 className="font-display text-4xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-5xl wide:text-6xl">
             Come funzionano gli sconti
           </h1>
-          <p className="mt-3 max-w-2xl text-lg text-ink-soft wide:text-xl">
-            Un modo semplice per le Botteghe del Borgo di offrire uno sconto ai soci della
-            community, senza carte fedeltà o app da scaricare: basta il QR personale già presente
-            nell&apos;account di ogni iscritto.
+          <p className="mx-auto max-w-3xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl">
+            Uno sconto per i soci, senza carte fedeltà o app da scaricare.
           </p>
         </div>
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-12 wide:max-w-4xl">
-        <section>
+        <p className="text-lg leading-relaxed text-ink-soft wide:text-xl">
+          Un modo semplice per le Botteghe del Borgo di offrire uno sconto ai soci della community,
+          senza carte fedeltà o app da scaricare: basta il QR personale già presente
+          nell&apos;account di ogni iscritto.
+        </p>
+
+        <section className="mt-12">
           <p className="eyebrow text-sky-dark">Per chi è socio</p>
           <h2 className="font-display mt-2 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
           <div className="mt-6 space-y-4">

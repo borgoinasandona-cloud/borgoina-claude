@@ -790,6 +790,15 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         continua su più righe, usare sempre `{" "}` esplicito per lo spazio invece di contare su
         uno spazio letterale a inizio riga — non è affidabile con questo compilatore. Verificato
         leggendo il testo effettivamente renderizzato (non solo lo screenshot) prima e dopo il fix
+      - **Hero fotografico aggiunto (2026-08-26)**: sostituito l'header piatto (`bg-cream-deep`) con
+        un vero hero fotografico, stesso pattern di `/il-borgo`/`/chi-siamo` (foto full-bleed con
+        overlay scuro sfumato, altezza 360px/460px, header trasparente sovrapposto — aggiunta la
+        rotta a `HERO_IMAGE_PATHS` in `components/Header.tsx`). Foto fornita da Dario
+        (`materiale/immagini-sito/webapp/comefunziona.jpg` — una mano che mostra la Tessera
+        digitale/QR sullo smartphone su uno sfondo di via del Borgo), copiata in
+        `public/images/come-funzionano-gli-sconti/` e servita come asset statico locale (non
+        Cloudinary: pagina non gestita da CMS, stesso pattern già usato per l'hero della home in
+        `components/home/Hero.tsx`, non il pattern Cloudinary delle pagine CMS-gestite)
 - [x] **Sconti attivi in dettaglio nella pagina bottega (2026-08-26)**: a differenza del badge
       aggregato in `ShopCard.tsx` (solo un numero totale di posti residui), `/botteghe/[slug]`
       mostra ora un riquadro "Sconti disponibili" con **ogni token attivo elencato singolarmente**
