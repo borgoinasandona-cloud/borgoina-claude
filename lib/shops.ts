@@ -15,15 +15,31 @@ const shopInclude = {
   images: { orderBy: { order: "asc" } },
 } as const;
 
-export function getPublicShops({ category }: { category?: ShopCategory } = {}) {
-  return prisma.shop.findMany({
+// Include i token sconto attivi solo per calcolare i posti residui aggregati (discountSlotsRemaining,
+// vedi sotto) — la card pubblica mostra solo un badge "N sconti disponibili", non i singoli token.
+export async function getPublicShops({ category }: { category?: ShopCategory } = {}) {
+  const shops = await prisma.shop.findMany({
     where: {
       visibility: "PUBLIC",
       ...(category ? { category } : {}),
     },
     orderBy: { createdAt: "desc" },
-    include: shopInclude,
+    include: {
+      ...shopInclude,
+      discountTokens: {
+        where: { active: true },
+        select: { totalIssued: true, _count: { select: { redemptions: true } } },
+      },
+    },
   });
+
+  return shops.map(({ discountTokens, ...shop }) => ({
+    ...shop,
+    discountSlotsRemaining: discountTokens.reduce(
+      (sum, token) => sum + Math.max(0, token.totalIssued - token._count.redemptions),
+      0,
+    ),
+  }));
 }
 
 export function getShopBySlug(slug: string) {

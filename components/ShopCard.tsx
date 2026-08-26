@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { shopCategoryLabels } from "@/lib/shops";
 import { GalleryBadge } from "@/components/GalleryBadge";
+import { DiscountBadge } from "@/components/DiscountBadge";
 import type { Shop, ShopImage } from "@prisma/client";
 
-type CardShop = Shop & { images: ShopImage[] };
+type CardShop = Shop & { images: ShopImage[]; discountSlotsRemaining: number };
 
 export function ShopCard({ shop }: { shop: CardShop }) {
   return (
@@ -25,6 +26,11 @@ export function ShopCard({ shop }: { shop: CardShop }) {
             {shopCategoryLabels[shop.category]}
           </span>
         </div>
+        {shop.discountSlotsRemaining > 0 && (
+          <div className="absolute top-2 right-2">
+            <DiscountBadge remaining={shop.discountSlotsRemaining} />
+          </div>
+        )}
         {shop.images.length > 0 && (
           <div className="absolute right-2 bottom-2">
             <GalleryBadge />

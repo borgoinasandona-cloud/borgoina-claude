@@ -752,8 +752,57 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         automatico** (nessuna camera reale in ambiente headless) — da provare a mano su un device
         vero dopo il deploy. Dati di test (utenti, bottege, token) ripuliti dal DB di produzione
         dopo la verifica
-- [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
-      il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
+- [x] **Badge sconti disponibili sul listino pubblico Botteghe (2026-08-26)**: `getPublicShops()`
+      (`lib/shops.ts`) include ora i `DiscountToken` attivi di ogni bottega (con `_count` delle
+      `redemptions`) e li riduce lato server a un unico campo `discountSlotsRemaining` (somma dei
+      posti residui = `totalIssued - redemptions` per ogni token attivo, mai negativo) — la card
+      pubblica non riceve né mostra i singoli token, solo il totale aggregato. Nuovo componente
+      `components/DiscountBadge.tsx` (stesso pattern di `GalleryBadge.tsx`: pillola `font-mono`
+      uppercase con icona FontAwesome, qui `faTag` da `free-solid-svg-icons` — non esiste in
+      `free-regular-svg-icons`), colore `bg-brick` per distinguerlo dal pill categoria (`bg-ink/80`,
+      in alto a sinistra) e dal badge Galleria (bianco/trasparente, in basso a destra): mostrato in
+      `components/ShopCard.tsx` in alto a destra sulla cover, solo se `discountSlotsRemaining > 0`,
+      testo singolare/plurale corretto ("1 sconto disponibile" / "N sconti disponibili"). Non
+      toccata la pagina di dettaglio bottega (`/botteghe/[slug]`) — la richiesta era specifica sul
+      listino ("schermata... delle botteghe")
+      - Testato visivamente con due bottege di test (una con 7 posti totali e 2 già riscattati →
+        badge corretto a "5 sconti disponibili", verificando che mostri il **residuo** e non il
+        totale; una senza alcun token → nessun badge) — dati di test ripuliti dal DB di produzione
+        dopo la verifica. Durante il test notato (non toccato, dato reale) che la bottega reale
+        "TeroTero" ha già un token da 10 con 1 riscatto reale registrato, badge "9 sconti
+        disponibili" corretto anche lì
+- [x] **Pagina "Come funzionano gli sconti" (2026-08-26)**: `app/come-funzionano-gli-sconti/page.tsx`,
+      pagina statica hardcoded (non un `Page` del CMS — è un contenuto una tantum, non gestito da
+      admin) che spiega in due sezioni ("Per chi è socio" / "Per chi ha una bottega") come funziona
+      il sistema token sconto della Fase 6. **Deliberatamente non linkata da nessuna parte del sito**
+      (non in `navLinks`, non referenziata da altre pagine — verificato con grep) su richiesta
+      esplicita: raggiungibile solo con l'URL diretto, pensata per essere condivisa a mano con le
+      botteghe finché non si decide di collegarla dal menù
+      - **Bug reale trovato e corretto durante la verifica**: in tre punti un testo dopo uno `</span>`
+        perdeva lo spazio iniziale (es. "di Botteghe" + "le attività" → "Bottegele attività"), anche
+        se nel sorgente JSX c'era un carattere spazio letterale prima della parola successiva sulla
+        stessa riga. Causa: il testo continuava su più righe dopo lo span, e il compilatore SWC
+        usato da Next.js/Turbopack (diversamente da Babel, che ha un caso speciale per la prima riga
+        di un nodo di testo JSX) tronca lo spazio iniziale della prima riga di un nodo di testo
+        multi-riga. Risolto sostituendo lo spazio letterale con `{" "}` esplicito nei tre punti
+        interessati — stesso pattern già usato altrove nel progetto per casi simili. **Promemoria
+        per il futuro**: quando del testo segue un elemento inline (`<span>`, `<Link>`, ecc.) e
+        continua su più righe, usare sempre `{" "}` esplicito per lo spazio invece di contare su
+        uno spazio letterale a inizio riga — non è affidabile con questo compilatore. Verificato
+        leggendo il testo effettivamente renderizzato (non solo lo screenshot) prima e dopo il fix
+- [x] **Sconti attivi in dettaglio nella pagina bottega (2026-08-26)**: a differenza del badge
+      aggregato in `ShopCard.tsx` (solo un numero totale di posti residui), `/botteghe/[slug]`
+      mostra ora un riquadro "Sconti disponibili" con **ogni token attivo elencato singolarmente**
+      (percentuale + posti residui di quel token), riusando `getActiveTokensForShop()` già esistente
+      in `lib/discounts.ts` (nessuna logica nuova, stessa funzione già usata da `/scan`) — chiamata
+      con `shop.id` subito dopo `getShopBySlug()` in `app/botteghe/[slug]/page.tsx`. Sezione
+      posizionata subito dopo i pulsanti WhatsApp/Chiama, prima di "Chi siamo" (alta visibilità),
+      con una riga di istruzioni su come riscattarlo (mostrare il proprio QR). Non renderizzata
+      affatto se non ci sono token attivi con posti residui (nessun riquadro vuoto)
+      - Testato con dati reali di produzione: la bottega "TeroTero" (già con un token 20% da 10
+        posti, 1 riscattato) mostra correttamente "20% di sconto — 9 posti disponibili"; una
+        bottega senza alcun token attivo (Musicanova) non mostra la sezione, verificato leggendo il
+        testo della pagina renderizzata (non solo uno screenshot)
 
 Utente admin creato in DB: `dario@terotero.com` (password impostata via `ADMIN_PASSWORD` in `.env`
 al momento del seed — da cambiare prima di condividere l'accesso).

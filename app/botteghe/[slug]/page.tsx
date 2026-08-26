@@ -4,10 +4,11 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope, faImage, faClock } from "@fortawesome/free-regular-svg-icons";
-import { faPhone, faGlobe, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faPhone, faGlobe, faLocationDot, faTag } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
+import { getActiveTokensForShop } from "@/lib/discounts";
 import { toWhatsAppNumber } from "@/lib/phone";
 import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 import { initials } from "@/lib/initials";
@@ -77,6 +78,7 @@ export default async function ShopDetailPage({
     notFound();
   }
 
+  const activeTokens = await getActiveTokensForShop(shop.id);
   const hasContacts = shop.address || shop.hours || shop.email || shop.website || shop.instagram;
   // Finché non c'è un account collegato, il nome scritto dall'admin (ownerName) fa da segnaposto:
   // appena la bottega viene collegata a un utente, nome e foto del profilo prendono il sopravvento.
@@ -164,6 +166,32 @@ export default async function ShopDetailPage({
               <FontAwesomeIcon icon={faPhone} className="h-4 w-4" aria-hidden="true" />
               Chiama ora
             </a>
+          </div>
+        )}
+
+        {activeTokens.length > 0 && (
+          <div className="mb-8 rounded-xl border border-brick/20 bg-brick/5 p-5">
+            <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
+              <FontAwesomeIcon icon={faTag} className="h-3.5 w-3.5" aria-hidden="true" />
+              Sconti disponibili
+            </p>
+            <ul className="mt-3 space-y-2">
+              {activeTokens.map((token) => (
+                <li
+                  key={token.id}
+                  className="flex items-center justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5"
+                >
+                  <span className="font-semibold text-ink">{token.discountPct}% di sconto</span>
+                  <span className="font-mono text-xs text-ink-soft uppercase">
+                    {token.remaining} {token.remaining === 1 ? "posto disponibile" : "posti disponibili"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-xs text-ink-soft">
+              Mostra il tuo QR personale (<span className="font-mono">Il mio account</span>{" "}
+              → Tessera digitale) al gestore per riscattare uno sconto.
+            </p>
           </div>
         )}
 
