@@ -1141,6 +1141,50 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       - Testato con Playwright e un admin di test: nav desktop invariato con "Eventi" sotto
         "Community", tendina mobile chiusa di default e correttamente espandibile, header più basso
         misurato numericamente (non solo a occhio). Dati di test ripuliti
+- [x] **KPI di utilizzo piani gratuiti in dashboard admin (2026-08-27)**: card "Utilizzo piani
+      gratuiti" in `/admin` per Cloudinary e Neon (percentuale reale contro i limiti del piano
+      Free, non stimata) — **Vercel deliberatamente escluso**: l'endpoint di billing/usage
+      (`GET /v1/billing/charges`, individuato leggendo la documentazione REST ufficiale) risponde
+      `"Plan not found"` per un team su piano Hobby — l'accesso ai dati di utilizzo via API è
+      riservato a Pro/Enterprise, nessun formato di richiesta diverso lo sblocca. Confermato con
+      Dario di ometterlo dalla dashboard invece di mostrare un placeholder vuoto
+      - `lib/usage.ts` (nuovo): `getCloudinaryUsage()` (Admin API `/usage` di Cloudinary, già
+        verificata via `curl` prima di scrivere codice) e `getNeonUsage()` (Neon Management API,
+        `GET /v2/projects/{id}`). Entrambe ritornano `null` — mai un errore che rompe la pagina —
+        se le credenziali mancano o la chiamata fallisce (verificato esplicitamente con credenziali
+        assenti e con credenziali invalide, in entrambi i casi `null` pulito, non un'eccezione)
+      - **Due nuove chiavi**: `NEON_API_KEY` (generata da Dario su console.neon.tech → progetto →
+        Settings → API Keys — **scoped al progetto**, non all'account: `GET /v2/projects` senza id
+        risponde infatti 404 "not allowed to perform actions outside the project this key is
+        scoped to", il messaggio d'errore stesso rivela lo slug del progetto,
+        `solitary-thunder-55089858`, usato per popolare `NEON_PROJECT_ID`) e `VERCEL_TOKEN`
+        (generato ma non usato in codice, vedi sopra — lasciato in `.env` nel caso torni utile in
+        futuro, es. se il piano venisse aggiornato a Pro)
+      - **`compute_time_seconds` di Neon non è tempo di orologio**: è già in CU-secondi (un
+        endpoint a 2 CU attivo per 1s conta 2, non 1) — verificato leggendo la documentazione
+        ufficiale (neon.com/docs/introduction/usage-calculations) prima di scrivere la conversione,
+        per non fidarsi di un'assunzione plausibile ma sbagliata. Va diviso per 3600 per ottenere le
+        CU-ore consumate, confrontate con le 100 CU-ore/mese del piano Free (limite **non esposto
+        dall'API di progetto** — solo l'uso effettivo lo è — quindi hardcoded in `lib/usage.ts` con
+        link alla fonte, da aggiornare a mano se Neon lo cambia). Il limite di storage invece **è**
+        esposto dall'API (`branch_logical_size_limit_bytes`), usato live invece di un valore fisso
+      - Per Cloudinary, storage/banda/trasformazioni condividono lo stesso monte crediti del piano
+        Free (25 crediti totali): la percentuale di ciascuna voce nella card è "quota del budget
+        totale consumata da quella voce" (`credits_usage` della singola voce / `limit` totale), non
+        un tetto indipendente — coerente con come Cloudinary stessa presenta il piano
+      - Barra colorata per soglia (verde/ambra/rosso sotto 70%/70-90%/oltre 90%), stesso linguaggio
+        cromatico già in uso altrove in admin (es. badge "Esauriti"/"Attivo" nei token sconto)
+      - Card renderizzate solo se la funzione corrispondente ritorna dati (`.filter()` sui `null`):
+        nessuna card vuota/rotta se una chiave manca o l'API è giù, la sezione intera sparisce se
+        entrambe falliscono
+      - **Le chiavi vanno aggiunte anche su Vercel (Environment Variables, Production)** perché la
+        dashboard gira anche in produzione, non solo in locale — promemoria lasciato a Dario, non
+        ancora fatto al momento di questa nota
+      - Verificato con Playwright e un admin di test: sezione "Utilizzo piani gratuiti" presente,
+        nessuna menzione di "Vercel" da nessuna parte della pagina, percentuali renderizzate
+        coincidenti (arrotondamento a parte) con quelle lette direttamente dalle due API in una
+        chiamata `curl`/script indipendente fatta prima di scrivere il componente. Dati di test
+        ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
