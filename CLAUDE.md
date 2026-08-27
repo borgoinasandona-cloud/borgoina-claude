@@ -1185,6 +1185,20 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         coincidenti (arrotondamento a parte) con quelle lette direttamente dalle due API in una
         chiamata `curl`/script indipendente fatta prima di scrivere il componente. Dati di test
         ripuliti
+      - **Specificato quando/se ogni voce si azzera (2026-08-27), su richiesta esplicita**: prima
+        di scrivere il testo, verificato con la documentazione ufficiale invece di assumere "tutto
+        si azzera a fine mese" — **falso per Cloudinary**. Aggiunto `UsageMetric.resetInfo` (una
+        riga in più sotto ogni barra, testo `text-neutral-400`):
+        - **Neon**: Compute e Trasferimento dati si azzerano davvero a data fissa, letta
+          direttamente dal campo `consumption_period_end` dell'API (non calcolata a mano) — es.
+          "Si azzera il 1 settembre 2026". Storage non si azzera mai (istantanea)
+        - **Cloudinary**: **non esiste un azzeramento mensile fisso** per banda/trasformazioni sul
+          piano Free — usa una finestra mobile di 30 giorni (l'attività di 31 giorni fa esce da sola
+          ogni giorno), verificato su cloudinary.com/documentation/billing_and_plans dopo che una
+          prima spiegazione a voce data a Dario ("si azzera ogni mese") si è rivelata imprecisa.
+          Storage, come su Neon, non si azzera mai
+      - Verificato con Playwright che il testo compaia per entrambi i servizi (`"Si azzera il"`,
+        `"finestra mobile"`, `"istantanea"`), screenshot per la leggibilità. Dati di test ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

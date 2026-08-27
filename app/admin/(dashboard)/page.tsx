@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getCloudinaryUsage, getNeonUsage, type ServiceUsage } from "@/lib/usage";
+import { getCloudinaryUsage, getNeonUsage, type ServiceUsage, type UsageMetric } from "@/lib/usage";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +74,7 @@ function UsageCard({ usage }: { usage: ServiceUsage }) {
   );
 }
 
-function UsageBar({ metric }: { metric: { label: string; percent: number; detail: string } }) {
+function UsageBar({ metric }: { metric: UsageMetric }) {
   const clampedWidth = Math.min(100, Math.max(0, metric.percent));
   const barColor = metric.percent >= 90 ? "bg-red-500" : metric.percent >= 70 ? "bg-amber-500" : "bg-green-600";
 
@@ -89,6 +89,7 @@ function UsageBar({ metric }: { metric: { label: string; percent: number; detail
       <div className="mt-1 h-1.5 w-full rounded-full bg-neutral-100">
         <div className={`h-1.5 rounded-full ${barColor}`} style={{ width: `${clampedWidth}%` }} />
       </div>
+      <p className="mt-0.5 text-[0.7rem] text-neutral-400">{metric.resetInfo}</p>
     </div>
   );
 }

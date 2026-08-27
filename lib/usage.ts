@@ -7,6 +7,9 @@ export type UsageMetric = {
   label: string;
   percent: number;
   detail: string;
+  // Quando/se il conteggio si azzera — non è uguale per tutte le voci (vedi commenti sotto), va
+  // sempre specificato esplicitamente invece di assumere "si azzera a fine mese" per tutto.
+  resetInfo: string;
 };
 
 export type ServiceUsage = {
@@ -49,6 +52,13 @@ export async function getCloudinaryUsage(): Promise<ServiceUsage | null> {
     // è "quota del budget totale consumata da questa voce", non un limite a sé stante.
     const asShareOfCredits = (creditsUsage: number) => (creditsUsage / creditLimit) * 100;
 
+    // Sul piano Free (e sui piani self-service Plus/Advanced/Advanced Extra) Cloudinary NON azzera
+    // banda e trasformazioni il 1° del mese: usa una finestra mobile di 30 giorni, l'attività di 31
+    // giorni fa esce automaticamente ogni giorno. Lo storage invece è sempre un'istantanea del
+    // momento, mai un conteggio che si azzera. Fonte: cloudinary.com/documentation/billing_and_plans
+    const rollingWindowNote = "Finestra mobile di 30 giorni (non un mese fisso)";
+    const snapshotNote = "Non si azzera — istantanea di quanto occupato ora";
+
     return {
       service: "Cloudinary",
       planLabel: data.plan ?? "Free",
@@ -57,16 +67,19 @@ export async function getCloudinaryUsage(): Promise<ServiceUsage | null> {
           label: "Crediti totali",
           percent: data.credits?.used_percent ?? 0,
           detail: `${(data.credits?.usage ?? 0).toFixed(2)} / ${creditLimit} crediti`,
+          resetInfo: "Storage: istantanea attuale · Banda/trasformazioni: finestra mobile 30gg",
         },
         {
           label: "Banda",
           percent: asShareOfCredits(data.bandwidth?.credits_usage ?? 0),
           detail: formatBytes(data.bandwidth?.usage ?? 0),
+          resetInfo: rollingWindowNote,
         },
         {
           label: "Storage",
           percent: asShareOfCredits(data.storage?.credits_usage ?? 0),
           detail: formatBytes(data.storage?.usage ?? 0),
+          resetInfo: snapshotNote,
         },
       ],
     };
@@ -103,6 +116,15 @@ export async function getNeonUsage(): Promise<ServiceUsage | null> {
     const storageLimitBytes = project.branch_logical_size_limit_bytes ?? NEON_FREE_STORAGE_BYTES_FALLBACK;
     const dataTransferBytes = project.data_transfer_bytes ?? 0;
 
+    // A differenza di Cloudinary, Neon usa un vero ciclo mensile fisso: compute e trasferimento
+    // dati si azzerano entrambi a consumption_period_end (il progetto lo espone direttamente,
+    // niente da indovinare). Lo storage invece resta un'istantanea, come su Cloudinary.
+    const periodEnd = project.consumption_period_end ? new Date(project.consumption_period_end) : null;
+    const resetDateLabel = periodEnd
+      ? `Si azzera il ${new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(periodEnd)}`
+      : "Si azzera a inizio ciclo di fatturazione";
+    const snapshotNote = "Non si azzera — istantanea di quanto occupato ora";
+
     return {
       service: "Neon",
       planLabel: project.owner?.subscription_type === "free_v3" ? "Free" : (project.owner?.subscription_type ?? "—"),
@@ -111,16 +133,19 @@ export async function getNeonUsage(): Promise<ServiceUsage | null> {
           label: "Compute",
           percent: (computeCuHours / NEON_FREE_COMPUTE_CU_HOURS) * 100,
           detail: `${computeCuHours.toFixed(1)} / ${NEON_FREE_COMPUTE_CU_HOURS} CU-ore`,
+          resetInfo: resetDateLabel,
         },
         {
           label: "Storage",
           percent: (storageUsedBytes / storageLimitBytes) * 100,
           detail: `${formatBytes(storageUsedBytes)} / ${formatBytes(storageLimitBytes)}`,
+          resetInfo: snapshotNote,
         },
         {
           label: "Trasferimento dati",
           percent: (dataTransferBytes / NEON_FREE_DATA_TRANSFER_BYTES) * 100,
           detail: `${formatBytes(dataTransferBytes)} / ${formatBytes(NEON_FREE_DATA_TRANSFER_BYTES)}`,
+          resetInfo: resetDateLabel,
         },
       ],
     };
