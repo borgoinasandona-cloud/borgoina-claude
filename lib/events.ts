@@ -1,20 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-export async function getEventBySlug(slug: string) {
-  const event = await prisma.event.findUnique({
-    where: { slug },
-    include: { rsvps: { select: { guests: true } } },
-  });
-  if (!event) return null;
-
-  const { rsvps, ...rest } = event;
-  const seatsTaken = rsvps.reduce((sum, rsvp) => sum + 1 + rsvp.guests, 0);
-
-  return {
-    ...rest,
-    seatsTaken,
-    seatsRemaining: rest.maxSeats !== null ? Math.max(0, rest.maxSeats - seatsTaken) : null,
-  };
+export function getEventBySlug(slug: string) {
+  return prisma.event.findUnique({ where: { slug } });
 }
 
 export function getEventRsvpForUser(eventId: string, userId: string) {
@@ -31,7 +18,7 @@ export function getAllEventsForAdmin() {
   return prisma.event.findMany({
     orderBy: { date: "desc" },
     include: {
-      rsvps: { select: { guests: true } },
+      _count: { select: { rsvps: true } },
     },
   });
 }

@@ -137,18 +137,19 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   per eventi futuri. Indipendente da `Post`: gli "eventi" come contenuto editoriale (`Post` +
   `Category` "Eventi" in Bacheca) restano per gli annunci, i due nuovi modelli servono solo per la
   prenotazione posti vera e propria
-- Due nuovi modelli: `Event` (titolo, descrizione, data/ora, posti massimi opzionali, etichetta
-  personalizzabile per il campo note) e `EventRsvp` (socio + evento + accompagnatori + note libere,
+- Due nuovi modelli: `Event` (titolo, descrizione, data/ora, etichetta personalizzabile per il
+  campo note) e `EventRsvp` (socio + evento + accompagnatori (max 5) + note libere,
   `@@unique([eventId, userId])` — un socio prenota un evento una sola volta, può modificarla finché
   l'evento non è passato)
 - **Nessuna pagina di elenco pubblico eventi per ora** (deciso esplicitamente con Dario): solo
   `/eventi/[slug]`, raggiungibile con link diretto condiviso a mano. Nessuna voce di menù, nessun
   campo `visibility` sul modello (niente da filtrare senza un elenco). Aggiungibile in futuro
-- Limite posti (`maxSeats`, conta anche gli accompagnatori) garantito con lo stesso pattern della
-  Fase 6 — row lock esplicito (`SELECT ... FOR UPDATE` sulla riga `Event`) invece di un semplice
-  recount, perché sotto scansioni/prenotazioni concorrenti READ COMMITTED non basterebbe da solo.
-  Qui il lock serve solo per il conteggio posti: l'unicità "una prenotazione per socio" è già
-  garantita dal vincolo `@@unique` via `upsert`. Dettagli e verifica: vedi CLAUDE.md
+- **Nessun limite posti**: `Event.maxSeats` era nella prima versione rilasciata (con un row lock
+  esplicito per garantirlo sotto prenotazioni concorrenti, sullo stesso pattern della Fase 6), poi
+  rimosso su richiesta esplicita subito dopo — l'evento registra solo chi si prenota e con quanti
+  accompagnatori (max 5 a testa), senza alcun tetto. `createOrUpdateRsvp()` è tornato un `upsert`
+  semplice, l'unicità "una prenotazione per socio" resta garantita dal vincolo `@@unique`, senza
+  bisogno di transazione/lock. Dettagli: vedi CLAUDE.md
 - Admin CRUD completo in `/admin/eventi` (lista, crea, modifica, elimina) più una sotto-pagina
   `/admin/eventi/[id]/rsvps` con la tabella delle prenotazioni — nome, email, ospiti e **note
   sempre visibili in cella**, mai dietro un dettaglio da aprire (è l'informazione operativa più

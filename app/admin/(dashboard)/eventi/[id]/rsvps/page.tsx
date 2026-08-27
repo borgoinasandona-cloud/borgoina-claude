@@ -17,7 +17,6 @@ export default async function AdminEventRsvpsPage({
   }
 
   const rsvps = await getRsvpsForEventAdmin(id);
-  const seatsTaken = rsvps.reduce((sum, rsvp) => sum + 1 + rsvp.guests, 0);
 
   return (
     <div>
@@ -26,8 +25,7 @@ export default async function AdminEventRsvpsPage({
       </Link>
       <h1 className="mt-2 text-2xl font-semibold text-neutral-900">Prenotazioni — {event.title}</h1>
       <p className="mt-1 text-sm text-neutral-500">
-        {seatsTaken}
-        {event.maxSeats !== null ? ` / ${event.maxSeats}` : ""} posti occupati ·{" "}
+        {rsvps.length} {rsvps.length === 1 ? "prenotazione" : "prenotazioni"} ·{" "}
         {new Intl.DateTimeFormat("it-IT", { dateStyle: "full", timeStyle: "short" }).format(event.date)}
       </p>
 

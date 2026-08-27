@@ -30,7 +30,6 @@ function parseEventFormData(formData: FormData) {
     title: formData.get("title"),
     description: formData.get("description") || "",
     date: formData.get("date"),
-    maxSeats: formData.get("maxSeats") || "",
     notesLabel: formData.get("notesLabel") || "",
   });
 }
@@ -46,7 +45,7 @@ export async function createEventAction(
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Dati non validi." };
   }
 
-  const { date, maxSeats, description, notesLabel, ...data } = parsed.data;
+  const { date, description, notesLabel, ...data } = parsed.data;
 
   let eventId: string;
   try {
@@ -56,7 +55,6 @@ export async function createEventAction(
         description: description || null,
         notesLabel: notesLabel || null,
         date: new Date(date),
-        maxSeats: maxSeats === "" || maxSeats === undefined ? null : maxSeats,
       },
     });
     eventId = event.id;
@@ -80,7 +78,7 @@ export async function updateEventAction(
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Dati non validi." };
   }
 
-  const { date, maxSeats, description, notesLabel, ...data } = parsed.data;
+  const { date, description, notesLabel, ...data } = parsed.data;
 
   try {
     await prisma.event.update({
@@ -90,7 +88,6 @@ export async function updateEventAction(
         description: description || null,
         notesLabel: notesLabel || null,
         date: new Date(date),
-        maxSeats: maxSeats === "" || maxSeats === undefined ? null : maxSeats,
       },
     });
   } catch {

@@ -37,7 +37,6 @@ export default async function EventDetailPage({
 
   const isPast = event.date < new Date();
   const existingRsvp = session?.user?.id ? await getEventRsvpForUser(event.id, session.user.id) : null;
-  const isFull = event.seatsRemaining !== null && event.seatsRemaining <= 0;
 
   return (
     <article>
@@ -50,16 +49,6 @@ export default async function EventDetailPage({
           <p className="font-mono mt-3 text-sm text-ink-soft">
             {new Intl.DateTimeFormat("it-IT", { dateStyle: "full", timeStyle: "short" }).format(event.date)}
           </p>
-          {event.maxSeats !== null && (
-            <p className="font-mono mt-1 text-sm text-ink-soft">
-              {event.seatsTaken} / {event.maxSeats} posti occupati
-              {isFull && (
-                <span className="ml-2 rounded-sm bg-brick px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-cream uppercase">
-                  Esaurito
-                </span>
-              )}
-            </p>
-          )}
         </div>
       </header>
 
@@ -97,11 +86,7 @@ export default async function EventDetailPage({
                 </p>
               )}
 
-              {!existingRsvp && isFull ? (
-                <p className="font-semibold text-ink">Posti esauriti.</p>
-              ) : (
-                <EventRsvpForm slug={slug} notesLabel={event.notesLabel} existingRsvp={existingRsvp} />
-              )}
+              <EventRsvpForm slug={slug} notesLabel={event.notesLabel} existingRsvp={existingRsvp} />
 
               {existingRsvp && (
                 <form action={cancelRsvpAction.bind(null, slug)} className="mt-4">

@@ -64,34 +64,18 @@ export function EventForm({ event }: { event?: Event }) {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium text-neutral-700">
-            Data e ora
-          </label>
-          <input
-            id="date"
-            name="date"
-            type="datetime-local"
-            defaultValue={toDateTimeInputValue(event?.date ?? null)}
-            required
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="maxSeats" className="block text-sm font-medium text-neutral-700">
-            Posti massimi
-          </label>
-          <input
-            id="maxSeats"
-            name="maxSeats"
-            type="number"
-            min={1}
-            defaultValue={event?.maxSeats ?? ""}
-            placeholder="Vuoto = nessun limite"
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
-          />
-        </div>
+      <div>
+        <label htmlFor="date" className="block text-sm font-medium text-neutral-700">
+          Data e ora
+        </label>
+        <input
+          id="date"
+          name="date"
+          type="datetime-local"
+          defaultValue={toDateTimeInputValue(event?.date ?? null)}
+          required
+          className="mt-1 w-full max-w-xs rounded-md border border-neutral-300 px-3 py-2 text-sm"
+        />
       </div>
 
       <div>

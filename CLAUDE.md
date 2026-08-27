@@ -1018,34 +1018,33 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       contenuto editoriale, senza data strutturata né alcuna nozione di prenotazione. Nessun
       aggancio possibile, servivano modelli nuovi indipendenti da `Post`. Piano e diff schema
       mostrati e approvati prima di scrivere codice (vedi PLANNING.md "Fase 7" per il riassunto)
-      - Schema: `Event` (titolo, descrizione, data/ora, `maxSeats` opzionale, `notesLabel`
-        opzionale) e `EventRsvp` (`@@unique([eventId, userId])` — un socio prenota un evento una
-        sola volta, la stessa riga si aggiorna con un `upsert` per "modifica prenotazione").
-        Aggiunti rispetto alla bozza iniziale, per coerenza con `Post`/`CommunityPost`/`Shop`:
-        `Event.slug` (URL pubblica leggibile, mai un cuid nudo), `@db.Text` sui campi di testo
-        lunghi, `updatedAt`. **Deliberatamente senza `visibility`**: confermato con Dario in fase
-        di piano — nessuna pagina di elenco pubblico per ora (solo `/eventi/[slug]` via link
-        diretto condiviso a mano, nessuna voce di menù), quindi niente da filtrare. Aggiungibile in
-        futuro insieme a un eventuale elenco
-      - **Limite posti garantito con lo stesso pattern già collaudato in `lib/discounts.ts` →
-        `redeemToken()` (Fase 6)**: row lock esplicito (`SELECT ... FOR UPDATE` via `tx.$queryRaw`
-        sulla riga `Event`) dentro `lib/eventRsvp.ts` → `createOrUpdateRsvp()`, non un semplice
-        recount — sotto l'isolamento di default di Postgres (READ COMMITTED) due prenotazioni
-        concorrenti vicino al limite potrebbero altrimenti leggere lo stesso conteggio stantio e
-        superarlo entrambe. Qui il lock serve solo per il conteggio posti (accompagnatori inclusi:
-        posti occupati = somma di `1 + guests` su tutte le prenotazioni): l'unicità "una
-        prenotazione per socio" è già garantita a parte dal vincolo `@@unique` tramite `upsert`,
-        non serve il lock anche per quello
-      - **Verificato con un test di concorrenza reale** (stesso approccio della Fase 6, script
-        diretto via `tsx`, non solo "il codice non lancia errori"): evento con `maxSeats: 1`, due
-        `createOrUpdateRsvp()` simultanee (`Promise.allSettled`, due utenti reali diversi) → sempre
-        esattamente 1 successo e 1 fallimento ("Posti esauriti."), mai 2 successi
+      - Schema: `Event` (titolo, descrizione, data/ora, `notesLabel` opzionale) e `EventRsvp`
+        (`@@unique([eventId, userId])` — un socio prenota un evento una sola volta, la stessa riga
+        si aggiorna con un `upsert` per "modifica prenotazione"). Aggiunti rispetto alla bozza
+        iniziale, per coerenza con `Post`/`CommunityPost`/`Shop`: `Event.slug` (URL pubblica
+        leggibile, mai un cuid nudo), `@db.Text` sui campi di testo lunghi, `updatedAt`.
+        **Deliberatamente senza `visibility`**: confermato con Dario in fase di piano — nessuna
+        pagina di elenco pubblico per ora (solo `/eventi/[slug]` via link diretto condiviso a mano,
+        nessuna voce di menù), quindi niente da filtrare. Aggiungibile in futuro insieme a un
+        eventuale elenco
+      - **`maxSeats` rimosso il 2026-08-27, subito dopo il rilascio iniziale**: la prima versione
+        aveva un limite posti opzionale (`Event.maxSeats`) con un row lock esplicito
+        (`SELECT ... FOR UPDATE`, stesso pattern di `lib/discounts.ts` → `redeemToken()` della
+        Fase 6) per garantirlo sotto prenotazioni concorrenti — **tolto su richiesta esplicita**:
+        nessun limite posti per gli eventi, `guests` (accompagnatori) resta ma ristretto da
+        `min(0).max(20)` a `min(0).max(5)`. Migration additiva (`event_remove_max_seats`) applicata
+        subito su Neon prod. `lib/eventRsvp.ts` → `createOrUpdateRsvp()` è tornato un `upsert`
+        semplice fuori da transazione: senza un limite da proteggere, l'unicità "una prenotazione
+        per socio" garantita dal vincolo `@@unique` basta da sola, nessun lock necessario. Rimossi
+        di conseguenza: il messaggio "Posti esauriti" e il contatore posti nella pagina pubblica,
+        il campo `maxSeats` dal form admin e da `eventSchema`, il conteggio "posti occupati/totali"
+        nella lista/tabella admin (sostituito con un semplice conteggio "N prenotazioni",
+        `_count.rsvps` invece di sommare `1 + guests` su tutte le righe)
       - Pagina pubblica `/eventi/[slug]`: stato dinamico in un'unica pagina — non loggato (invito
-        al login), loggato senza prenotazione con posti disponibili (form), loggato senza
-        prenotazione e posti esauriti (messaggio, niente form), loggato già prenotato (banner +
-        stesso form precompilato per modificare + bottone "Annulla prenotazione" separato), evento
-        passato (stato di sola lettura, form sempre assente indipendentemente da prenotazione
-        esistente o meno — coerente con "si può modificare finché l'evento non è passato")
+        al login), loggato senza prenotazione (form), loggato già prenotato (banner + stesso form
+        precompilato per modificare + bottone "Annulla prenotazione" separato), evento passato
+        (stato di sola lettura, form sempre assente indipendentemente da prenotazione esistente o
+        meno — coerente con "si può modificare finché l'evento non è passato")
       - Etichetta del campo note: `event.notesLabel` se valorizzato dall'admin (es. "Preferenze
         menù" per la cena), altrimenti placeholder generico "Note per l'organizzatore
         (opzionale)" — il campo in sé resta generico (`EventRsvp.notes`), non specifico per
@@ -1069,15 +1068,19 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         visibili direttamente in cella**, mai dietro un dettaglio da espandere/aprire (richiesto
         esplicitamente: le note sono l'informazione operativa più usata da chi organizza)
       - Testato end-to-end con Playwright contro un dev server riavviato di fresco e dati reali
-        (1 admin + 2 iscritti, ripuliti a fine test): admin crea evento (`maxSeats: 3`) dalla UI →
-        utente anonimo vede invito al login senza form → iscritto A prenota 2 accompagnatori →
-        banner "sei prenotato" → A modifica a 1 accompagnatore (verificato che non duplichi la riga,
-        `count === 1`) → iscritto B tenta con troppi accompagnatori → rifiutato con "Posti
-        esauriti", nessuna riga creata → A annulla → B ora riesce a prenotarsi → admin apre
-        `/admin/eventi/[id]/rsvps` e le note sono visibili direttamente in tabella → evento con data
-        nel passato mostra stato di sola lettura, form assente. Dati di test ripuliti dal DB di
-        produzione dopo la verifica (controllato con una query mirata a fine sessione: zero eventi e
-        zero utenti di test residui)
+        (1 admin + 1 iscritto, ripuliti a fine test), riverificato dopo la rimozione di `maxSeats`:
+        form admin senza più il campo posti massimi → admin crea evento dalla UI → pagina pubblica
+        non menziona più "posti" da nessuna parte, il campo ospiti ha `max="5"` → utente anonimo
+        vede invito al login senza form → iscritto prenota 3 accompagnatori → banner "sei
+        prenotato" → modifica a 1 accompagnatore, poi di nuovo a 2 in una terza prenotazione
+        consecutiva: sempre `count === 1` in `EventRsvp` (l'`upsert` aggiorna la stessa riga, mai
+        duplica) → admin apre `/admin/eventi/[id]/rsvps`, le note restano visibili direttamente in
+        tabella e il riepilogo mostra "N prenotazioni" invece di "posti occupati" → stesso
+        conteggio nella lista `/admin/eventi` → evento con data nel passato mostra stato di sola
+        lettura, form assente. **Rimosso il test di concorrenza su `maxSeats: 1`** (non più
+        applicabile, nessun limite da proteggere). Dati di test ripuliti dal DB di produzione dopo
+        la verifica (controllato con una query mirata a fine sessione: zero eventi e zero utenti di
+        test residui)
 - [x] **Avatar segnaposto (iniziali) in header su sfondo bianco (2026-08-27)**: era `bg-cream`,
       ora `bg-white` — richiesto esplicitamente. Verificato visivamente sia nell'header trasparente
       (hero foto) sia in quello solido, nessuna perdita di leggibilità delle iniziali

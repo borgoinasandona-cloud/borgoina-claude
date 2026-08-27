@@ -33,7 +33,7 @@ export function EventRsvpForm({
           name="guests"
           type="number"
           min={0}
-          max={20}
+          max={5}
           defaultValue={existingRsvp?.guests ?? 0}
           className={`${inputClass} mt-1`}
         />

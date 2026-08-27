@@ -263,16 +263,12 @@ model Event {
   title       String
   description String?     @db.Text
   date        DateTime
-  maxSeats    Int? // null = nessun limite posti
   notesLabel  String? // etichetta personalizzata per il campo note — se null, UI usa un placeholder generico
   rsvps       EventRsvp[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
 
-// Nessun vincolo diretto sui posti qui a livello DB (a differenza di @@unique([eventId, userId]),
-// che DB-enforced l'unicità della prenotazione): il limite maxSeats è garantito in
-// lib/eventRsvp.ts con un row lock esplicito sulla riga Event, non da un vincolo a parte.
 model EventRsvp {
   id        String   @id @default(cuid())
   eventId   String

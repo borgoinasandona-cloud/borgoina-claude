@@ -25,7 +25,6 @@ export default async function AdminEventsPage() {
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
         {events.map((event) => {
-          const seatsTaken = event.rsvps.reduce((sum, rsvp) => sum + 1 + rsvp.guests, 0);
           const isPast = event.date < new Date();
           return (
             <li key={event.id} className="flex items-center justify-between gap-4 py-3">
@@ -43,8 +42,7 @@ export default async function AdminEventsPage() {
                   {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium", timeStyle: "short" }).format(
                     event.date,
                   )}{" "}
-                  · {seatsTaken}
-                  {event.maxSeats !== null ? ` / ${event.maxSeats}` : ""} posti occupati
+                  · {event._count.rsvps} {event._count.rsvps === 1 ? "prenotazione" : "prenotazioni"}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-3">

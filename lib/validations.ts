@@ -117,14 +117,11 @@ export const eventSchema = z.object({
   title: z.string().trim().min(1, "Il titolo è obbligatorio").max(200),
   description: z.string().trim().max(3000).optional().or(z.literal("")),
   date: z.string().trim().min(1, "La data è obbligatoria"),
-  maxSeats: z.coerce.number().int().min(1).optional().or(z.literal("")),
   notesLabel: z.string().trim().max(120).optional().or(z.literal("")),
 });
 
-// guests limitato a 20: nessun vincolo esplicito richiesto, ma un tetto ragionevole evita che un
-// singolo RSVP possa svuotare maxSeats per un errore di battitura (es. "200" invece di "2").
 export const eventRsvpSchema = z.object({
-  guests: z.coerce.number().int().min(0).max(20),
+  guests: z.coerce.number().int().min(0).max(5),
   notes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
 
