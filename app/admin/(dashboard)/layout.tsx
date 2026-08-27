@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { auth, signOut } from "@/lib/auth";
+import { AdminNav } from "@/components/AdminNav";
 
 type AdminNavItem =
   | { href: string; label: string }
@@ -28,11 +28,8 @@ const adminNav: AdminNavItem[] = [
     items: [
       { href: "/admin/community", label: "Mercatino" },
       { href: "/admin/botteghe", label: "Botteghe" },
+      { href: "/admin/eventi", label: "Eventi" },
     ],
-  },
-  {
-    group: "Eventi",
-    items: [{ href: "/admin/eventi", label: "Eventi" }],
   },
 ];
 
@@ -50,30 +47,7 @@ export default async function AdminDashboardLayout({
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 pb-4">
-          <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-neutral-700">
-            {adminNav.map((item, index) =>
-              "group" in item ? (
-                <div key={item.group} className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  {index > 0 && <span className="hidden h-4 w-px bg-neutral-300 sm:block" aria-hidden />}
-                  <span className="text-xs font-semibold tracking-wide text-neutral-400 uppercase">
-                    {item.group}
-                  </span>
-                  {item.items.map((link) => (
-                    <Link key={link.href} href={link.href} className="hover:text-green-700">
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div key={item.href} className="flex items-center gap-x-4">
-                  {index > 0 && <span className="hidden h-4 w-px bg-neutral-300 sm:block" aria-hidden />}
-                  <Link href={item.href} className="hover:text-green-700">
-                    {item.label}
-                  </Link>
-                </div>
-              ),
-            )}
-          </nav>
+          <AdminNav adminNav={adminNav} />
           <form
             action={async () => {
               "use server";

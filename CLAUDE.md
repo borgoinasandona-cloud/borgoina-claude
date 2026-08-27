@@ -1078,6 +1078,66 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         nel passato mostra stato di sola lettura, form assente. Dati di test ripuliti dal DB di
         produzione dopo la verifica (controllato con una query mirata a fine sessione: zero eventi e
         zero utenti di test residui)
+- [x] **Avatar segnaposto (iniziali) in header su sfondo bianco (2026-08-27)**: era `bg-cream`,
+      ora `bg-white` — richiesto esplicitamente. Verificato visivamente sia nell'header trasparente
+      (hero foto) sia in quello solido, nessuna perdita di leggibilità delle iniziali
+- [x] **Dashboard admin: nuovi blocchi statistiche (2026-08-27)**: sostituiti i 4 blocchi originali
+      (Articoli Bacheca/Pagine/Categorie/Messaggi contatto) con 5 nuovi, su richiesta: Utenti, Nuovi
+      utenti (24h), Botteghe, Nuove botteghe (24h), Annunci in approvazione (`CommunityPost` con
+      `visibility: PENDING`). Le finestre "ultime 24h" usano `new Date()` + `setHours(-24)`, non
+      `Date.now() - ...`: il progetto ha una regola eslint (`react-hooks/purity`) che segnala
+      `Date.now()` come chiamata impura anche in un Server Component — `new Date()` (già usato
+      altrove nel progetto, es. i controlli "evento passato" della Fase 7) non viene invece
+      segnalato. **Promemoria per il futuro**: preferire `new Date()` a `Date.now()` in questo
+      progetto per evitare l'errore di lint, anche se semanticamente equivalenti. Verificato con
+      Playwright confrontando i numeri renderizzati con una query diretta sullo stesso DB
+      (coincidenti esattamente) usando un admin di test poi ripulito
+- [x] **Ottimizzazione menù admin per mobile (2026-08-27)**:
+      - "Eventi" (era un gruppo a sé nel nav admin, con un solo link) spostato dentro il gruppo
+        "Community" insieme a Mercatino/Botteghe — tre voci correlate (contenuti generati dagli
+        iscritti) in un solo gruppo invece di un gruppo con una voce sola
+      - Nav admin estratto in un componente client dedicato, `components/AdminNav.tsx`: su schermi
+        `sm`+ si comporta esattamente come prima (lista sempre visibile), sotto `sm` diventa una
+        tendina — un bottone "Menu" che mostra/nasconde la lista di link, chiusa di default e
+        richiusa automaticamente al cambio pagina (stesso pattern "adjust state during render" già
+        usato in `components/Header.tsx` per il menu mobile pubblico, non un `useEffect` con un
+        solo `setState` dentro)
+      - **Rifinitura estetica della tendina mobile, su richiesta esplicita ("fai un po più carino
+        il drop down menù")**: il bottone "Menu" era testo nudo — ora è un vero bottone
+        (`border`/`rounded-md`/`shadow-sm`, coerente con lo stile neutro già in uso nel resto
+        dell'admin) con un'icona SVG a freccia che ruota 180° all'apertura (`transition-transform`)
+        al posto dei caratteri unicode ▲/▼ originali (resa meno uniforme tra font/piattaforme). Il
+        pannello espanso è diventato una vera card (`border`/`rounded-md`/`shadow-sm`/`bg-white`/
+        `p-4`), con più respiro tra i gruppi (`gap-4` invece di `gap-3` compresso) — questo styling
+        da "card" è applicato solo sotto `sm` (override esplicito a `sm:border-0 sm:bg-transparent
+        sm:shadow-none sm:p-0`), il nav desktop resta piatto/invariato come prima, non era in scope
+        la richiesta. **Aggiunta anche l'evidenziazione della voce attiva** (non richiesta
+        esplicitamente ma naturale per "più carino" — aiuta l'orientamento): il link della pagina
+        corrente diventa `font-semibold text-green-700` invece del colore neutro, calcolato
+        confrontando `pathname` con l'`href` di ogni voce (match esatto solo per "Dashboard"
+        `/admin`, altrimenti `startsWith` per non richiedere match esatto sulle sotto-pagine, es.
+        `/admin/botteghe/[id]/edit` evidenzia comunque "Botteghe"), attiva sia in versione mobile
+        che desktop
+      - **Indentazione della tendina mobile per evidenziare la gerarchia**: i link di ogni gruppo
+        erano allo stesso margine sinistro dell'etichetta del gruppo, leggibile come una lista
+        piatta invece che come un albero. Aggiunto `pl-3` al contenitore dei link di ogni gruppo
+        (solo sotto `sm`, resettato a `sm:pl-0` per non toccare il layout orizzontale desktop, dove
+        la gerarchia è già resa dai separatori verticali tra gruppi) — "Dashboard", unico link di
+        primo livello senza gruppo, resta non indentato, coerente col suo ruolo di radice
+        dell'albero. Verificato misurando le coordinate X reali (etichetta gruppo vs link figlio)
+        via Playwright, non solo a occhio da uno screenshot
+      - **Header pubblico più basso in `/admin`**: essendo condiviso da tutte le rotte (nessun
+        layout separato per l'area admin — vedi la nota più sopra sulla cascata CSS/body condiviso),
+        su mobile la sua altezza normale si sommava a quella del nav admin sotto, occupando troppo
+        spazio verticale. `components/Header.tsx` rileva `pathname.startsWith("/admin")` e in quel
+        caso usa padding verticale ridotto (`py-2` invece di `py-4`) e un logo più piccolo e a
+        dimensione fissa (`h-8` invece di `h-11 md:h-14 wide:h-16` — in admin non serve scalare per
+        breakpoint, non è una pagina di marketing). Icone QR/avatar/hamburger invariate, restano
+        utili anche in admin (link rapido al sito pubblico, propria tessera). Verificato con
+        Playwright: altezza header in `/admin` (mobile) 49px contro 77px nelle pagine pubbliche
+      - Testato con Playwright e un admin di test: nav desktop invariato con "Eventi" sotto
+        "Community", tendina mobile chiusa di default e correttamente espandibile, header più basso
+        misurato numericamente (non solo a occhio). Dati di test ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

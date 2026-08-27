@@ -43,6 +43,10 @@ export function Header({
   qrCodeDataUrl: string | null;
 }) {
   const pathname = usePathname();
+  // L'header pubblico è condiviso da tutte le rotte, /admin incluso (nessun layout separato — vedi
+  // CLAUDE.md): in versione compatta lì per lasciare più spazio verticale al pannello admin,
+  // specialmente in mobile dove la sua altezza normale si somma a quella del menu admin sotto.
+  const isAdmin = pathname.startsWith("/admin");
   const hasImageHero = HERO_IMAGE_PATHS.has(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -89,14 +93,18 @@ export function Header({
         overlay ? "bg-transparent" : "border-b border-ink/5 bg-cream/95 backdrop-blur"
       }`}
     >
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 wide:max-w-6xl">
+      <div
+        className={`mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 wide:max-w-6xl ${
+          isAdmin ? "py-2" : "py-4"
+        }`}
+      >
         <Link href="/" className="shrink-0">
           <Image
             src={overlay ? "/logo/logo-orizz-white.png" : "/logo/logo-orizz.png"}
             alt={siteConfig.name}
             width={441}
             height={134}
-            className="h-11 w-auto md:h-14 wide:h-16"
+            className={isAdmin ? "h-8 w-auto" : "h-11 w-auto md:h-14 wide:h-16"}
             priority
           />
         </Link>
@@ -127,7 +135,7 @@ export function Header({
                     className="h-7 w-7 shrink-0 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cream text-[0.65rem] font-bold text-ink">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[0.65rem] font-bold text-ink">
                     {initials(session.user.name || "Account")}
                   </span>
                 )}
