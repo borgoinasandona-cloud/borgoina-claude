@@ -109,9 +109,9 @@ export function Header({
                   type="button"
                   onClick={() => setQrModalOpen(true)}
                   aria-label="Mostra il mio QR code"
-                  className={`transition-colors ${iconColor}`}
+                  className={`-m-2 flex items-center justify-center p-2 transition-colors ${iconColor}`}
                 >
-                  <FontAwesomeIcon icon={faQrcode} className="h-5 w-5 wide:h-6 wide:w-6" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faQrcode} className="!h-6 !w-6 wide:!h-6 wide:!w-6" aria-hidden="true" />
                 </button>
               )}
               <Link
@@ -124,10 +124,10 @@ export function Header({
                   <img
                     src={session.user.image}
                     alt=""
-                    className="h-6 w-6 shrink-0 rounded-full object-cover"
+                    className="h-7 w-7 shrink-0 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cream text-[0.6rem] font-bold text-ink">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cream text-[0.65rem] font-bold text-ink">
                     {initials(session.user.name || "Account")}
                   </span>
                 )}
@@ -148,12 +148,12 @@ export function Header({
             onClick={() => setMobileOpen((open) => !open)}
             aria-label={mobileOpen ? "Chiudi il menu" : "Apri il menu"}
             aria-expanded={mobileOpen}
-            className={`transition-colors ${overlay ? "text-cream" : "text-ink"}`}
+            className={`-m-2 flex items-center justify-center p-2 transition-colors ${overlay ? "text-cream" : "text-ink"}`}
           >
             {mobileOpen ? (
-              <CloseIcon className="h-7 w-7 wide:h-8 wide:w-8" />
+              <CloseIcon className="!h-8 !w-8 wide:!h-8 wide:!w-8" />
             ) : (
-              <HamburgerIcon className="h-7 w-7 wide:h-8 wide:w-8" />
+              <HamburgerIcon className="!h-8 !w-8 wide:!h-8 wide:!w-8" />
             )}
           </button>
         </div>
@@ -281,7 +281,7 @@ export function Header({
                     aria-label="Chiudi"
                     className="absolute top-3 right-3 text-ink-soft transition-colors hover:text-brick"
                   >
-                    <CloseIcon className="h-5 w-5" />
+                    <CloseIcon className="!h-5 !w-5" />
                   </button>
                   <UserQrCode dataUrl={qrCodeDataUrl} />
                 </div>

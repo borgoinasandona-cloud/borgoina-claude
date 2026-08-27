@@ -77,7 +77,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="font-mono inline-flex items-center gap-1.5 rounded-sm text-xs font-semibold tracking-[0.08em] uppercase transition-colors hover:text-white"
                   >
-                    <FontAwesomeIcon icon={faInstagram} className="h-3.5 w-3.5" />
+                    <FontAwesomeIcon icon={faInstagram} className="!h-3.5 !w-3.5" />
                     Instagram
                   </a>
                 </div>

@@ -34,7 +34,7 @@ function ContactCard({
   return (
     <div className="flex items-start gap-3 rounded-xl border border-ink/10 bg-white p-4 shadow-md">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brick/10 text-brick">
-        <FontAwesomeIcon icon={icon} className="h-4 w-4" aria-hidden="true" />
+        <FontAwesomeIcon icon={icon} className="!h-4 !w-4" aria-hidden="true" />
       </div>
       <div className="min-w-0">
         <p className="font-mono text-[0.7rem] font-semibold tracking-wide text-ink-soft uppercase">{label}</p>
@@ -101,7 +101,7 @@ export default async function ShopDetailPage({
               href="/botteghe"
               className="inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
             >
-              <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="h-3 w-3" />
+              <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="!h-3 !w-3" />
               Torna a Botteghe
             </Link>
 
@@ -166,14 +166,14 @@ export default async function ShopDetailPage({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#1ebe5a]"
             >
-              <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon icon={faWhatsapp} className="!h-4 !w-4" aria-hidden="true" />
               Scrivimi su WhatsApp
             </a>
             <a
               href={`tel:${shop.phone}`}
               className="inline-flex items-center gap-2 rounded border border-ink/15 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brick hover:text-brick"
             >
-              <FontAwesomeIcon icon={faPhone} className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon icon={faPhone} className="!h-4 !w-4" aria-hidden="true" />
               Chiama ora
             </a>
           </div>
@@ -182,7 +182,7 @@ export default async function ShopDetailPage({
         {activeTokens.length > 0 && (
           <div className="mb-8 rounded-xl border border-brick/20 bg-brick/5 p-5">
             <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
-              <FontAwesomeIcon icon={faTag} className="h-3.5 w-3.5" aria-hidden="true" />
+              <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
               Sconti disponibili
             </p>
             <ul className="mt-3 space-y-2">
@@ -266,7 +266,7 @@ export default async function ShopDetailPage({
                     className="inline-flex items-center gap-1 hover:text-brick"
                   >
                     Apri il profilo
-                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
                   </a>
                 </ContactCard>
               )}
@@ -277,7 +277,7 @@ export default async function ShopDetailPage({
         {shop.images.length > 0 && (
           <div className="mt-8">
             <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
-              <FontAwesomeIcon icon={faImage} className="h-3.5 w-3.5" aria-hidden="true" />
+              <FontAwesomeIcon icon={faImage} className="!h-3.5 !w-3.5" aria-hidden="true" />
               Galleria
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">

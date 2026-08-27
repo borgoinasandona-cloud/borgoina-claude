@@ -52,7 +52,7 @@ export default async function NewsDetailPage({
             href="/news"
             className="mb-6 inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
           >
-            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="h-3 w-3" />
+            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="!h-3 !w-3" />
             Torna alla Bacheca
           </Link>
 
@@ -98,7 +98,7 @@ export default async function NewsDetailPage({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded bg-brick px-4 py-2 text-base font-semibold text-cream no-underline shadow-md transition-colors hover:bg-brick-dark"
             >
-              <FontAwesomeIcon icon={faImage} className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon icon={faImage} className="!h-4 !w-4" aria-hidden="true" />
               Vedi la galleria completa
             </a>
           </p>
@@ -107,7 +107,7 @@ export default async function NewsDetailPage({
         {post.images.length > 0 && (
           <div className="mt-8">
             <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
-              <FontAwesomeIcon icon={faImage} className="h-3.5 w-3.5" aria-hidden="true" />
+              <FontAwesomeIcon icon={faImage} className="!h-3.5 !w-3.5" aria-hidden="true" />
               Galleria
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">

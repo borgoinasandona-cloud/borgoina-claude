@@ -923,6 +923,88 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       presente indipendentemente dal breakpoint. Verificato con Playwright (display effettivo dello
       span nome: nascosto sotto 640px, visibile a 1400px; `aria-label` presente in entrambi i casi)
       e screenshot mobile/desktop. Dati di test ripuliti
+- [x] **Aree cliccabili ingrandite in header mobile (2026-08-27)**: icona QR e hamburger avevano
+      un'area di tocco pari alla sola icona (~20-28px), sotto il minimo consigliato (~44px).
+      Icone portate a `h-6 w-6`/`h-8 w-8` e aggiunta la tecnica margine-negativo/padding
+      (`-m-2 p-2`) per allargare l'area cliccabile senza spostare il layout visibile (il padding
+      aggiunto è compensato dal margine negativo uguale e contrario, quindi il `gap-4` del
+      contenitore flex resta invariato). Avatar/iniziali ingranditi da `h-6 w-6` a `h-8 w-8`
+      (dimensione visibile, non solo l'area di tocco: è un elemento identitario, non una pura
+      icona). Verificato misurando i bounding box reali via Playwright: QR e hamburger ora 37×44px,
+      avatar 32×32px — click funzionale confermato su tutti e tre (apre la modale QR, apre il menu
+      mobile). Dati di test ripuliti
+- [x] **Bug scoperto e corretto: tutte le classi Tailwind `h-*`/`w-*` sulle icone Font Awesome del
+      sito pubblico venivano ignorate dal browser (2026-08-27)**: partendo dalla richiesta di
+      ingrandire anche il *glyph* (non solo l'area di tocco) di icona QR e hamburger in mobile
+      header, portando le classi a `h-9 w-9` (36px) la dimensione renderizzata non cambiava
+      affatto — misurato via Playwright, sempre ~21×17px indipendentemente dalla classe applicata.
+      **Causa reale**: `node_modules/@fortawesome/fontawesome-svg-core/styles.css` (importato una
+      volta per side-effect in `lib/fontawesome.ts`) definisce `.svg-inline--fa { height: 1em;
+      width: var(--fa-width, 1.25em); }` come CSS "unlayered" (fuori da `@layer`) — la stessa
+      classe di bug già documentata in questo file per `.eyebrow`/`body`: una regola non-layered
+      batte **sempre** le utility Tailwind di `@layer utilities`, indipendentemente dall'ordine nel
+      markup. Il bug era presente fin dalla prima icona Font Awesome introdotta in questa sessione
+      (frecce, tag, camera, qrcode, commento, ecc.) ma non era mai stato notato: alle dimensioni
+      piccole tipiche (14–19px, vicine a 1em/1.25em del font body a 17px) il risultato "sbagliato"
+      sembrava plausibile a occhio — è diventato evidente solo ora, chiedendo una dimensione molto
+      più grande (36px) e misurandola con Playwright invece di verificarla solo visivamente
+      - **Primo tentativo, abbandonato**: un override centralizzato in `app/globals.css` con
+        `.svg-inline--fa { height: revert-layer; width: revert-layer; }`. Si è rivelato inaffidabile:
+        anche dopo un riavvio pulito del dev server, l'elemento aveva **tre** regole
+        `.svg-inline--fa` in cascata (originale Font Awesome → il mio `revert-layer` → un'altra copia
+        della regola originale, apparentemente da una duplicazione della stessa stylesheet nel
+        bundle di sviluppo) — la terza regola, arrivata dopo, vinceva di nuovo per ordine sorgente e
+        annullava l'override. Troppo fragile per essere affidabile, rimosso
+      - **Bug collaterale mentre si scriveva il commento esplicativo per quel tentativo**: la
+        sottostringa letterale `*/` dentro il testo di un commento CSS (scritta come scorciatoia
+        per riferirsi insieme a pattern `h-*` e `w-*`) chiude il commento in anticipo e corrompe il
+        parsing di tutto il CSS successivo — scoperto solo con l'errore reale di `npx next build`
+        ("Unclosed bracket"), non dai diagnostici CSS dell'IDE (che indicavano una posizione
+        fuorviante). **Promemoria**: mai scrivere scorciatoie tipo "h-*/w-*" dentro un commento
+        `/* ... */`, va riformulato (es. "h-* e w-*")
+      - **Fix definitivo**: prefisso `!` (important-modifier di Tailwind) su ogni classe `h-N`/`w-N`
+        applicata a un'icona Font Awesome, in tutti i 18 file del sito pubblico che ne contenevano
+        (`h-N` → `!h-N`, incluso il caso con variante breakpoint: `wide:h-N` → `wide:!h-N`, non
+        `!wide:h-N` — l'importante va dopo la variante, non prima, altrimenti la classe non è
+        valida per Tailwind). `!important` vince sempre su una dichiarazione non-important
+        indipendentemente da layer/duplicazioni, quindi robusto per costruzione a differenza di
+        `revert-layer`. Applicato con uno script Node temporaneo che modifica solo i token
+        `h-N`/`w-N` dentro l'attributo `className` di tag `<FontAwesomeIcon>`/`<HamburgerIcon>`/
+        `<CloseIcon>`/`<InstagramIcon>`, lasciando intatte le altre classi (colori, transizioni)
+      - Verificato con `npx tsc --noEmit`, `npx eslint`, `npx next build` puliti, poi con Playwright
+        contro un dev server riavviato di fresco: icona QR ora 28×28px reali (`h-7`), hamburger
+        36×36px (`h-9`), un'icona di controllo altrove (`+`, `h-3`) 12×12px — tutte esattamente
+        quanto dichiarato in classe. Controllo visivo con screenshot su home, Botteghe, Bacheca,
+        header mobile, pagina token sconto: nessuna regressione, tutte le icone del sito ora
+        nitide e correttamente proporzionate invece che schiacciate al default di Font Awesome.
+        Dati/file temporanei ripuliti
+- [x] **Allineamento verticale icona QR/avatar/hamburger in header corretto (2026-08-27)**: dopo il
+      fix delle dimensioni sopra, misurando con Playwright il centro verticale reale di ciascun
+      elemento (non solo la dimensione) è emerso che l'icona QR e l'icona hamburger erano ~3px più
+      in alto del centro dell'avatar, pur essendo tutti dentro lo stesso contenitore `flex
+      items-center`. **Causa**: i due `<button>` che le contengono non erano essi stessi `flex` —
+      l'SVG di Font Awesome, come elemento inline, veniva posizionato secondo l'allineamento
+      inline/baseline di default del browser (Font Awesome imposta `vertical-align: -0.125em` sulle
+      sue icone) invece che centrato nel content-box del bottone. L'avatar, al contrario, era già
+      dentro uno `span`/contenitore con `flex items-center justify-center` propri, quindi centrato
+      correttamente fin dall'inizio — da qui l'asimmetria. **Fix**: aggiunto `flex items-center
+      justify-center` alle classi dei due `<button>` (icona QR e hamburger) in `components/Header.tsx`,
+      così l'SVG si centra nel content-box via flexbox invece che per allineamento inline. Non
+      toccato il bottone "Chiudi" dentro la modale QR (`<CloseIcon className="!h-5 !w-5" />`,
+      riga ~284): è isolato, non affiancato ad altre icone da allineare, fuori dallo scope di questa
+      richiesta. Verificato misurando il centro Y di ciascuna icona via Playwright (bounding box
+      reali, non solo screenshot): prima 35.03px (icone) vs 37.98px (avatar) — scarto di ~3px; dopo
+      tutti e tre esattamente a 38.00px, coincidenti al pixel. Effetto collaterale positivo: le
+      aree di tap di QR/hamburger sono ora quadrati puliti (44×44px, 52×52px) invece di rettangoli
+      leggermente più alti che larghi (44×49.9px, 52×57.9px) dovuti allo stesso disallineamento.
+      Screenshot del logged-in header verificato visivamente. Dati/file temporanei ripuliti
+- [x] **Icone header rimpicciolite (2026-08-27)**: su richiesta, ridotte di uno step Tailwind
+      mantenendo la gerarchia relativa — QR `h-7`→`h-6` (28→24px), avatar/iniziali `h-8`→`h-7`
+      (32→28px), hamburger `h-9`→`h-8` (36→32px). Il centraggio verticale via `flex items-center
+      justify-center` sui bottoni (vedi voce precedente) resta valido a qualunque dimensione:
+      verificato con Playwright che i tre elementi siano ancora esattamente allineati sullo stesso
+      centro Y dopo il ridimensionamento. Screenshot verificato visivamente, dati/file temporanei
+      ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

@@ -41,7 +41,7 @@ export default async function CommunityPage({
               href={session?.user ? "/community/new" : "/community/login"}
               className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
             >
-              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="h-3 w-3" />
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="!h-3 !w-3" />
               Nuovo annuncio
             </Link>
             {session?.user && (
@@ -50,7 +50,7 @@ export default async function CommunityPage({
                 className="inline-flex items-center gap-1 text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
               >
                 Il mio account
-                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
               </Link>
             )}
           </div>

@@ -43,7 +43,7 @@ export default async function BotteghePage({
               href={session?.user ? "/community/bottega" : "/community/login"}
               className="inline-flex items-center gap-1.5 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
             >
-              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="h-3 w-3" />
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" className="!h-3 !w-3" />
               Crea la tua pagina
             </Link>
             {session?.user && (
@@ -52,7 +52,7 @@ export default async function BotteghePage({
                 className="inline-flex items-center gap-1 text-sm font-semibold text-ink-soft transition-colors hover:text-brick"
               >
                 La mia bottega
-                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
               </Link>
             )}
           </div>

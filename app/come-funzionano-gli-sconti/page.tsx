@@ -19,7 +19,7 @@ function StepCard({
   return (
     <div className="flex gap-4 rounded-xl border border-ink/10 bg-white p-5 shadow-md">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brick/10 text-brick">
-        <FontAwesomeIcon icon={icon} className="h-4 w-4" aria-hidden="true" />
+        <FontAwesomeIcon icon={icon} className="!h-4 !w-4" aria-hidden="true" />
       </div>
       <div>
         <p className="font-display text-lg font-bold text-ink">{title}</p>

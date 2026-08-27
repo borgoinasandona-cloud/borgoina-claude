@@ -121,7 +121,7 @@ export default async function CommunityAccountPage() {
                     className="mt-1 inline-flex items-center justify-center gap-1.5 rounded bg-sage px-5 py-2.5 text-center text-sm font-semibold text-cream shadow-md transition-colors hover:bg-sage-dark"
                   >
                     Crea un annuncio nel Mercatino
-                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
                   </Link>
                 </div>
 
@@ -139,7 +139,7 @@ export default async function CommunityAccountPage() {
                     className="mt-1 inline-flex items-center justify-center gap-1.5 rounded bg-brick px-5 py-2.5 text-center text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
                   >
                     {shop ? "Gestisci la tua bottega" : "Crea la tua bottega"}
-                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                    <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
                   </Link>
                 </div>
               </div>

@@ -21,7 +21,7 @@ export function BachecaPreview({ posts }: { posts: PreviewPost[] }) {
           className="inline-flex items-center gap-1.5 text-base font-bold text-brick transition-colors hover:text-brick-dark wide:text-lg"
         >
           Vedi tutte
-          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3.5 w-3.5" />
+          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3.5 !w-3.5" />
         </Link>
       </div>
       {posts.length > 0 ? (

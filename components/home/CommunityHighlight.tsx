@@ -61,7 +61,7 @@ export function CommunityHighlight({ post }: { post: FeaturedCommunityPost | nul
 
             {post._count.comments > 0 && (
               <p className="font-mono mt-3 inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-sage uppercase">
-                <FontAwesomeIcon icon={faComment} className="h-3.5 w-3.5" aria-hidden="true" />
+                <FontAwesomeIcon icon={faComment} className="!h-3.5 !w-3.5" aria-hidden="true" />
                 {post._count.comments} {post._count.comments === 1 ? "commento" : "commenti"}
               </p>
             )}

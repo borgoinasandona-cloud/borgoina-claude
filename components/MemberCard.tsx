@@ -38,7 +38,7 @@ export function MemberCard({ member }: { member: Member }) {
           className="inline-flex items-center gap-1 text-sm font-semibold text-brick hover:text-brick-dark"
         >
           Vedi la sua bottega
-          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+          <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
         </Link>
       )}
     </div>

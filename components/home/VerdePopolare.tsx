@@ -67,7 +67,7 @@ export function VerdePopolare() {
               <FontAwesomeIcon
                 icon={faArrowRight}
                 aria-hidden="true"
-                className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1"
+                className="!h-3 !w-3 transition-transform duration-200 group-hover:translate-x-1"
               />
             </p>
           </div>

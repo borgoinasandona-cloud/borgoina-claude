@@ -71,7 +71,7 @@ export default async function CommunityPostDetailPage({
             href="/community"
             className="mb-6 inline-flex items-center gap-1 text-sm font-bold text-brick transition-colors hover:text-brick-dark"
           >
-            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="h-3 w-3" />
+            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" className="!h-3 !w-3" />
             Torna alla Community
           </Link>
 
@@ -152,7 +152,7 @@ export default async function CommunityPostDetailPage({
 
         <div className="mt-12 border-t border-ink/5 pt-8">
           <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
-            <FontAwesomeIcon icon={faComment} className="h-3.5 w-3.5" aria-hidden="true" />
+            <FontAwesomeIcon icon={faComment} className="!h-3.5 !w-3.5" aria-hidden="true" />
             Commenti
           </p>
 

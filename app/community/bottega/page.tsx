@@ -50,7 +50,7 @@ export default async function MyShopPage() {
                 className="inline-flex items-center gap-1 text-sm font-semibold text-brick hover:text-brick-dark"
               >
                 Vedi la pagina pubblica
-                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="h-3 w-3" />
+                <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
               </Link>
             )}
           </div>
@@ -60,7 +60,7 @@ export default async function MyShopPage() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
-                    <FontAwesomeIcon icon={faTag} className="h-3.5 w-3.5" aria-hidden="true" />
+                    <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
                     Sconti attivati
                   </p>
                   <p className="mt-1 text-sm text-ink-soft">
@@ -71,7 +71,7 @@ export default async function MyShopPage() {
                   href="/scan"
                   className="inline-flex shrink-0 items-center gap-2 rounded bg-brick px-5 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark"
                 >
-                  <FontAwesomeIcon icon={faCamera} className="h-4 w-4" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faCamera} className="!h-4 !w-4" aria-hidden="true" />
                   Scansiona QR
                 </Link>
               </div>
