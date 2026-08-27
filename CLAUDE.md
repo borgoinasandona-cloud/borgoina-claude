@@ -1005,6 +1005,13 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       verificato con Playwright che i tre elementi siano ancora esattamente allineati sullo stesso
       centro Y dopo il ridimensionamento. Screenshot verificato visivamente, dati/file temporanei
       ripuliti
+- [x] **Hamburger ulteriormente rimpicciolito, spaziatura header aumentata (2026-08-27)**: icona
+      hamburger/chiudi `h-8`→`h-6` (32→24px, ora stessa dimensione dell'icona QR). Spaziatura tra
+      gli elementi del blocco destro dell'header (QR, avatar, hamburger) aumentata da `gap-4` a
+      `gap-6` (16px→24px). Riverificato con Playwright dopo la modifica: i tre elementi restano
+      centrati sullo stesso asse Y (il fix del centraggio via `flex items-center justify-center`
+      resta valido a qualunque dimensione/spaziatura) e il click sull'hamburger continua ad aprire
+      il menu correttamente. Dati/file temporanei ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

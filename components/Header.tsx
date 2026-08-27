@@ -101,7 +101,7 @@ export function Header({
           />
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {session?.user ? (
             <>
               {qrCodeDataUrl && (
@@ -151,9 +151,9 @@ export function Header({
             className={`-m-2 flex items-center justify-center p-2 transition-colors ${overlay ? "text-cream" : "text-ink"}`}
           >
             {mobileOpen ? (
-              <CloseIcon className="!h-8 !w-8 wide:!h-8 wide:!w-8" />
+              <CloseIcon className="!h-6 !w-6 wide:!h-6 wide:!w-6" />
             ) : (
-              <HamburgerIcon className="!h-8 !w-8 wide:!h-8 wide:!w-8" />
+              <HamburgerIcon className="!h-6 !w-6 wide:!h-6 wide:!w-6" />
             )}
           </button>
         </div>
