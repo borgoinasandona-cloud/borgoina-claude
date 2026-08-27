@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";
 import { auth } from "@/lib/auth";
+import { generateUserQrCode } from "@/lib/qr";
 
 const bigShoulders = Big_Shoulders({
   variable: "--font-display",
@@ -60,6 +61,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const qrCodeDataUrl = session?.user?.id ? await generateUserQrCode(session.user.id) : null;
 
   return (
     <html
@@ -67,7 +69,7 @@ export default async function RootLayout({
       className={`${bigShoulders.variable} ${workSans.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white text-ink">
-        <Header session={session} />
+        <Header session={session} qrCodeDataUrl={qrCodeDataUrl} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

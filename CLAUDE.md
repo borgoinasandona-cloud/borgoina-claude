@@ -878,6 +878,51 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       `app/admin/(dashboard)/botteghe/page.tsx` e "+ Nuovo token" in `components/TokenForm.tsx`,
       stesso motivo dei back-link sopra: sono pulsanti dell'area admin, mai stata toccata dal
       lavoro sulle icone FontAwesome fatto in questa sessione
+- [x] **Avatar sempre presente accanto al nome in header, con iniziali di fallback (2026-08-27)**:
+      in `components/Header.tsx`, il link "Il mio account" accanto all'hamburger mostrava l'avatar
+      solo se `session.user.image` era valorizzato — altrimenti solo il nome, senza alcun
+      segnaposto. Aggiunto il fallback iniziali (`initials()` da `lib/initials.ts`, stesso helper
+      già usato in `MemberCard`/`AccountForm`/pagina bottega) in un cerchietto `bg-cream text-ink`:
+      colore fisso indipendente dallo stato dell'header (trasparente su hero foto vs solido)
+      per restare leggibile in entrambi i casi, a differenza di un `bg-ink/10` come in `MemberCard`
+      (lì il contesto è sempre uno sfondo bianco di card, qui no). Verificato con Playwright e
+      utenti di test reali nei tre casi: senza foto su header solido, senza foto su header
+      trasparente (hero fotografica in home), con foto — tutti corretti. Dati di test ripuliti
+- [x] **Icona QR in header, apre il proprio QR in una modale (2026-08-27)**: a sinistra del blocco
+      avatar+nome (da loggati), nuova icona `faQrcode` che apre una modale centrata con lo stesso
+      `components/UserQrCode.tsx` già usato in `/community/account` (nessun componente nuovo per il
+      contenuto, solo il contenitore modale). Il QR va generato server-side (usa `crypto`/
+      `QR_SECRET`, non può girare nel client component `Header.tsx`): `app/layout.tsx` ora chiama
+      `generateUserQrCode(session.user.id)` una volta per richiesta (già faceva `auth()` per la
+      sessione, nessuna query DB aggiuntiva: la firma si ricalcola al volo dall'id, come da
+      Fase 5) e lo passa a `Header` come prop `qrCodeDataUrl`, invece di fare una chiamata separata
+      dal client — costo trascurabile (HMAC + encode QR, nessun I/O) anche calcolato ad ogni
+      pagina per un utente che magari non apre mai la modale
+      - Stesso pattern di portale (`createPortal` su `document.body`) già usato per il menu mobile,
+        stato `qrModalOpen` indipendente da `mobileOpen` (i due non si aprono mai insieme). Chiusura
+        su: pulsante X (riusa `CloseIcon` da `components/MenuIcons.tsx`), click sul backdrop, o
+        cambio pagina (stesso pattern "adjust state during render" già usato per chiudere il menu
+        mobile alla navigazione). `inert` sul contenitore quando chiuso, blocco scroll body condiviso
+        con `mobileOpen` nello stesso `useEffect`
+      - **Bug di metodologia nel primo giro di test, non un bug applicativo**: `page.locator(...).
+        isVisible()` di Playwright non considera `opacity-0` come "non visibile" (solo
+        `display:none`/`visibility:hidden`/dimensione zero) — il primo test segnalava la modale
+        "visibile" anche a riposo. Corretto usando l'opacità effettiva calcolata
+        (`getComputedStyle` risalendo gli antenati) invece di `isVisible()`: con la verifica giusta,
+        0 a riposo, 1 da aperta, 0 dopo ogni chiusura, come atteso
+      - Testato con Playwright e utenti reali: icona presente da loggati, apertura/chiusura (X e
+        backdrop) corrette, QR renderizzato come data URL PNG valido, stabile per lo stesso utente
+        tra due aperture, diverso tra due utenti diversi (verifica indiretta di unicità senza dover
+        decodificare i pixel del QR). Dati di test ripuliti dal DB di produzione dopo la verifica
+- [x] **Nome utente nascosto in header sotto `sm` (2026-08-27)**: da loggati, sotto i 640px resta
+      visibile solo l'avatar/iniziali nel link account (per risparmiare spazio in mobile) — il nome
+      è in uno `<span className="hidden sm:inline">`, non rimosso dal DOM ma escluso
+      dall'accessibility tree quando nascosto. Per non perdere il nome accessibile su mobile (il
+      link avrebbe altrimenti nessun testo accessibile con una foto profilo, alt="" sull'immagine),
+      aggiunto `aria-label={session.user.name || "Account"}` direttamente sul `<Link>`, sempre
+      presente indipendentemente dal breakpoint. Verificato con Playwright (display effettivo dello
+      span nome: nascosto sotto 640px, visibile a 1400px; `aria-label` presente in entrambi i casi)
+      e screenshot mobile/desktop. Dati di test ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

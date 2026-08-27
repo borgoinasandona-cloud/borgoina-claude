@@ -6,9 +6,13 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Session } from "next-auth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
+import { initials } from "@/lib/initials";
 import { InstagramIcon } from "@/components/InstagramIcon";
 import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
+import { UserQrCode } from "@/components/UserQrCode";
 
 // Pagine il cui hero è una foto a piena larghezza (non una fascia di colore piatto):
 // solo lì l'header può stare trasparente sopra l'immagine finché non si scrolla.
@@ -31,19 +35,27 @@ function getServerSnapshot() {
   return false;
 }
 
-export function Header({ session }: { session: Session | null }) {
+export function Header({
+  session,
+  qrCodeDataUrl,
+}: {
+  session: Session | null;
+  qrCodeDataUrl: string | null;
+}) {
   const pathname = usePathname();
   const hasImageHero = HERO_IMAGE_PATHS.has(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
   const mounted = useSyncExternalStore(subscribeNoop, getClientSnapshot, getServerSnapshot);
 
-  // Chiudi il menu mobile quando cambia pagina (pattern "adjust state during render"
-  // di React, per evitare un useEffect con solo un setState dentro).
+  // Chiudi il menu mobile e la modale QR quando cambia pagina (pattern "adjust state during
+  // render" di React, per evitare un useEffect con solo un setState dentro).
   const [lastPathname, setLastPathname] = useState(pathname);
   if (pathname !== lastPathname) {
     setLastPathname(pathname);
     setMobileOpen(false);
+    setQrModalOpen(false);
   }
 
   useEffect(() => {
@@ -58,14 +70,14 @@ export function Header({ session }: { session: Session | null }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasImageHero]);
 
-  // Blocca lo scroll della pagina sotto mentre il menu mobile (modale) è aperto.
+  // Blocca lo scroll della pagina sotto mentre il menu mobile o la modale QR sono aperti.
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!mobileOpen && !qrModalOpen) return;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, qrModalOpen]);
 
   // A menu mobile aperto l'header resta sempre in versione solida, anche sopra una hero foto.
   const overlay = hasImageHero && !scrolled && !mobileOpen;
@@ -91,20 +103,37 @@ export function Header({ session }: { session: Session | null }) {
 
         <div className="flex items-center gap-4">
           {session?.user ? (
-            <Link
-              href="/community/account"
-              className={`flex items-center gap-2 font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
-            >
-              {session.user.image && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={session.user.image}
-                  alt=""
-                  className="h-6 w-6 rounded-full object-cover"
-                />
+            <>
+              {qrCodeDataUrl && (
+                <button
+                  type="button"
+                  onClick={() => setQrModalOpen(true)}
+                  aria-label="Mostra il mio QR code"
+                  className={`transition-colors ${iconColor}`}
+                >
+                  <FontAwesomeIcon icon={faQrcode} className="h-5 w-5 wide:h-6 wide:w-6" aria-hidden="true" />
+                </button>
               )}
-              {session.user.name || "Account"}
-            </Link>
+              <Link
+                href="/community/account"
+                aria-label={session.user.name || "Account"}
+                className={`flex items-center gap-2 font-mono text-[0.8rem] font-semibold tracking-[0.08em] uppercase transition-colors wide:text-sm ${iconColor}`}
+              >
+                {session.user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={session.user.image}
+                    alt=""
+                    className="h-6 w-6 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cream text-[0.6rem] font-bold text-ink">
+                    {initials(session.user.name || "Account")}
+                  </span>
+                )}
+                <span className="hidden sm:inline">{session.user.name || "Account"}</span>
+              </Link>
+            </>
           ) : (
             <Link
               href="/community/login"
@@ -228,6 +257,36 @@ export function Header({ session }: { session: Session | null }) {
                 </div>
               </div>
             </nav>
+
+            {/* Modale QR: stesso pattern di backdrop+contenuto del menu mobile, ma centrata
+                e indipendente da esso (i due non si aprono mai insieme, il click sull'icona QR
+                non passa dal bottone hamburger). */}
+            {qrCodeDataUrl && (
+              <div
+                className={`fixed inset-0 z-40 flex items-center justify-center bg-ink/60 backdrop-blur-sm px-4 transition-opacity duration-300 ${
+                  qrModalOpen ? "opacity-100" : "pointer-events-none opacity-0"
+                }`}
+                onClick={() => setQrModalOpen(false)}
+                inert={!qrModalOpen}
+              >
+                <div
+                  className={`relative rounded-xl bg-white p-6 shadow-xl transition-transform duration-300 ${
+                    qrModalOpen ? "scale-100" : "scale-95"
+                  }`}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setQrModalOpen(false)}
+                    aria-label="Chiudi"
+                    className="absolute top-3 right-3 text-ink-soft transition-colors hover:text-brick"
+                  >
+                    <CloseIcon className="h-5 w-5" />
+                  </button>
+                  <UserQrCode dataUrl={qrCodeDataUrl} />
+                </div>
+              </div>
+            )}
           </>,
           document.body,
         )}
