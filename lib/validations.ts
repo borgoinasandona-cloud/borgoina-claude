@@ -107,6 +107,27 @@ export const shopSchema = z.object({
   images: z.array(shopImageSchema).default([]),
 });
 
+export const eventSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(160)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug non valido (usa minuscole e trattini)"),
+  title: z.string().trim().min(1, "Il titolo è obbligatorio").max(200),
+  description: z.string().trim().max(3000).optional().or(z.literal("")),
+  date: z.string().trim().min(1, "La data è obbligatoria"),
+  maxSeats: z.coerce.number().int().min(1).optional().or(z.literal("")),
+  notesLabel: z.string().trim().max(120).optional().or(z.literal("")),
+});
+
+// guests limitato a 20: nessun vincolo esplicito richiesto, ma un tetto ragionevole evita che un
+// singolo RSVP possa svuotare maxSeats per un errore di battitura (es. "200" invece di "2").
+export const eventRsvpSchema = z.object({
+  guests: z.coerce.number().int().min(0).max(20),
+  notes: z.string().trim().max(1000).optional().or(z.literal("")),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().trim().email("Email non valida"),
 });
@@ -141,3 +162,5 @@ export type CommunityPostInput = z.infer<typeof communityPostSchema>;
 export type CommentInput = z.infer<typeof commentSchema>;
 export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
 export type ShopInput = z.infer<typeof shopSchema>;
+export type EventInput = z.infer<typeof eventSchema>;
+export type EventRsvpInput = z.infer<typeof eventRsvpSchema>;

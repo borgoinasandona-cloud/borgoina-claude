@@ -30,6 +30,10 @@ const adminNav: AdminNavItem[] = [
       { href: "/admin/botteghe", label: "Botteghe" },
     ],
   },
+  {
+    group: "Eventi",
+    items: [{ href: "/admin/eventi", label: "Eventi" }],
+  },
 ];
 
 export default async function AdminDashboardLayout({

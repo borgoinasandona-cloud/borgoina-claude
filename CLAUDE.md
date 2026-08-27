@@ -1012,6 +1012,72 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
       centrati sullo stesso asse Y (il fix del centraggio via `flex items-center justify-center`
       resta valido a qualunque dimensione/spaziatura) e il click sull'hamburger continua ad aprire
       il menu correttamente. Dati/file temporanei ripuliti
+- [x] **Fase 7 — Sistema RSVP nativo per eventi (2026-08-27)**: prima applicazione, la prossima
+      cena di quartiere. Verificato prima di procedere che non esistesse già nulla di simile: gli
+      "eventi" nel progetto erano solo `Post` con `Category` "Eventi" nella Bacheca news — puro
+      contenuto editoriale, senza data strutturata né alcuna nozione di prenotazione. Nessun
+      aggancio possibile, servivano modelli nuovi indipendenti da `Post`. Piano e diff schema
+      mostrati e approvati prima di scrivere codice (vedi PLANNING.md "Fase 7" per il riassunto)
+      - Schema: `Event` (titolo, descrizione, data/ora, `maxSeats` opzionale, `notesLabel`
+        opzionale) e `EventRsvp` (`@@unique([eventId, userId])` — un socio prenota un evento una
+        sola volta, la stessa riga si aggiorna con un `upsert` per "modifica prenotazione").
+        Aggiunti rispetto alla bozza iniziale, per coerenza con `Post`/`CommunityPost`/`Shop`:
+        `Event.slug` (URL pubblica leggibile, mai un cuid nudo), `@db.Text` sui campi di testo
+        lunghi, `updatedAt`. **Deliberatamente senza `visibility`**: confermato con Dario in fase
+        di piano — nessuna pagina di elenco pubblico per ora (solo `/eventi/[slug]` via link
+        diretto condiviso a mano, nessuna voce di menù), quindi niente da filtrare. Aggiungibile in
+        futuro insieme a un eventuale elenco
+      - **Limite posti garantito con lo stesso pattern già collaudato in `lib/discounts.ts` →
+        `redeemToken()` (Fase 6)**: row lock esplicito (`SELECT ... FOR UPDATE` via `tx.$queryRaw`
+        sulla riga `Event`) dentro `lib/eventRsvp.ts` → `createOrUpdateRsvp()`, non un semplice
+        recount — sotto l'isolamento di default di Postgres (READ COMMITTED) due prenotazioni
+        concorrenti vicino al limite potrebbero altrimenti leggere lo stesso conteggio stantio e
+        superarlo entrambe. Qui il lock serve solo per il conteggio posti (accompagnatori inclusi:
+        posti occupati = somma di `1 + guests` su tutte le prenotazioni): l'unicità "una
+        prenotazione per socio" è già garantita a parte dal vincolo `@@unique` tramite `upsert`,
+        non serve il lock anche per quello
+      - **Verificato con un test di concorrenza reale** (stesso approccio della Fase 6, script
+        diretto via `tsx`, non solo "il codice non lancia errori"): evento con `maxSeats: 1`, due
+        `createOrUpdateRsvp()` simultanee (`Promise.allSettled`, due utenti reali diversi) → sempre
+        esattamente 1 successo e 1 fallimento ("Posti esauriti."), mai 2 successi
+      - Pagina pubblica `/eventi/[slug]`: stato dinamico in un'unica pagina — non loggato (invito
+        al login), loggato senza prenotazione con posti disponibili (form), loggato senza
+        prenotazione e posti esauriti (messaggio, niente form), loggato già prenotato (banner +
+        stesso form precompilato per modificare + bottone "Annulla prenotazione" separato), evento
+        passato (stato di sola lettura, form sempre assente indipendentemente da prenotazione
+        esistente o meno — coerente con "si può modificare finché l'evento non è passato")
+      - Etichetta del campo note: `event.notesLabel` se valorizzato dall'admin (es. "Preferenze
+        menù" per la cena), altrimenti placeholder generico "Note per l'organizzatore
+        (opzionale)" — il campo in sé resta generico (`EventRsvp.notes`), non specifico per
+        preferenze alimentari, come richiesto
+      - **Attenzione al fuso orario nell'input `datetime-local` del form admin**: una stringa
+        "YYYY-MM-DDTHH:mm" non porta alcuna informazione di fuso orario. `new Date(...)` la
+        interpreta come orario locale del runtime che esegue il codice — se quel valore venisse poi
+        ri-formattato con un `timeZone` esplicito diverso (es. forzando `"Europe/Rome"` in
+        `Intl.DateTimeFormat`), l'orario mostrato in pubblico si sfaserebbe rispetto a quanto
+        digitato dall'admin. Scelta deliberata: **nessun `timeZone` esplicito da nessuna parte**
+        (né alla creazione in `app/admin/(dashboard)/eventi/actions.ts`, né alla visualizzazione in
+        `app/eventi/[slug]/page.tsx`, né alla ri-lettura per il form di modifica in
+        `components/EventForm.tsx`, che usa i getter locali `getFullYear()`/`getHours()` ecc. e non
+        `.toISOString()`, sempre UTC) — così l'orario digitato e quello mostrato ai soci coincidono
+        sempre "alla lettera", per costruzione, qualunque sia il fuso orario reale del server.
+        Non adatto a un pubblico multi-fuso, ma sufficiente per un comitato di quartiere locale;
+        commentato nel codice per non perdere il ragionamento in futuro
+      - Admin: nuovo gruppo "Eventi" in `adminNav` (`app/admin/(dashboard)/layout.tsx`), CRUD in
+        `/admin/eventi` (lista/nuovo/modifica, stesso impianto di `/admin/botteghe`) e tabella
+        prenotazioni dedicata in `/admin/eventi/[id]/rsvps` — **nome, email, ospiti e note sempre
+        visibili direttamente in cella**, mai dietro un dettaglio da espandere/aprire (richiesto
+        esplicitamente: le note sono l'informazione operativa più usata da chi organizza)
+      - Testato end-to-end con Playwright contro un dev server riavviato di fresco e dati reali
+        (1 admin + 2 iscritti, ripuliti a fine test): admin crea evento (`maxSeats: 3`) dalla UI →
+        utente anonimo vede invito al login senza form → iscritto A prenota 2 accompagnatori →
+        banner "sei prenotato" → A modifica a 1 accompagnatore (verificato che non duplichi la riga,
+        `count === 1`) → iscritto B tenta con troppi accompagnatori → rifiutato con "Posti
+        esauriti", nessuna riga creata → A annulla → B ora riesce a prenotarsi → admin apre
+        `/admin/eventi/[id]/rsvps` e le note sono visibili direttamente in tabella → evento con data
+        nel passato mostra stato di sola lettura, form assente. Dati di test ripuliti dal DB di
+        produzione dopo la verifica (controllato con una query mirata a fine sessione: zero eventi e
+        zero utenti di test residui)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

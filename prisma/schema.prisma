@@ -64,6 +64,7 @@ model User {
   comments       Comment[]
   shop           Shop?
   redemptions    TokenRedemption[]
+  eventRsvps     EventRsvp[]
   createdAt      DateTime          @default(now())
 }
 
@@ -250,6 +251,40 @@ model PostImage {
   url    String // Cloudinary
   alt    String?
   order  Int     @default(0)
+}
+
+// Sistema RSVP nativo per eventi (cena di quartiere e futuri) — indipendente da Post: gli
+// "eventi" come contenuto editoriale (Post + Category "Eventi") restano per gli annunci in
+// Bacheca, questo modello serve solo per la prenotazione posti vera e propria. Niente pagina di
+// elenco pubblico per ora (solo /eventi/[slug] via link diretto), quindi niente campo visibility.
+model Event {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  description String?     @db.Text
+  date        DateTime
+  maxSeats    Int? // null = nessun limite posti
+  notesLabel  String? // etichetta personalizzata per il campo note — se null, UI usa un placeholder generico
+  rsvps       EventRsvp[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// Nessun vincolo diretto sui posti qui a livello DB (a differenza di @@unique([eventId, userId]),
+// che DB-enforced l'unicità della prenotazione): il limite maxSeats è garantito in
+// lib/eventRsvp.ts con un row lock esplicito sulla riga Event, non da un vincolo a parte.
+model EventRsvp {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guests    Int      @default(0) // accompagnatori
+  notes     String?  @db.Text // testo libero: preferenze/note/richieste specifiche per l'evento
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, userId])
 }
 
 model ContactMessage {
