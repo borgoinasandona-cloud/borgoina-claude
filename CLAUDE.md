@@ -1270,6 +1270,22 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         testo/bordi in tutto il sito), che legge come azione di sistema/utility piuttosto che
         come destinazione di navigazione — coerente con la sua natura diversa dalle tre pillole
         colorate sopra
+      - **Bug reale segnalato da Dario e corretto (2026-08-28)**: le istruzioni della modale
+        dicevano sempre "nella barra di Safari", ma la rilevazione controllava solo se il
+        dispositivo fosse iOS, non quale browser — su Chrome per iPhone (provato da Dario dal
+        vivo) il testo era quindi sbagliato: il pulsante Condividi di Chrome iOS sta in alto a
+        destra nella barra degli indirizzi, non in basso come su Safari, e va anche scorso verso
+        il basso per trovare "Aggiungi alla schermata Home" nel menu che si apre. Verificato il
+        comportamento reale di Chrome iOS via ricerca (browserstack.com/guide/add-chrome-to-home-screen)
+        prima di scrivere il testo, invece di assumere fosse identico a Safari. Aggiunta
+        `getChromeIOSSnapshot()` (rileva il token `CriOS` nello user agent — presente solo in
+        Chrome su iOS, mai in Safari puro, dato che tutti i browser iOS sono obbligati da Apple a
+        usare il motore WebKit di Safari ma non necessariamente la sua UI) e due testi distinti
+        nella modale. Verificato con Playwright (user agent iPhone reale vs user agent Chrome iOS
+        con token `CriOS` spoofato) leggendo l'`innerText` effettivamente renderizzato per
+        entrambi i casi, non solo uno screenshot — nessuna regressione sul bug dello spazio
+        mancante già corretto in precedenza (verificato che `{" "}` resti presente in entrambi i
+        rami di testo)
 - [x] **Scorciatoia a `/scan` in header per chi ha una bottega (2026-08-27)**: icona fotocamera
       (`faCamera`, stessa icona già usata per "Scansiona QR" in `/community/bottega` — coerenza
       visiva, non una scelta nuova) a sinistra dell'icona QR, visibile solo se

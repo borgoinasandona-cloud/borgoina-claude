@@ -23,6 +23,14 @@ function subscribeNoop() {
 function getIOSSnapshot() {
   return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 }
+// Su iOS ogni browser è obbligato da Apple a usare il motore WebKit di Safari, ma la UI (dove si
+// trova il pulsante Condividi) resta quella del browser, non di Safari — "CriOS" è il token che
+// Chrome usa nel suo user agent su iOS (Safari da solo non lo include mai). Senza questo
+// controllo le istruzioni dicevano sempre "nella barra di Safari" anche a chi usava Chrome, dove
+// il pulsante Condividi sta altrove (in alto a destra nella barra degli indirizzi, non in basso).
+function getChromeIOSSnapshot() {
+  return /CriOS/i.test(window.navigator.userAgent);
+}
 function getFalse() {
   return false;
 }
@@ -45,6 +53,7 @@ function getStandaloneSnapshot() {
 // return null qui sotto è sull'intero wrapper, non solo sul bottone.
 export function InstallAppButton({ wrapperClassName }: { wrapperClassName: string }) {
   const isIOS = useSyncExternalStore(subscribeNoop, getIOSSnapshot, getFalse);
+  const isChromeIOS = useSyncExternalStore(subscribeNoop, getChromeIOSSnapshot, getFalse);
   const isStandalone = useSyncExternalStore(subscribeStandalone, getStandaloneSnapshot, getFalse);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showIOSHelp, setShowIOSHelp] = useState(false);
@@ -110,11 +119,19 @@ export function InstallAppButton({ wrapperClassName }: { wrapperClassName: strin
               <CloseIcon className="!h-5 !w-5" />
             </button>
             <p className="font-display text-lg font-bold text-ink">Aggiungi alla schermata Home</p>
-            <p className="mt-2 text-sm text-ink-soft">
-              Tocca <strong>Condividi</strong>{" "}
-              (l&apos;icona con la freccia verso l&apos;alto) nella barra di Safari, poi scegli{" "}
-              <strong>&quot;Aggiungi alla schermata Home&quot;</strong>.
-            </p>
+            {isChromeIOS ? (
+              <p className="mt-2 text-sm text-ink-soft">
+                Tocca l&apos;icona <strong>Condividi</strong> in alto a destra nella barra degli
+                indirizzi, scorri verso il basso e scegli{" "}
+                <strong>&quot;Aggiungi alla schermata Home&quot;</strong>.
+              </p>
+            ) : (
+              <p className="mt-2 text-sm text-ink-soft">
+                Tocca <strong>Condividi</strong>{" "}
+                (l&apos;icona con la freccia verso l&apos;alto) nella barra di Safari, poi scegli{" "}
+                <strong>&quot;Aggiungi alla schermata Home&quot;</strong>.
+              </p>
+            )}
           </div>
         </div>
       )}
