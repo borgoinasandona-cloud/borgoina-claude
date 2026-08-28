@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Big_Shoulders, Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import "@/lib/fontawesome";
@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/site-config";
 import { auth } from "@/lib/auth";
 import { generateUserQrCode } from "@/lib/qr";
+import { getShopByAuthorId } from "@/lib/shops";
 
 const bigShoulders = Big_Shoulders({
   variable: "--font-display",
@@ -53,6 +54,18 @@ export const metadata: Metadata = {
     description: defaultDescription,
     images: [defaultOgImage],
   },
+  // iOS non legge il manifest.json per queste impostazioni (a differenza di Chrome/Android):
+  // servono questi meta tag dedicati per far sì che l'app aperta da schermata Home non mostri la
+  // barra degli indirizzi di Safari e usi il nome corto come titolo sotto l'icona.
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Borgo INA",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#b54a2a",
 };
 
 export default async function RootLayout({
@@ -61,7 +74,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  const qrCodeDataUrl = session?.user?.id ? await generateUserQrCode(session.user.id) : null;
+  const [qrCodeDataUrl, shop] = session?.user?.id
+    ? await Promise.all([generateUserQrCode(session.user.id), getShopByAuthorId(session.user.id)])
+    : [null, null];
 
   return (
     <html
@@ -69,7 +84,7 @@ export default async function RootLayout({
       className={`${bigShoulders.variable} ${workSans.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white text-ink">
-        <Header session={session} qrCodeDataUrl={qrCodeDataUrl} />
+        <Header session={session} qrCodeDataUrl={qrCodeDataUrl} hasShop={Boolean(shop)} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

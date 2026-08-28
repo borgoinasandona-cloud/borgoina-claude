@@ -1199,6 +1199,98 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
           Storage, come su Neon, non si azzera mai
       - Verificato con Playwright che il testo compaia per entrambi i servizi (`"Si azzera il"`,
         `"finestra mobile"`, `"istantanea"`), screenshot per la leggibilità. Dati di test ripuliti
+- [x] **Installazione come app da home screen (PWA "leggera", 2026-08-27)**: bottone per salvare
+      il sito sulla schermata Home del telefono con aspetto da app — nessun service worker,
+      nessuna cache offline, solo manifest + icone + il bottone stesso: non richiesto e fuori
+      scope, avrebbe introdotto complessità (gestione cache/aggiornamenti) senza che sia mai stato
+      chiesto
+      - `app/manifest.ts` (convenzione file di Next.js, genera da solo `/manifest.webmanifest` e
+        il `<link rel="manifest">`, nessun collegamento manuale — stesso meccanismo già in uso per
+        `app/icon.jpg`): nome/nome corto, `display: "standalone"`, `theme_color` #b54a2a (brick),
+        `background_color` #fff8f4 (cream, stessi colori del brand)
+      - Icone rigenerate da `public/logo/borgo-icona.jpg` (400×400, l'unica sorgente quadrata
+        disponibile) a 192×192 e 512×512 via `sharp` (già presente come dipendenza transitiva di
+        Next.js, nessun pacchetto nuovo) — **dimensioni reali, non semplicemente ridichiarate**:
+        Chrome verifica che esistano davvero un'icona ≥192px e una ≥512px prima di considerare il
+        sito installabile, altrimenti l'evento `beforeinstallprompt` (da cui dipende il bottone su
+        Android/Chrome) non scatta mai. `app/apple-icon.png` (convenzione Next.js per
+        `<link rel="apple-touch-icon">`) riusa la 512px
+      - `appleWebApp` in `app/layout.tsx` (`capable`, `statusBarStyle`, `title`) + nuovo export
+        `viewport` con `themeColor`: iOS non legge affatto il manifest per questi aspetti (a
+        differenza di Chrome/Android), servono i meta tag dedicati perché l'app aperta da home
+        screen non mostri la barra indirizzi di Safari
+      - `components/InstallAppButton.tsx`: **due percorsi completamente diversi**, perché Safari/
+        iOS non ha alcuna API programmatica per attivare "Aggiungi a Home" (scelta deliberata di
+        Apple) — su Chrome/Edge/Android intercetta `beforeinstallprompt` e chiama `.prompt()` sul
+        click; su iOS mostra una modale con le istruzioni manuali (Condividi → Aggiungi alla
+        schermata Home), l'unica cosa possibile. Il bottone si nasconde da solo se: l'app è già
+        installata (rilevato via `matchMedia("(display-mode: standalone)")`, con listener `change`
+        per aggiornarsi dopo un'installazione mentre la pagina resta aperta — niente ricarica
+        necessaria), oppure su desktop/browser che non supportano nessuno dei due percorsi (niente
+        prompt nativo e non iOS)
+      - **`isIOS`/`isStandalone` letti con `useSyncExternalStore`, non `useState`+`useEffect`**:
+        stesso pattern già in uso in `components/Header.tsx` per "mounted" — leggere
+        `window`/`navigator` dentro un `useEffect` e poi chiamare `setState` sincronamente nel
+        corpo dell'effetto è segnalato dalla regola eslint `react-hooks/set-state-in-effect` del
+        progetto (stessa famiglia di regole di "purity" già incontrata per `Date.now()`)
+      - **Bug reale trovato e corretto durante la verifica**: nel testo della modale iOS, uno
+        spazio letterale dopo `</strong>` all'inizio di una nuova riga JSX veniva ancora una volta
+        eliminato dal compilatore SWC ("Condividi(l'icona" invece di "Condividi (l'icona") — stesso
+        identico bug già documentato per `/come-funzionano-gli-sconti`. Corretto con `{" "}`
+        esplicito, verificato leggendo `innerText` del testo effettivamente renderizzato (non solo
+        lo screenshot) prima e dopo il fix
+      - Testato con Playwright (Chromium headless + emulazione iPhone 13 + `matchMedia` sovrascritta
+        per simulare la modalità standalone, dato che l'emulazione dispositivo di Playwright non
+        copre `display-mode`): bottone assente su desktop senza `beforeinstallprompt`, visibile e
+        funzionante su iOS (click → modale con istruzioni corrette), assente se già "installata"
+        (standalone simulato). Build reale (`next build`) verifica che `/manifest.webmanifest` e
+        `/apple-icon.png` vengano effettivamente generati. **Non verificabile da qui**: il vero
+        comportamento del prompt nativo Android/Chrome (richiede un Chrome reale che valuti
+        l'installabilità, non riproducibile in Playwright headless) — da provare a mano su un
+        device reale dopo il deploy
+      - **Spostato dall'header al fondo del menu mobile (2026-08-27), su richiesta esplicita**:
+        tolta l'icona sola (download) dall'header pubblico; il bottone (ora con icona + testo
+        "Installa l'app") vive in fondo al pannello del menu hamburger, come terzo elemento
+        `col-span-2` sotto le due colonne Pagine/Partecipa, visibile solo sotto il breakpoint `sm`
+        (`sm:hidden` — su schermi più larghi installare il sito come app ha meno senso). Refactor
+        di `components/InstallAppButton.tsx`: la classe del contenitore (bordo/margine/
+        `sm:hidden`) è passata come prop `wrapperClassName` e applicata a un `<div>` che avvolge
+        l'intero componente (bottone + eventuale modale iOS), non più solo al `<button>` — così
+        quando il componente ritorna `null` (non installabile/già installata) sparisce anche il
+        wrapper, invece di lasciare un divisore "orfano" (bordo/margine visibile senza il bottone
+        dentro) nel menu. Verificato con Playwright: icona sparita dall'header, bottone presente e
+        cliccabile in fondo al menu su viewport stretto (iPhone 13, 390px), stesso user agent iOS
+        ma viewport ≥640px → bottone nascosto (`sm:hidden` rispettato), nessun bottone/divisore
+        residuo su desktop non installabile (nessun wrapper orfano)
+      - **Colore cambiato da `bg-brick` a `bg-ink` (2026-08-27)**: nella prima versione il bottone
+        condivideva il colore brick con la pillola "Botteghe" proprio sopra di lui nello stesso
+        menu — confusione esplicitamente segnalata. Le tre tinte accento (`sage`/`brick`/`sky`)
+        sono già tutte assegnate a Mercatino/Botteghe/Iscritti in `navLinkAccentClasses`
+        (`lib/site-config.ts`), quindi niente nuova tinta brand: usato `ink` (già la base di
+        testo/bordi in tutto il sito), che legge come azione di sistema/utility piuttosto che
+        come destinazione di navigazione — coerente con la sua natura diversa dalle tre pillole
+        colorate sopra
+- [x] **Scorciatoia a `/scan` in header per chi ha una bottega (2026-08-27)**: icona fotocamera
+      (`faCamera`, stessa icona già usata per "Scansiona QR" in `/community/bottega` — coerenza
+      visiva, non una scelta nuova) a sinistra dell'icona QR, visibile solo se
+      `getShopByAuthorId(session.user.id)` (già esistente in `lib/shops.ts`, nessuna nuova query)
+      trova una bottega collegata all'utente loggato. Calcolata in `app/layout.tsx` in parallelo
+      alla generazione del QR (`Promise.all`, stesso punto che già faceva una query per pagina) e
+      passata come prop `hasShop: boolean` a `Header` — l'query è un lookup su `authorId` (`@unique`
+      su `Shop`), costo trascurabile anche ad ogni richiesta
+      - **Visibile anche in `/admin`**, a differenza di `InstallAppButton` (nascosto lì): non
+        gated da `isAdmin` di proposito, stesso trattamento già riservato a icona QR e avatar
+        ("restano utili anche in admin", vedi nota sopra sulla Fase di ottimizzazione mobile) — un
+        admin che gestisce anche una propria bottega deve poter raggiungere `/scan` da lì senza
+        differenze. **Scoperto durante il test**: la prima versione dello script di verifica
+        assumeva (per analogia con `InstallAppButton`) che l'icona dovesse sparire in admin — il
+        test falliva, ma era l'assunzione del test ad essere sbagliata, non il codice; corretto il
+        test invece del comportamento, dopo aver verificato il precedente reale nel codice
+      - Testato con Playwright e due iscritti reali (uno con bottega collegata, uno senza): icona
+        assente per chi non ha una bottega, visibile e funzionante (click → naviga a `/scan`) per
+        chi ce l'ha, posizionata realmente a sinistra dell'icona QR (bounding box confrontati, non
+        solo l'ordine nel markup), visibile anche su `/admin/login`. Dati di test (utenti + bottega)
+        ripuliti dal DB di produzione dopo la verifica
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

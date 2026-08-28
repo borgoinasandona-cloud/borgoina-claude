@@ -7,12 +7,13 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Session } from "next-auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode, faCamera } from "@fortawesome/free-solid-svg-icons";
 import { navLinks, navLinkAccentClasses, siteConfig } from "@/lib/site-config";
 import { initials } from "@/lib/initials";
 import { InstagramIcon } from "@/components/InstagramIcon";
 import { HamburgerIcon, CloseIcon } from "@/components/MenuIcons";
 import { UserQrCode } from "@/components/UserQrCode";
+import { InstallAppButton } from "@/components/InstallAppButton";
 
 // Pagine il cui hero è una foto a piena larghezza (non una fascia di colore piatto):
 // solo lì l'header può stare trasparente sopra l'immagine finché non si scrolla.
@@ -38,9 +39,11 @@ function getServerSnapshot() {
 export function Header({
   session,
   qrCodeDataUrl,
+  hasShop,
 }: {
   session: Session | null;
   qrCodeDataUrl: string | null;
+  hasShop: boolean;
 }) {
   const pathname = usePathname();
   // L'header pubblico è condiviso da tutte le rotte, /admin incluso (nessun layout separato — vedi
@@ -112,6 +115,15 @@ export function Header({
         <div className="flex items-center gap-6">
           {session?.user ? (
             <>
+              {hasShop && (
+                <Link
+                  href="/scan"
+                  aria-label="Scansiona QR sconti"
+                  className={`-m-2 flex items-center justify-center p-2 transition-colors ${iconColor}`}
+                >
+                  <FontAwesomeIcon icon={faCamera} className="!h-6 !w-6" aria-hidden="true" />
+                </Link>
+              )}
               {qrCodeDataUrl && (
                 <button
                   type="button"
@@ -263,6 +275,15 @@ export function Header({
                     </div>
                   )}
                 </div>
+
+                {/* Bottone "Installa l'app": solo nel layout mobile (sm:hidden), in fondo al menu
+                    (col-span-2 per occupare tutta la larghezza sotto le due colonne) — su schermi
+                    più larghi installare il sito come app ha meno senso. Il componente ritorna
+                    null sull'intero wrapper (non solo sul bottone) quando non c'è nulla da
+                    mostrare (già installata / non installabile qui), altrimenti il bordo/margine
+                    passato come wrapperClassName resterebbe visibile come divisore "orfano" nel
+                    menu — vedi components/InstallAppButton.tsx. */}
+                <InstallAppButton wrapperClassName="col-span-2 mt-8 border-t border-ink/5 pt-6 sm:hidden" />
               </div>
             </nav>
 
