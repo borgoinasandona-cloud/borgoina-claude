@@ -1286,6 +1286,27 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         entrambi i casi, non solo uno screenshot — nessuna regressione sul bug dello spazio
         mancante già corretto in precedenza (verificato che `{" "}` resti presente in entrambi i
         rami di testo)
+      - **Bordo bianco intorno all'icona su Android, segnalato da Dario dopo l'installazione reale
+        (2026-08-28)**: causa nota — senza un'icona dichiarata `purpose: "maskable"` nel manifest,
+        Android non sa che l'artwork (mattoni bordo a bordo) riempie già tutto il riquadro, quindi
+        per sicurezza rimpicciolisce l'icona dentro una "safe zone" più piccola e riempie il resto
+        con uno sfondo bianco. Corretto in `app/manifest.ts` aggiungendo una seconda entry per
+        ciascuna icona (192/512) con `purpose: "maskable"` accanto a quella `"any"` già presente —
+        stesso file immagine, due dichiarazioni. **Non la forma combinata `"any maskable"`**
+        (spaziata, valida per lo standard Web App Manifest): il tipo `MetadataRoute.Manifest` di
+        Next.js accetta un solo valore letterale per `purpose`, non una stringa con più valori
+        separati da spazio — due entry separate con lo stesso `src` sono l'equivalente supportato
+        dal tipo. Verificato che `/manifest.webmanifest` esponga davvero le 4 entry (2 dimensioni ×
+        2 purpose) e build reale pulita. **Non verificabile da qui**: il risultato visivo va
+        confermato disinstallando e reinstallando l'app su un device Android reale (comportamento
+        del launcher di sistema, non riproducibile in ambiente headless)
+      - **Sorgente icona sostituita con `public/logo/icon-app.jpg` (2026-08-28)**: Dario ha fornito
+        un'immagine dedicata per l'icona app (750×750, sfondo arancione pieno bordo a bordo con
+        colomba + "SAN DONÀ", soggetto centrato con margine dai bordi — pensata apposta per il
+        ritaglio "maskable", non un riuso del logo generico). `public/logo/borgo-icona.jpg`
+        (400×400, usata invece per la favicon via `app/icon.jpg`, invariata) resta la sorgente
+        solo per quello. 192/512 e `app/apple-icon.png` rigenerati da zero con `sharp` dalla nuova
+        immagine
 - [x] **Scorciatoia a `/scan` in header per chi ha una bottega (2026-08-27)**: icona fotocamera
       (`faCamera`, stessa icona già usata per "Scansiona QR" in `/community/bottega` — coerenza
       visiva, non una scelta nuova) a sinistra dell'icona QR, visibile solo se
