@@ -585,6 +585,26 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         tutte e tre le chiamate a Resend siano state accettate con un id reale e `error: null`,
         inviate a entrambi gli indirizzi admin in produzione. Dati di test (utente + annuncio +
         bottega, cascata su `onDelete: Cascade`) ripuliti dal DB di produzione dopo la verifica
+      - **Bug reale trovato e corretto: iscrizioni via Google non notificavano l'admin
+        (2026-08-29, segnalato da Dario)**: `sendNewMemberNotification` era collegata solo a
+        `registerAction` (`app/community/register/actions.ts`), il flusso di registrazione
+        Credentials — chi si iscrive con Google non passa mai da lì: `@auth/prisma-adapter` crea
+        l'utente da solo al primo login OAuth, senza toccare quel file. Il test end-to-end del
+        2026-08-21 sopra copriva solo "registrazione → verifica email via token" (Credentials),
+        quindi il buco non era mai stato notato. Corretto agganciando `sendNewMemberNotification`
+        a `events.createUser` nella configurazione NextAuth (`lib/auth.ts`, non
+        `lib/auth.config.ts` — quest'ultimo resta "edge-safe" per il proxy/middleware, niente
+        chiamate Resend/Prisma lì) — l'hook ufficiale di Auth.js che scatta solo quando è
+        l'*adapter* a creare l'utente, quindi solo per OAuth: la registrazione Credentials crea
+        l'utente direttamente con `prisma.user.create()`, mai tramite l'adapter, zero rischio di
+        doppio invio per lo stesso utente. Stesso `try/catch` con `console.error` del resto delle
+        notifiche admin — un fallimento dell'invio non deve mai bloccare il login
+      - **Verifica parziale**: `tsc`/`next build` puliti. **Non verificabile da qui**: il vero
+        comportamento di `events.createUser` richiede un login Google reale (redirect OAuth con
+        consenso su accounts.google.com), non riproducibile in Playwright/headless senza
+        credenziali Google reali — da confermare con un primo accesso Google reale dopo il deploy
+        (un account che non ha mai fatto login sul sito prima, altrimenti l'utente esiste già e
+        l'evento non scatta)
 - [x] **Palette cream più calda, sfondo pagina di default nel sito pubblico (2026-08-21)**:
       `--color-cream` da `#f4f2f2` a `#fff8f4`, `--color-cream-deep` da `#f3efef` a `#f9f2ef` in
       `app/globals.css`. La regola non-layered `body { background: ... }` (quella che vince sempre

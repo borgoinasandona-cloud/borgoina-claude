@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/lib/auth.config";
 import { loginSchema } from "@/lib/validations";
+import { sendNewMemberNotification } from "@/lib/resend";
 
 // Sottoclasse dedicata (invece del generico CredentialsSignin) così le action che chiamano
 // signIn() possono distinguere "email non verificata" da "credenziali sbagliate" leggendo
@@ -17,6 +18,20 @@ export class EmailNotVerifiedError extends CredentialsSignin {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
+  events: {
+    // Scatta solo per gli utenti creati dall'adapter, cioè il flusso OAuth (Google): la
+    // registrazione Credentials crea l'utente direttamente con prisma.user.create() in
+    // app/community/register/actions.ts, non passa mai dall'adapter, e invia già lì la propria
+    // notifica — nessun rischio di doppio invio per lo stesso utente.
+    async createUser({ user }) {
+      if (!user.email) return;
+      try {
+        await sendNewMemberNotification({ name: user.name ?? "Socio", email: user.email });
+      } catch (error) {
+        console.error("Notifica admin nuovo iscritto (Google) fallita:", error);
+      }
+    },
+  },
   providers: [
     // Nomi env storici del progetto (GOOGLE_CLIENT_ID/SECRET, non AUTH_GOOGLE_ID/SECRET):
     // niente auto-inferenza di Auth.js v5, vanno passati esplicitamente.
