@@ -9,8 +9,9 @@ const initialState: CommunityLoginState = {};
 const inputClass =
   "mt-1 w-full rounded border border-ink/15 bg-white px-3 py-2 text-sm text-ink focus:border-brick focus:outline-none";
 
-export function CommunityLoginForm() {
-  const [state, formAction, pending] = useActionState(communityLoginAction, initialState);
+export function CommunityLoginForm({ callbackUrl }: { callbackUrl?: string }) {
+  const action = communityLoginAction.bind(null, callbackUrl);
+  const [state, formAction, pending] = useActionState(action, initialState);
 
   return (
     <div className="mt-5">

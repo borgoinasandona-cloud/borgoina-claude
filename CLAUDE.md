@@ -1328,6 +1328,33 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         chi ce l'ha, posizionata realmente a sinistra dell'icona QR (bounding box confrontati, non
         solo l'ordine nel markup), visibile anche su `/admin/login`. Dati di test (utenti + bottega)
         ripuliti dal DB di produzione dopo la verifica
+- [x] **Login con ritorno alla pagina di partenza (`callbackUrl`, 2026-08-29)**: chi non è loggato
+      e arriva su `/eventi/[slug]` finiva su `/community` dopo l'accesso invece di tornare
+      all'evento — `signIn()` di Auth.js aveva sempre `redirectTo: "/community"` hardcoded sia per
+      Credentials sia per Google, in `app/community/login/actions.ts`
+      - `communityLoginAction`/`signInWithGoogleAction` ora accettano un primo argomento
+        `callbackUrl: string | undefined` (bind, stesso pattern di `addCommentAction.bind(null,
+        slug)` in `CommentForm.tsx`), passato da `app/community/login/page.tsx` via query param
+        `?callbackUrl=...` letto con `searchParams` (async, come già in `reset-password/page.tsx`)
+      - **`safeCallbackUrl()`**: il valore arriva da un query param, quindi mai fidato as-is —
+        deve iniziare per `/` e non per `//` (protocol-relative, sfugge al controllo "inizia con
+        /" ma porta comunque fuori dal sito), altrimenti fallback a `/community`. Senza questo
+        controllo un link `?callbackUrl=https://sito-malevolo.it` userebbe Auth.js stesso per
+        reindirizzare fuori dal sito subito dopo un login riuscito (open redirect) — verificato
+        esplicitamente con Playwright passando sia `https://evil.com` sia `//evil.com`: entrambi
+        finiscono su `/community`, non sul dominio esterno
+      - Solo il link "Accedi" in `/eventi/[slug]` costruisce il `callbackUrl` (verso
+        `/eventi/[slug]` stesso) per ora — gli altri ~14 punti del sito che linkano a
+        `/community/login` (Header, community, botteghe, ecc.) restano con il comportamento
+        precedente (default `/community`), non richiesto estendere a tutti. Il meccanismo è
+        comunque generico: `callbackUrl` resta `undefined` se non passato, `GoogleSignInButton`/
+        `CommunityLoginForm` restano compatibili con i chiamanti esistenti che non lo passano
+        (es. `/community/register`)
+      - Testato con Playwright end-to-end: link "Accedi" su un evento reale include il
+        `callbackUrl` corretto (URL-encoded) → pagina di login lo preserva nella query string →
+        dopo login con credenziali si resta sulla pagina evento, non su `/community` → login
+        diretto da `/community/login` senza `callbackUrl` continua a funzionare come prima
+        (nessuna regressione). Dati di test ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

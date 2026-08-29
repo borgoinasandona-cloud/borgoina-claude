@@ -23,9 +23,9 @@ function GoogleLogo() {
   );
 }
 
-export function GoogleSignInButton() {
+export function GoogleSignInButton({ callbackUrl }: { callbackUrl?: string }) {
   return (
-    <form action={signInWithGoogleAction}>
+    <form action={signInWithGoogleAction.bind(null, callbackUrl)}>
       <button
         type="submit"
         className="flex w-full items-center justify-center gap-2 rounded border border-ink/15 bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink/30 hover:bg-cream"

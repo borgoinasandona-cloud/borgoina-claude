@@ -10,7 +10,19 @@ export type CommunityLoginState = {
   unverifiedEmail?: string;
 };
 
+// Il callbackUrl arriva da un query param (?callbackUrl=...), quindi non è mai fidato: deve
+// essere un percorso relativo interno al sito. Senza questo controllo un link tipo
+// /community/login?callbackUrl=https://sito-malevolo.it porterebbe l'utente fuori dal sito subito
+// dopo il login (open redirect) — "//host" è protocol-relative e sfugge al controllo "inizia con /".
+function safeCallbackUrl(callbackUrl: string | undefined) {
+  if (!callbackUrl || !callbackUrl.startsWith("/") || callbackUrl.startsWith("//")) {
+    return "/community";
+  }
+  return callbackUrl;
+}
+
 export async function communityLoginAction(
+  callbackUrl: string | undefined,
   _prevState: CommunityLoginState,
   formData: FormData,
 ): Promise<CommunityLoginState> {
@@ -19,7 +31,7 @@ export async function communityLoginAction(
     await signIn("credentials", {
       email,
       password: formData.get("password"),
-      redirectTo: "/community",
+      redirectTo: safeCallbackUrl(callbackUrl),
     });
     return {};
   } catch (error) {
@@ -36,6 +48,6 @@ export async function communityLoginAction(
   }
 }
 
-export async function signInWithGoogleAction() {
-  await signIn("google", { redirectTo: "/community" });
+export async function signInWithGoogleAction(callbackUrl: string | undefined) {
+  await signIn("google", { redirectTo: safeCallbackUrl(callbackUrl) });
 }

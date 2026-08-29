@@ -72,7 +72,10 @@ export default async function EventDetailPage({
             </div>
           ) : !session?.user ? (
             <p className="text-sm text-ink-soft">
-              <Link href="/community/login" className="font-semibold text-brick hover:text-brick-dark">
+              <Link
+                href={`/community/login?callbackUrl=${encodeURIComponent(`/eventi/${slug}`)}`}
+                className="font-semibold text-brick hover:text-brick-dark"
+              >
                 Accedi
               </Link>{" "}
               per prenotarti a questo evento.
