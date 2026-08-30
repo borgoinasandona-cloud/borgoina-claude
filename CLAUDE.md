@@ -1375,6 +1375,33 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         dopo login con credenziali si resta sulla pagina evento, non su `/community` → login
         diretto da `/community/login` senza `callbackUrl` continua a funzionare come prima
         (nessuna regressione). Dati di test ripuliti
+- [x] **Card "Ultime dalla Bacheca" orizzontali solo in mobile (2026-08-30)**: dentro ogni singola
+      card della sezione home (immagine sopra, testo sotto a tutti i breakpoint) diventa, solo
+      sotto `sm`, immagine a sinistra (colonna quadrata stretta, `w-28`) e contenuto a destra —
+      niente cambi alla griglia esterna (resta 1 colonna sotto `sm`, 2 da `sm`, 4 da `lg`, come
+      prima di questa sessione: un primo tentativo di passare la griglia stessa a 2 colonne in
+      mobile è stato provato e poi scartato da Dario a favore di questo layout per-card)
+      - `components/PostCard.tsx` (condiviso anche con `/news`, che deve restare invariata) prende
+        un nuovo prop opzionale `mobileHorizontal` (default `false`): quando `true`, il `<Link>`
+        esterno passa da `block` a `flex flex-row sm:block`, l'immagine da `aspect-video w-full` a
+        `aspect-square w-28 shrink-0` sotto `sm` (tornando `aspect-video w-full` da `sm` in poi), e
+        il contenuto guadagna `min-w-0` (necessario perché `line-clamp` funzioni dentro un figlio
+        flex, che altrimenti non si restringe sotto la larghezza del contenuto). Solo
+        `components/home/BachecaPreview.tsx` passa `mobileHorizontal`; `app/news/page.tsx`
+        continua a chiamare `<PostCard post={post} />` senza il prop, comportamento identico a
+        prima
+      - Verificato con Playwright/screenshot su tre punti: home mobile (390px, layout orizzontale
+        confermato), `/news` mobile (390px, stack verticale invariato — nessuna regressione sulla
+        pagina condivisa), home desktop (1400px, griglia a 4 colonne con card verticali invariata)
+      - **Categorie e data sulla stessa riga, data in cifre (2026-08-30)**: sempre per risparmiare
+        spazio nella colonna stretta, solo quando `mobileHorizontal` — categorie a sinistra, data
+        a destra in formato `dd/mm/aa` (`Intl.DateTimeFormat("it-IT", { day: "2-digit", month:
+        "2-digit", year: "2-digit" })`, non più `dateStyle: "long"`) invece che su una riga
+        separata sotto il titolo. Il paragrafo data in formato lungo esistente resta invariato
+        (e continua a comparire) quando `mobileHorizontal` è `false`, cioè su `/news` e nella
+        stessa home da `sm` in su. Verificato con Playwright cercando il pattern `dd/mm/aa` nel
+        testo della home mobile (trovato) e che `/news` mobile mostri ancora il mese per esteso
+        ("agosto", invariato)
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

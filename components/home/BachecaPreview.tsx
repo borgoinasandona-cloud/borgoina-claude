@@ -27,7 +27,7 @@ export function BachecaPreview({ posts }: { posts: PreviewPost[] }) {
       {posts.length > 0 ? (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} mobileHorizontal />
           ))}
         </div>
       ) : (
