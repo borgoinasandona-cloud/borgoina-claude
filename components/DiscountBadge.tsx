@@ -1,11 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTag } from "@fortawesome/free-solid-svg-icons";
-
 export function DiscountBadge({ remaining }: { remaining: number }) {
   return (
-    <span className="font-mono inline-flex items-center gap-1.5 rounded-sm bg-brick px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-cream uppercase shadow-sm">
-      <FontAwesomeIcon icon={faTag} className="!h-3 !w-3" aria-hidden="true" />
-      {remaining} token
+    <span className="flex flex-col items-center rounded-md bg-brick px-3 py-1.5 leading-none text-cream shadow-sm">
+      <span className="text-2xl font-extrabold">{remaining}</span>
+      <span className="font-mono mt-1 text-[0.6rem] font-semibold tracking-wide uppercase">token</span>
     </span>
   );
 }

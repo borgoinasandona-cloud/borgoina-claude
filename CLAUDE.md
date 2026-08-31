@@ -1587,6 +1587,15 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         di "/scan" o del vecchio percorso "Il mio account → Tessera digitale", presenza confermata
         di "icona del QR"/"icona della fotocamera"/"in alto nell'header". `tsc`/`eslint` puliti,
         screenshot verificato visivamente, file temporanei ripuliti
+      - **Badge token nella card del listino Botteghe reso più evidente (2026-08-31)**:
+        `components/DiscountBadge.tsx` — tolta l'icona (`faTag`), numero ingrandito
+        (`text-2xl font-extrabold`, mai più di 2 cifre per costruzione — il conteggio residuo di
+        una singola bottega non arriva mai a 3 cifre) e disposto in verticale sopra la scritta
+        "TOKEN" (`flex flex-col items-center`, invece della riga orizzontale "N token" con icona).
+        Nessuna modifica a `components/ShopCard.tsx` (badge già posizionato in alto a destra sulla
+        cover, solo il contenuto interno è cambiato). Verificato visivamente su `/botteghe` con
+        dati reali di produzione (bottega "TeroTero", badge "5" sopra "TOKEN" in alto a destra,
+        nessuna icona), `tsc`/`eslint` puliti, file temporanei ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
