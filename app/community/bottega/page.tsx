@@ -61,10 +61,10 @@ export default async function MyShopPage() {
                 <div>
                   <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
                     <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
-                    Sconti attivati
+                    Offerte attivate
                   </p>
                   <p className="mt-1 text-sm text-ink-soft">
-                    Scansiona il QR di un socio per assegnargli uno sconto.
+                    Scansiona il QR di un socio per assegnargli un&apos;offerta.
                   </p>
                 </div>
                 <Link
@@ -79,17 +79,22 @@ export default async function MyShopPage() {
                 {discountTokens.map((token) => (
                   <li
                     key={token.id}
-                    className="flex items-center justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5 text-sm"
+                    className="flex items-start justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5 text-sm"
                   >
-                    <span className="flex items-center gap-2 font-semibold text-ink">
-                      {token.discountPct}% di sconto
-                      {!token.active && (
-                        <span className="font-mono rounded-sm bg-ink/10 px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wide text-ink-soft uppercase">
-                          Disattivato
-                        </span>
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-2 font-semibold text-ink">
+                        {token.title}
+                        {!token.active && (
+                          <span className="font-mono rounded-sm bg-ink/10 px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wide text-ink-soft uppercase">
+                            Disattivato
+                          </span>
+                        )}
+                      </span>
+                      {token.description && (
+                        <span className="mt-0.5 block text-xs text-ink-soft">{token.description}</span>
                       )}
                     </span>
-                    <span className="font-mono text-xs text-ink-soft uppercase">
+                    <span className="font-mono shrink-0 text-xs text-ink-soft uppercase">
                       {token._count.redemptions} / {token.totalIssued} riscattati
                     </span>
                   </li>

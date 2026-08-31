@@ -183,24 +183,29 @@ export default async function ShopDetailPage({
           <div className="mb-8 rounded-xl border border-brick/20 bg-brick/5 p-5">
             <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
               <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
-              Sconti disponibili
+              Offerte disponibili
             </p>
             <ul className="mt-3 space-y-2">
               {activeTokens.map((token) => (
                 <li
                   key={token.id}
-                  className="flex items-center justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5"
+                  className="flex items-start justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5"
                 >
-                  <span className="font-semibold text-ink">{token.discountPct}% di sconto</span>
-                  <span className="font-mono text-xs text-ink-soft uppercase">
-                    {token.remaining} {token.remaining === 1 ? "posto disponibile" : "posti disponibili"}
+                  <span className="min-w-0">
+                    <span className="block font-semibold text-ink">{token.title}</span>
+                    {token.description && (
+                      <span className="mt-0.5 block text-sm text-ink-soft">{token.description}</span>
+                    )}
+                  </span>
+                  <span className="font-mono shrink-0 text-xs text-ink-soft uppercase">
+                    {token.remaining} {token.remaining === 1 ? "token disponibile" : "token disponibili"}
                   </span>
                 </li>
               ))}
             </ul>
             <p className="mt-3 text-xs text-ink-soft">
               Mostra il tuo QR personale (<span className="font-mono">Il mio account</span>{" "}
-              → Tessera digitale) al gestore per riscattare uno sconto.
+              → Tessera digitale) al gestore per riscattare un&apos;offerta.
             </p>
           </div>
         )}

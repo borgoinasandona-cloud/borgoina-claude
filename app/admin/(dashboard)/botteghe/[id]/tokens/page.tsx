@@ -26,11 +26,12 @@ export default async function AdminShopTokensPage({
       <Link href="/admin/botteghe" className="text-sm text-green-700 hover:underline">
         ← Torna a Botteghe
       </Link>
-      <h1 className="mt-2 text-2xl font-semibold text-neutral-900">Sconti — {shop.name}</h1>
+      <h1 className="mt-2 text-2xl font-semibold text-neutral-900">Offerte — {shop.name}</h1>
       <p className="mt-1 text-sm text-neutral-500">
-        Token sconto da assegnare scansionando il QR identificativo dei soci in{" "}
-        <span className="font-mono">/scan</span>. La quantità va decisa in base all&apos;accordo
-        con l&apos;attività.
+        Offerte concordate con l&apos;attività (sconti, omaggi, ecc.) da assegnare scansionando il
+        QR identificativo dei soci in <span className="font-mono">/scan</span>. Ogni offerta è una
+        campagna a sé: un socio può riscattarla una sola volta, la quantità va decisa in base
+        all&apos;accordo con l&apos;attività.
       </p>
 
       <ul className="mt-8 divide-y divide-neutral-200 border-y border-neutral-200">
@@ -41,7 +42,7 @@ export default async function AdminShopTokensPage({
             <li key={token.id} className="flex items-center justify-between gap-4 py-3">
               <div>
                 <p className="flex items-center gap-2 font-medium text-neutral-900">
-                  {token.discountPct}% di sconto
+                  {token.title}
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                       token.active
@@ -54,6 +55,7 @@ export default async function AdminShopTokensPage({
                     {token.active ? (exhausted ? "Esaurito" : "Attivo") : "Disattivato"}
                   </span>
                 </p>
+                {token.description && <p className="mt-0.5 text-sm text-neutral-600">{token.description}</p>}
                 <p className="text-xs text-neutral-500">
                   {used} / {token.totalIssued} riscattati ·{" "}
                   {new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(token.createdAt)}
@@ -68,7 +70,7 @@ export default async function AdminShopTokensPage({
           );
         })}
         {tokens.length === 0 && (
-          <li className="py-6 text-sm text-neutral-500">Nessun token sconto ancora creato.</li>
+          <li className="py-6 text-sm text-neutral-500">Nessuna offerta ancora creata.</li>
         )}
       </ul>
 

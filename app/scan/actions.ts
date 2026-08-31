@@ -24,7 +24,7 @@ export type ScanResult =
       status: "ok";
       customerId: string;
       customerName: string;
-      tokens: { id: string; discountPct: number; remaining: number }[];
+      tokens: { id: string; title: string; description: string | null; remaining: number }[];
     };
 
 export async function verifyAndListTokensAction(qrValue: string): Promise<ScanResult> {
@@ -40,13 +40,15 @@ export async function verifyAndListTokensAction(qrValue: string): Promise<ScanRe
     return { status: "error", message: "Utente non trovato." };
   }
 
-  const tokens = await getActiveTokensForShop(shop.id);
+  // Esclude le offerte che questo socio ha già riscattato (una sola volta per campagna, vedi
+  // @@unique([tokenId, userId])) — non ha senso proporle di nuovo al gestore.
+  const tokens = await getActiveTokensForShop(shop.id, customerId);
 
   return {
     status: "ok",
     customerId,
     customerName: customer.name ?? "Socio",
-    tokens: tokens.map((t) => ({ id: t.id, discountPct: t.discountPct, remaining: t.remaining })),
+    tokens: tokens.map((t) => ({ id: t.id, title: t.title, description: t.description, remaining: t.remaining })),
   };
 }
 

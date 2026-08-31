@@ -107,20 +107,28 @@ riusando lo stack già collaudato da Dario (Next.js, Prisma/Postgres, Vercel, Cl
   nulla (nessuna route di scansione/controllo) — solo la generazione, come richiesto. Dettagli e
   scelte di scope: vedi CLAUDE.md
 
-### Fase 6 — Token sconto (non prevista nel planning originale, aggiunta il 2026-08-26)
+### Fase 6 — Token/offerte via QR (non prevista nel planning originale, aggiunta il 2026-08-26,
+rivista il 2026-08-31)
 - Chiude il cerchio aperto dalla Fase 5: il QR identificativo ora serve a qualcosa. Un gestore di
-  `Shop` può scansionare il QR di un socio e assegnargli uno sconto concordato con l'admin
-  (percentuale + quantità totale disponibile, decisi caso per caso in base all'accordo commerciale)
+  `Shop` può scansionare il QR di un socio e assegnargli un'offerta concordata di persona con
+  l'admin
+- **Non più necessariamente uno sconto percentuale** (revisione del 2026-08-31): un `DiscountToken`
+  rappresenta una campagna/offerta generica a piacere — "1 brioche gratis min 10€ di spesa",
+  "sconto 10% su prodotto specifico", "vaso da fiori gratis" — con un `title` breve e una
+  `description` opzionale per condizioni/dettagli, non più un campo `discountPct` numerico
 - Nessun modello `Business` separato e nessun ruolo `BUSINESS`: tutto si aggancia a `Shop`/`User`
   già esistenti (un utente "è un'attività" se e solo se ha una `Shop` collegata, come già per la
   Fase 4)
-- Due nuovi modelli: `DiscountToken` (uno sconto definito dall'admin per una bottega, con quantità
-  totale e stato attivo/disattivato) e `TokenRedemption` (un riscatto effettivo, socio + token +
-  timestamp). **Nessun limite di riscatti per singolo socio** su uno stesso token, per scelta
-  esplicita — solo la quantità totale (`totalIssued`) è vincolante, garantita con un row lock
-  (`SELECT ... FOR UPDATE`) invece che con un vincolo `@@unique`, perché un semplice recount dentro
-  una transazione non basterebbe sotto scansioni concorrenti (isolamento di default Postgres,
-  READ COMMITTED). Dettagli: vedi CLAUDE.md
+- Due modelli: `DiscountToken` (un'offerta/campagna definita dall'admin per una bottega, con
+  quantità totale e stato attivo/disattivato) e `TokenRedemption` (un riscatto effettivo, socio +
+  token + timestamp). **Un solo riscatto per socio per campagna** (`@@unique([tokenId, userId])`,
+  reintrodotto il 2026-08-31 — la versione originale non lo prevedeva deliberatamente, ma con
+  ogni token ora una campagna specifica e limitata ha senso limitarlo): se l'esercente vuole
+  ripetere la stessa offerta, l'admin crea un nuovo `DiscountToken`, non riusa quello vecchio. La
+  quantità totale (`totalIssued`) resta vincolante a parte, garantita con un row lock
+  (`SELECT ... FOR UPDATE`) invece che con un semplice recount, perché quest'ultimo non basterebbe
+  sotto scansioni concorrenti (isolamento di default Postgres, READ COMMITTED). Dettagli: vedi
+  CLAUDE.md
 - `lib/qr.ts` si arricchisce di `verifySignedUserId()` (verifica della firma con
   `crypto.timingSafeEqual`, a tempo costante) — la generazione (Fase 5) resta invariata
 - Solo l'ADMIN crea/gestisce i `DiscountToken` di una bottega, da `/admin/botteghe/[id]/tokens`

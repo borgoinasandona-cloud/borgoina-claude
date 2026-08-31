@@ -1402,6 +1402,92 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         stessa home da `sm` in su. Verificato con Playwright cercando il pattern `dd/mm/aa` nel
         testo della home mobile (trovato) e che `/news` mobile mostri ancora il mese per esteso
         ("agosto", invariato)
+- [x] **Fase 6 rivista: token/offerte generiche invece di sconti percentuali (2026-08-31)**: un
+      `DiscountToken` non rappresenta più necessariamente una percentuale — è una campagna/offerta
+      qualsiasi decisa di persona tra esercente e admin ("1 brioche gratis min 10€ di spesa",
+      "vaso da fiori gratis", ecc.). Cambio non banale sullo schema: **prima di procedere, verificato
+      lo stato di produzione** (come richiesto esplicitamente) invece di assumere che fosse vuoto —
+      trovato **1 solo** `DiscountToken` reale (bottega "TeroTero", `discountPct: 20`, con **1
+      riscatto reale già registrato**, lo stesso citato nella voce dell'8-26 sul badge "9 sconti
+      disponibili" più sopra). Nessuna coppia `(tokenId, userId)` duplicata, quindi il nuovo
+      `@@unique` non avrebbe comunque avuto righe da violare. Presentate a Dario tre opzioni per
+      quell'unica riga (backfill automatico "Sconto 20%", placeholder da aggiornare a mano,
+      eliminazione) — **scelta: eliminazione** (cascata sul suo `TokenRedemption`), eseguita prima
+      della migration con uno script diretto mirato sul solo id di quella riga
+      - Schema: `DiscountToken.discountPct Int` → `title String` (obbligatorio) + `description
+        String? @db.Text` (opzionale). `TokenRedemption` riguadagna `@@unique([tokenId, userId])`
+        — **capovolge la scelta esplicita della Fase 6 originale** ("un socio può riscattare più
+        volte lo stesso token"): con ogni token ora una campagna specifica e limitata, un socio la
+        riscatta una sola volta; per ripetere la stessa offerta l'admin crea un nuovo
+        `DiscountToken`, non riusa quello vecchio. Migration
+        `20260831073404_discount_token_generic_offer` creata a mano (`prisma migrate diff
+        --from-schema-datasource ... --to-schema-datamodel ...` per generare l'SQL, poi
+        `prisma migrate deploy` per applicarlo) perché `prisma migrate dev` rifiuta di girare in
+        un ambiente non interattivo quando rileva un cambiamento che considera potenzialmente
+        distruttivo (anche con `--create-only`) — **promemoria per il futuro**: per una migration
+        che tocca colonne esistenti in questo ambiente, usare `migrate diff` + `migrate deploy`
+        invece di `migrate dev`, che si blocca aspettando una conferma che qui non può arrivare
+      - `lib/discounts.ts` → `redeemToken()`: il row lock su `totalIssued` resta invariato (limite
+        totale, non per-utente — un problema diverso dal nuovo `@@unique`), ma la `create()` ora
+        può fallire per violazione del vincolo — gestito con `Prisma.PrismaClientKnownRequestError`
+        + `code === "P2002"` → messaggio dedicato "Questo socio ha già riscattato questa offerta."
+        invece di un errore Prisma grezzo, stesso pattern già in uso altrove nel progetto per
+        `Shop.authorId`. `getActiveTokensForShop()` guadagna un secondo parametro opzionale
+        `excludeRedeemedByUserId`: usato solo da `/scan` (dove ha senso non riproporre al gestore
+        un'offerta che quel socio specifico ha già usato — fallirebbe comunque per `@@unique`, ma è
+        più chiaro non mostrarla affatto), non dalla pagina pubblica della bottega, che continua a
+        mostrare tutte le offerte attive con posti residui indipendentemente da chi le ha già
+        riscattate
+      - UI aggiornata ovunque comparisse `discountPct` (verificato con `tsc`/grep, zero riferimenti
+        residui): form admin (`TokenForm.tsx`, campo percentuale → `title` + `description` come
+        textarea, dato `@db.Text`), lista admin token (`/admin/botteghe/[id]/tokens`), pagina
+        pubblica bottega (`/botteghe/[slug]`, "Sconti disponibili" → "Offerte disponibili"), pagina
+        bottega dell'iscritto (`/community/bottega`, "Sconti attivati" → "Offerte attivate"),
+        `/scan` (`ScanClient.tsx`, lista post-scansione e conferma riscatto mostrano
+        titolo+descrizione invece del badge percentuale). **Non toccata** deliberatamente
+        `/come-funzionano-gli-sconti`: la pagina usa già linguaggio generico ("sconto", "token
+        sconto") senza mai citare una percentuale specifica nel testo, quindi non era rotta dal
+        cambio — solo imprecisa in alcuni punti, segnalato a Dario ma non riscritto senza richiesta
+      - Testato end-to-end: fase UI con Playwright (campo percentuale assente dal form, titolo e
+        descrizione visibili in admin/pagina pubblica/pagina iscritto, nessuna menzione di "% di
+        sconto" residua) + fase diretta via script su `lib/discounts.ts` (secondo riscatto dello
+        stesso utente sullo stesso token rifiutato con messaggio corretto senza riga duplicata nel
+        DB; lista token esclude l'offerta per chi l'ha già riscattata ma non per un altro utente né
+        per la pagina pubblica senza filtro; **test di concorrenza rieseguito** su `totalIssued` per
+        confermare che il row lock funzioni ancora identico dopo il cambio schema — 1 successo e 1
+        fallimento su due riscatti simultanei di utenti diversi, mai un doppio). Dati di test e la
+        singola riga reale eliminata ripuliti dal DB di produzione dopo la verifica (0 righe
+        `DiscountToken` residue a fine sessione, come atteso dopo l'eliminazione concordata)
+      - **Bug reale trovato e corretto subito dopo (2026-08-31), segnalato da Dario**: nel form
+        admin (`TokenForm.tsx`) il campo "Dettagli/condizioni" (una `<textarea>`) appariva
+        spostato più in alto di ~9px rispetto a "Titolo offerta"/"Quantità" (due `<input>`),
+        nonostante tutti e tre gli elementi si misurassero alla stessa identica altezza (34px) —
+        un quirk del browser nel calcolare l'altezza intrinseca di una `<textarea>` dentro un
+        contenitore `items-end`, diverso da quello di un `<input>`, verificato misurando le
+        coordinate Y reali via Playwright (non solo a occhio) prima e dopo il fix. **Fix
+        strutturale, non un aggiustamento a spanne**: contenitore del form passato da
+        `items-end` a `items-stretch` (ogni cella del form ora alta quanto la riga intera, invece
+        di dipendere dall'altezza intrinseca di ciascun tipo di controllo) + ogni div-campo
+        diventa `flex flex-col justify-end` (allinea il proprio contenuto al fondo della propria
+        cella, ora garantita uguale per tutti) — il bottone "+ Nuovo token", figlio diretto del
+        form e non dentro un div-campo, ha bisogno di `self-end` esplicito per non stirarsi con
+        il resto ora che il contenitore non è più `items-end` di default. Riverificato con
+        Playwright: le tre coppie label+campo condividono ora esattamente le stesse coordinate Y
+        (460.375 / 480.375 / 514.375), non solo la stessa altezza. Colto anche un residuo di
+        terminologia non aggiornato nella revisione precedente: lo stato vuoto della lista diceva
+        ancora "Nessun token sconto ancora creato" → "Nessuna offerta ancora creata". Dati di test
+        ripuliti
+      - **"posti disponibili" → "token disponibili" nella pagina pubblica bottega (2026-08-31)**:
+        `app/botteghe/[slug]/page.tsx`, contatore accanto a ogni offerta nel riquadro "Offerte
+        disponibili" — "token" resta invariato al plurale (prestito linguistico non declinato in
+        italiano), solo "disponibile"/"disponibili" concorda col numero. Non toccato altrove (non
+        richiesto): `/community/bottega` mostra "N / M riscattati", formulazione diversa, e la
+        lista admin token in `/admin/botteghe/[id]/tokens` non ha mai usato "posti disponibili"
+      - **"N sconti" → "N token" nel badge del listino Botteghe (2026-08-31)**:
+        `components/DiscountBadge.tsx`, badge in alto a destra sulla card nella griglia
+        `/botteghe` — semplificato anche il markup: "token" non si declina al plurale in
+        italiano, quindi il ternario singolare/plurale (`"sconto"`/`"sconti"`) non serve più,
+        resta solo il numero + "token" fisso
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

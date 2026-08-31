@@ -23,17 +23,22 @@ export async function createTokenAction(
 ): Promise<TokenFormState> {
   await requireAdmin();
 
-  const discountPct = Number(formData.get("discountPct"));
+  const title = String(formData.get("title") ?? "").trim();
+  const descriptionRaw = String(formData.get("description") ?? "").trim();
+  const description = descriptionRaw === "" ? null : descriptionRaw;
   const totalIssued = Number(formData.get("totalIssued"));
 
-  if (!Number.isInteger(discountPct) || discountPct < 1 || discountPct > 100) {
-    return { status: "error", message: "La percentuale di sconto deve essere un numero tra 1 e 100." };
+  if (!title) {
+    return { status: "error", message: "Il titolo dell'offerta è obbligatorio." };
+  }
+  if (title.length > 200) {
+    return { status: "error", message: "Il titolo è troppo lungo (max 200 caratteri)." };
   }
   if (!Number.isInteger(totalIssued) || totalIssued < 1) {
     return { status: "error", message: "La quantità deve essere un numero intero positivo." };
   }
 
-  await prisma.discountToken.create({ data: { shopId, discountPct, totalIssued } });
+  await prisma.discountToken.create({ data: { shopId, title, description, totalIssued } });
 
   revalidatePath(`/admin/botteghe/${shopId}/tokens`);
   return { status: "success", message: "Token creato." };

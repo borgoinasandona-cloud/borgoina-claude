@@ -203,16 +203,22 @@ model Shop {
   updatedAt      DateTime        @updatedAt
 }
 
-// Fase 6 — token sconto, riscattati dal gestore della bottega scansionando il QR identificativo
-// dell'iscritto (lib/qr.ts, Fase 5). totalIssued è deciso dall'admin in base all'accordo con
-// l'attività; nessun limite per-utente sui riscatti, solo sul totale disponibile (vedi
-// lib/discounts.ts → redeemToken(), che usa un row lock esplicito invece di un vincolo @@unique
-// per garantire il limite sotto scansioni concorrenti).
+// Fase 6 — token/offerte, riscattati dal gestore della bottega scansionando il QR identificativo
+// dell'iscritto (lib/qr.ts, Fase 5). Ogni DiscountToken è una campagna specifica concordata di
+// persona tra esercente e admin (non necessariamente uno sconto percentuale: "1 brioche gratis
+// min 10€ di spesa", "vaso da fiori gratis", ecc. — vedi title/description). totalIssued è deciso
+// dall'admin in base all'accordo; il limite totale è garantito in lib/discounts.ts →
+// redeemToken() con un row lock esplicito (non basterebbe un semplice recount sotto scansioni
+// concorrenti, isolamento READ COMMITTED di Postgres). @@unique([tokenId, userId]) su
+// TokenRedemption sotto invece limita i riscatti per-utente a uno solo per campagna: se
+// l'esercente vuole ripetere la stessa offerta, l'admin crea un nuovo DiscountToken (nuova
+// campagna), non riusa quello vecchio.
 model DiscountToken {
   id          String            @id @default(cuid())
   shopId      String
   shop        Shop              @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  discountPct Int // 10, 20, 30
+  title       String // titolo breve, es. "Brioche gratis min 10€"
+  description String?           @db.Text // dettagli/condizioni, opzionale se il titolo basta
   totalIssued Int // deciso dall'admin in base all'accordo
   redemptions TokenRedemption[]
   active      Boolean           @default(true)
@@ -226,6 +232,8 @@ model TokenRedemption {
   userId  String
   user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   usedAt  DateTime      @default(now())
+
+  @@unique([tokenId, userId])
 }
 
 model ShopImage {

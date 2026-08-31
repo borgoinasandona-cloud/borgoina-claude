@@ -11,7 +11,7 @@ type ViewState =
   | { step: "checking" }
   | { step: "result"; data: Extract<ScanResult, { status: "ok" }> }
   | { step: "error"; message: string }
-  | { step: "redeemed"; discountPct: number; customerName: string };
+  | { step: "redeemed"; title: string; customerName: string };
 
 export function ScanClient() {
   const [state, setState] = useState<ViewState>({ step: "scanning" });
@@ -56,7 +56,7 @@ export function ScanClient() {
     };
   }, [state.step]);
 
-  async function handleRedeem(tokenId: string, discountPct: number, customerId: string, customerName: string) {
+  async function handleRedeem(tokenId: string, title: string, customerId: string, customerName: string) {
     setRedeemingId(tokenId);
     const result = await redeemTokenAction(tokenId, customerId);
     setRedeemingId(null);
@@ -65,7 +65,7 @@ export function ScanClient() {
       setState({ step: "error", message: result.message });
       return;
     }
-    setState({ step: "redeemed", discountPct, customerName });
+    setState({ step: "redeemed", title, customerName });
   }
 
   if (state.step === "scanning") {
@@ -95,7 +95,7 @@ export function ScanClient() {
     return (
       <div>
         <p className="text-sm text-ink-soft">
-          Sconto del <span className="font-semibold text-ink">{state.discountPct}%</span> assegnato a{" "}
+          Offerta <span className="font-semibold text-ink">&quot;{state.title}&quot;</span> assegnata a{" "}
           <span className="font-semibold text-ink">{state.customerName}</span>.
         </p>
         <button
@@ -117,7 +117,7 @@ export function ScanClient() {
         Socio: <span className="font-semibold text-ink">{customerName}</span>
       </p>
       {tokens.length === 0 ? (
-        <p className="mt-4 text-sm text-ink-soft">Nessuno sconto disponibile al momento per questa bottega.</p>
+        <p className="mt-4 text-sm text-ink-soft">Nessuna offerta disponibile al momento per questa bottega.</p>
       ) : (
         <ul className="mt-4 space-y-2">
           {tokens.map((token) => (
@@ -125,11 +125,16 @@ export function ScanClient() {
               <button
                 type="button"
                 disabled={redeemingId !== null}
-                onClick={() => handleRedeem(token.id, token.discountPct, customerId, customerName)}
-                className="flex w-full items-center justify-between rounded border border-ink/15 px-4 py-2.5 text-left text-sm font-semibold text-ink transition-colors hover:border-brick hover:text-brick disabled:opacity-60"
+                onClick={() => handleRedeem(token.id, token.title, customerId, customerName)}
+                className="flex w-full items-start justify-between gap-3 rounded border border-ink/15 px-4 py-2.5 text-left text-sm transition-colors hover:border-brick hover:text-brick disabled:opacity-60"
               >
-                <span>{token.discountPct}% di sconto</span>
-                <span className="font-mono text-xs text-ink-soft">{token.remaining} rimasti</span>
+                <span className="min-w-0">
+                  <span className="block font-semibold text-ink">{token.title}</span>
+                  {token.description && (
+                    <span className="mt-0.5 block text-xs font-normal text-ink-soft">{token.description}</span>
+                  )}
+                </span>
+                <span className="font-mono shrink-0 text-xs text-ink-soft">{token.remaining} rimasti</span>
               </button>
             </li>
           ))}
