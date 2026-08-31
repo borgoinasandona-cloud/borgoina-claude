@@ -23,9 +23,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // registrazione Credentials crea l'utente direttamente con prisma.user.create() in
     // app/community/register/actions.ts, non passa mai dall'adapter, e invia già lì la propria
     // notifica — nessun rischio di doppio invio per lo stesso utente.
+    //
+    // L'intero corpo è dentro un try/catch (non solo la chiamata a sendNewMemberNotification):
+    // Auth.js chiama `await events.createUser?.({ user })` direttamente dentro il flusso di
+    // login OAuth (vedi @auth/core/lib/actions/callback/handle-login.js) — qualunque eccezione
+    // non catturata qui esce da questo handler, fa fallire l'intero login e Auth.js la mostra
+    // come "Configuration" generico (qualsiasi errore non riconosciuto nella pipeline diventa
+    // quel messaggio, vedi @auth/core/index.js). L'utente viene comunque creato sul DB
+    // dall'adapter PRIMA che questo handler giri, quindi un errore qui fa apparire un login
+    // fallito anche se l'account esiste già — un socio che si registra da capo si troverebbe
+    // "email già in uso". Bug reale segnalato da Dario in produzione, corretto rendendo l'intero
+    // handler a prova di eccezioni.
     async createUser({ user }) {
-      if (!user.email) return;
       try {
+        if (!user.email) return;
         await sendNewMemberNotification({ name: user.name ?? "Socio", email: user.email });
       } catch (error) {
         console.error("Notifica admin nuovo iscritto (Google) fallita:", error);
