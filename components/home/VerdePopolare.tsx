@@ -48,7 +48,7 @@ export function VerdePopolare() {
           <div className="relative aspect-[4/3] w-full overflow-hidden">
             <Image
               src="/images/come-funzionano-gli-sconti/comefunziona.jpg"
-              alt="Token sconto nel Borgo"
+              alt="Token del Borgo"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -56,11 +56,11 @@ export function VerdePopolare() {
           </div>
           <div className="p-5">
             <h3 className="text-xl font-bold text-ink transition-colors duration-200 group-hover:text-brick wide:text-2xl">
-              Token sconto nel Borgo
+              Token del Borgo
             </h3>
             <p className="mt-2 text-base leading-relaxed text-ink-soft wide:text-lg">
-              Le Botteghe del Borgo offrono sconti ai soci: scopri come funziona con il tuo QR
-              personale.
+              Le Botteghe del Borgo premiano i soci con offerte dedicate: scopri come funziona con
+              il tuo QR personale.
             </p>
             <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brick transition-colors duration-200 group-hover:text-brick-dark">
               Scopri come funziona

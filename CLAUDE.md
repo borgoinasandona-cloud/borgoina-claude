@@ -1514,6 +1514,79 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         `/botteghe` — semplificato anche il markup: "token" non si declina al plurale in
         italiano, quindi il ternario singolare/plurale (`"sconto"`/`"sconti"`) non serve più,
         resta solo il numero + "token" fisso
+      - **Copy di `/come-funzionano-gli-sconti` e della card home aggiornati alla nuova gestione
+        token (2026-08-31)**: testi scritti per il vecchio modello a percentuale/riscatti multipli
+        non erano solo genericamente datati ma **contenevano due affermazioni ora false**, corrette
+        in `app/come-funzionano-gli-sconti/page.tsx`: il paragrafo intro e lo step 2 lato socio
+        parlavano genericamente di "sconto" invece di "offerta" (ora coerente col fatto che un
+        token può essere un omaggio, una promozione, non solo una percentuale); più gravemente, lo
+        step 3 lato socio affermava "puoi farlo ogni volta che torni, finché ci sono ancora posti
+        disponibili per quello sconto" — falso dopo la reintroduzione di `@@unique([tokenId,
+        userId])` del 2026-08-31 (un socio riscatta ogni campagna una sola volta), corretto in
+        "Ogni offerta si riscatta una sola volta a testa — se l'attività la ripete in futuro, sarà
+        un nuovo token da riscattare di nuovo"; e lo step 2 lato bottega mostrava un esempio con
+        percentuale (`"20%, 10 token"`), sostituito con un esempio coerente col nuovo modello
+        (`"Brioche gratis min 10€ di spesa, 10 token"`). Il primo punto elenco di "Un paio di cose
+        da sapere" era il più sbagliato di tutti — affermava esplicitamente il comportamento
+        opposto a quello reale (riscatti multipli concessi) — riscritto per dichiarare il limite
+        corretto (una volta a persona) e come l'admin lo aggira (crea un nuovo token, non riusa
+        quello vecchio). In `components/home/VerdePopolare.tsx`, la descrizione della terza card
+        ("Token sconto nel Borgo") aggiornata da "Le Botteghe del Borgo offrono sconti ai soci"
+        a "Le Botteghe del Borgo premiano i soci con offerte dedicate" — titolo della card e `alt`
+        dell'immagine lasciati invariati (nome del feature, non contenuto da correggere). Non
+        toccati deliberatamente: titolo `<title>`/URL/eyebrow/H1 della pagina guida (identità della
+        pagina, non contenuto impreciso) e i due usi di "→" testuale come indicatore di percorso
+        dentro una frase (non CTA, già documentato altrove nel non toccarli con le icone
+        FontAwesome)
+      - Verificato con Playwright contro un dev server già in esecuzione: nessuna occorrenza
+        residua di "più volte in occasioni diverse" (vecchio claim, ora rimosso) né di `"20%,"`
+        (vecchio esempio), presenza confermata di "una sola volta" e "Brioche gratis" nel testo
+        effettivamente renderizzato (non solo nel sorgente). Le tre card di "Verde popolare" in
+        home restano di altezza identica dopo la modifica del testo (444.1875px tutte e tre,
+        misurate via bounding box) — nessuna rottura del bilanciamento fatto in una sessione
+        precedente. `tsc`/`eslint` puliti. Screenshot verificati visivamente su entrambe le pagine,
+        file temporanei ripuliti
+      - **Parola "sconto" evitata/de-enfatizzata a favore di "token" nei titoli/card (2026-08-31,
+        richiesta subito successiva)**: "sconto" resta accettabile solo come una tra le opzioni che
+        un token può offrire (già così in due punti del corpo pagina — "sconti, omaggi, promozioni
+        speciali" e "uno sconto, un omaggio, una promozione speciale" — non toccati, corretto
+        lasciarli), ma non più come parola-titolo. Cambiati: `<title>`/H1 di
+        `app/come-funzionano-gli-sconti/page.tsx` da "Come funzionano gli sconti" a **"Come
+        funzionano i Token"** (richiesto esplicitamente), eyebrow da "Guida ai token sconto" a
+        "Guida ai token"; card home in `components/home/VerdePopolare.tsx` da "Token sconto nel
+        Borgo" a "Token del Borgo" (titolo e `alt` immagine); sottotitolo di `/scan`
+        (`app/scan/page.tsx`) da "vedere gli sconti disponibili" a "vedere i token disponibili";
+        `aria-label` dell'icona scorciatoia `/scan` in header da "Scansiona QR sconti" a "Scansiona
+        QR token" (`components/Header.tsx`); link "Sconti" → "Token" nella riga di ogni bottega in
+        `/admin/botteghe` (`app/admin/(dashboard)/botteghe/page.tsx`). **Deliberatamente non
+        toccati**: la route/URL `/come-funzionano-gli-sconti` e il percorso immagine
+        `/images/come-funzionano-gli-sconti/` (non richiesto rinominare URL/asset, solo i testi
+        visibili), il nome funzione interno `ComeFunzionanoGliScontiPage` (identificatore, non
+        testo utente), e i due punti del corpo pagina dove "sconto" è già usato correttamente come
+        una delle opzioni elencate. Verificato con Playwright: `<title>` tab, H1 ed eyebrow del
+        `<title>`/pagina guida corretti, titolo terza card home "Token del Borgo", le tre card
+        restano di altezza identica (444.1875px) dopo il cambio testo. `tsc`/`eslint` puliti,
+        screenshot verificati visivamente, file temporanei ripuliti
+      - **Istruzioni della guida sostituite con riferimento alle icone header, non più a `/scan` o
+        alla pagina account (2026-08-31, richiesta subito successiva)**: obiettivo esplicito —
+        semplificare l'accesso mentale sia per il socio sia per il gestore, puntando alle due
+        icone già presenti in `components/Header.tsx` (icona QR e icona fotocamera, aggiunte in
+        una sessione precedente) invece che a un percorso di navigazione testuale. Modificato solo
+        `app/come-funzionano-gli-sconti/page.tsx`: step 1 lato socio ("Apri il tuo QR personale")
+        da "In Il mio account → Tessera digitale trovi un codice QR..." a "Tocca l'icona del QR in
+        alto nell'header (accanto al tuo nome): si apre un codice che identifica solo te..."; step
+        3 lato bottega (titolo da "3. Scansiona il QR del cliente da /scan" a "3. Scansiona il QR
+        del cliente", corpo) da "apri /scan dal tuo telefono..." a "tocca l'icona della fotocamera
+        in alto nell'header (visibile solo a chi ha una bottega collegata al proprio account),
+        inquadra il codice..."; paragrafo introduttivo aggiornato di conseguenza ("basta il QR
+        personale, sempre a portata di tocco dall'icona in alto nell'header" invece di "già
+        presente nell'account di ogni iscritto"). Non toccati: step 2 lato socio (già rimanda al
+        listino pubblico Botteghe, non a una pagina di scansione) e step 1/2 lato bottega
+        (iscrizione e creazione token, nessun riferimento a `/scan` da rimuovere lì). Verificato
+        con Playwright leggendo il testo effettivamente renderizzato: nessuna occorrenza residua
+        di "/scan" o del vecchio percorso "Il mio account → Tessera digitale", presenza confermata
+        di "icona del QR"/"icona della fotocamera"/"in alto nell'header". `tsc`/`eslint` puliti,
+        screenshot verificato visivamente, file temporanei ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

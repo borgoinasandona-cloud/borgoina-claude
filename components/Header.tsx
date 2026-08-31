@@ -118,7 +118,7 @@ export function Header({
               {hasShop && (
                 <Link
                   href="/scan"
-                  aria-label="Scansiona QR sconti"
+                  aria-label="Scansiona QR token"
                   className={`-m-2 flex items-center justify-center p-2 transition-colors ${iconColor}`}
                 >
                   <FontAwesomeIcon icon={faCamera} className="!h-6 !w-6" aria-hidden="true" />

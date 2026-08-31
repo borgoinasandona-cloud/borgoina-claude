@@ -73,7 +73,7 @@ export default async function AdminShopsPage() {
                 Modifica
               </Link>
               <Link href={`/admin/botteghe/${shop.id}/tokens`} className="text-sm text-green-700 hover:underline">
-                Sconti
+                Token
               </Link>
               {shop.visibility === "PUBLIC" ? (
                 <form action={hideShopAction.bind(null, shop.id)}>

@@ -28,7 +28,7 @@ export default async function ScanPage() {
         Scansiona QR
       </h1>
       <p className="mt-3 text-sm text-ink-soft">
-        Inquadra il codice QR identificativo di un socio per vedere gli sconti disponibili e
+        Inquadra il codice QR identificativo di un socio per vedere i token disponibili e
         assegnarne uno.
       </p>
 
