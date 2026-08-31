@@ -1596,6 +1596,21 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         cover, solo il contenuto interno è cambiato). Verificato visivamente su `/botteghe` con
         dati reali di produzione (bottega "TeroTero", badge "5" sopra "TOKEN" in alto a destra,
         nessuna icona), `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Bordo sul badge e riepilogo token nel titolo "Offerte disponibili" (2026-08-31)**:
+        `components/DiscountBadge.tsx` — aggiunto `border-2 border-cream` (`border: 2px solid
+        var(--color-cream)`, stesso pattern già in uso nel progetto per l'avatar del gestore in
+        questa stessa pagina). **Riusato lo stesso componente** nel dettaglio bottega
+        (`app/botteghe/[slug]/page.tsx`): il testo "N token disponibile/i" accanto a ogni offerta
+        nel riquadro "Offerte disponibili" è sostituito da `<DiscountBadge remaining={token.
+        remaining} />`, stesso stile a due righe (numero grande sopra "TOKEN") già usato nella
+        card del listino — coerenza visiva tra le due pagine. Il titolo del riquadro guadagna un
+        riepilogo aggregato: "Offerte disponibili - (X di Y)", dove X è la somma dei `remaining` e
+        Y la somma dei `totalIssued` di tutti i token attivi della bottega (non per singola
+        offerta — un totale complessivo, calcolato con due `reduce()` sull'array già restituito da
+        `getActiveTokensForShop()`, nessuna nuova query). Verificato con Playwright su dati reali
+        di produzione (bottega "TeroTero", un solo token attivo 5/5 → titolo "Offerte disponibili
+        - (5 di 5)", badge con bordo visibile sia in griglia sia nel dettaglio). `tsc`/`eslint`
+        puliti, file temporanei ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 

@@ -16,6 +16,7 @@ import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { auth } from "@/lib/auth";
 import { getShopBySlug, shopCategoryLabels } from "@/lib/shops";
 import { getActiveTokensForShop } from "@/lib/discounts";
+import { DiscountBadge } from "@/components/DiscountBadge";
 import { toWhatsAppNumber } from "@/lib/phone";
 import { withCloudinaryTransform } from "@/lib/cloudinary-client";
 import { initials } from "@/lib/initials";
@@ -86,6 +87,8 @@ export default async function ShopDetailPage({
   }
 
   const activeTokens = await getActiveTokensForShop(shop.id);
+  const tokensRemaining = activeTokens.reduce((sum, token) => sum + token.remaining, 0);
+  const tokensIssued = activeTokens.reduce((sum, token) => sum + token.totalIssued, 0);
   const hasContacts = shop.address || shop.hours || shop.email || shop.website || shop.instagram;
   // Finché non c'è un account collegato, il nome scritto dall'admin (ownerName) fa da segnaposto:
   // appena la bottega viene collegata a un utente, nome e foto del profilo prendono il sopravvento.
@@ -183,7 +186,7 @@ export default async function ShopDetailPage({
           <div className="mb-8 rounded-xl border border-brick/20 bg-brick/5 p-5">
             <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
               <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
-              Offerte disponibili
+              Offerte disponibili - ({tokensRemaining} di {tokensIssued})
             </p>
             <ul className="mt-3 space-y-2">
               {activeTokens.map((token) => (
@@ -197,9 +200,7 @@ export default async function ShopDetailPage({
                       <span className="mt-0.5 block text-sm text-ink-soft">{token.description}</span>
                     )}
                   </span>
-                  <span className="font-mono shrink-0 text-xs text-ink-soft uppercase">
-                    {token.remaining} {token.remaining === 1 ? "token disponibile" : "token disponibili"}
-                  </span>
+                  <DiscountBadge remaining={token.remaining} />
                 </li>
               ))}
             </ul>
