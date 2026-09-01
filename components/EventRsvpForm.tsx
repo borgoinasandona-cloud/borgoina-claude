@@ -26,7 +26,7 @@ export function EventRsvpForm({
     <form action={formAction} className="space-y-4">
       <div>
         <label htmlFor="guests" className="block text-sm font-medium text-ink">
-          Accompagnatori
+          Quante persone porti
         </label>
         <input
           id="guests"

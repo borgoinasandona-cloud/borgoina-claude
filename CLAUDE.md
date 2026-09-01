@@ -1611,6 +1611,15 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
         di produzione (bottega "TeroTero", un solo token attivo 5/5 → titolo "Offerte disponibili
         - (5 di 5)", badge con bordo visibile sia in griglia sia nel dettaglio). `tsc`/`eslint`
         puliti, file temporanei ripuliti
+- [x] **Etichetta campo ospiti nel form RSVP eventi (2026-08-31)**: `components/EventRsvpForm.tsx`,
+      "Accompagnatori" → "Quante persone porti" (più diretto per chi compila il form). Non toccati
+      i due punti di `app/eventi/[slug]/page.tsx` dove "accompagnatore/i" compare come riepilogo
+      testuale ("Sei prenotato — N accompagnatori", "Eri prenotato con N accompagnatori") — sono
+      frasi di riepilogo, non l'etichetta del campo, e la richiesta era specifica sul form.
+      Verificato con Playwright login reale (admin) + apertura di un evento reale in produzione: il
+      form mostra "Quante persone porti" al posto di "Accompagnatori". `tsc`/`eslint` puliti, nessun
+      dato di test creato (solo login e visualizzazione, nessun RSVP inviato), file temporanei
+      ripuliti
 - [ ] Fase 2: area riservata (contenuti `visibility: PRIVATE` visibili solo a utenti autenticati) —
       il campo esiste ma non è ancora applicato/enforced da nessuna query pubblica
 
