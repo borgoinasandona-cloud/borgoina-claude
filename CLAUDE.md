@@ -15,73 +15,15 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 
 ## Convenzioni di progetto
 
-### Regole di prodotto
+Regole di prodotto, pattern ricorrenti nel codice e gotcha tecnici sono in `.claude/rules/`
+(caricate automaticamente: alcune sempre, altre solo quando si tocca un file nel loro `paths:`) —
+non duplicarle qui:
 
-- **Niente i18n/multilingua** — non introdurre next-intl o routing `/it` `/en`
-- **Niente redirect da URL legacy** — non serve mappare i vecchi permalink
-- Admin in Fase 1 è **un solo utente** (email di Dario), ma il modello `User` va scritto fin da subito
-  con `role` ed `Account`/`Session` di Auth.js, pensando alla Fase 2 (membri con login email/password + Google)
-- Il campo `visibility` su `Post`/`Page` esiste da subito ma resta `PUBLIC` ovunque finché non si apre la Fase 2
-- Immagini: caricare sempre su Cloudinary, mai servire da `/public` per contenuti gestiti da CMS
-- Foto della Bacheca/gallerie: quelle fornite da Dario provengono dal sito attuale (spesso già ridimensionate) —
-  se ci sono dubbi sulla risoluzione, segnalarlo invece di procedere assumendo che vadano bene
-- Contenuto di `Page`/`Post` è **HTML**, non Markdown: editor WYSIWYG (Tiptap) in admin
-  (`components/RichTextEditor.tsx`), reso in pubblico via `components/HtmlContent.tsx` che sanitizza
-  con `sanitize-html` prima di `dangerouslySetInnerHTML` — non renderizzare mai HTML da DB senza
-  passare da lì
-- **Niente `isomorphic-dompurify`/jsdom lato server**: ha rotto pagine pubbliche in produzione su
-  Vercel (500) pur passando build/lint/tsc e `next start` locale — il bundling serverless di Vercel
-  non include correttamente le dipendenze dinamiche di jsdom. Usare `sanitize-html` (puro JS,
-  nessuna dipendenza nativa/jsdom) per qualunque sanitizzazione HTML lato server, e testare sempre
-  con un deploy reale prima di considerarla verificata — `next build`/`next start` locali non
-  bastano a intercettare questa classe di bug
-- **`package.json` ha `postinstall: "prisma generate"`, non toglierlo**: senza, un deploy Vercel dopo
-  una modifica a `schema.prisma` (con `package.json`/lockfile invariati) può riusare `node_modules`
-  dalla cache con un Prisma Client stantio e fallire il build con errori di tipo su campi che esistono
-  nello schema ma non nel client generato
-
-### Pattern ricorrenti nel codice
-
-- `requireAdmin()`/`requireUser()` sono definiti **localmente in ogni file di action** (non un
-  helper condiviso) — pattern voluto, coerente in tutto il progetto
-- Vincoli `@@unique` violati: catturare `Prisma.PrismaClientKnownRequestError` con
-  `code === "P2002"` e restituire un messaggio dedicato invece dell'errore Prisma grezzo
-- Limiti di **capacità condivisa** sotto concorrenza (es. `totalIssued` di un `DiscountToken`): row
-  lock esplicito (`SELECT ... FOR UPDATE` via `tx.$queryRaw` dentro `$transaction`) — un semplice
-  recount non basta sotto l'isolamento di default Postgres (READ COMMITTED). Limiti **per-utente**
-  invece: `@@unique` da solo è sufficiente, senza lock
-- Ogni contenuto pubblico ha uno **slug leggibile** (mai un cuid nudo in URL): `Post`,
-  `CommunityPost`, `Shop`, `Event`
-- Upload immagini: sempre tramite lo stesso upload firmato Cloudinary condiviso
-  (`/api/upload/sign`, `lib/cloudinary.ts`), mai un endpoint nuovo per feature diverse
-- Le pagine di dettaglio pubbliche condividono lo stile "scheda unica" (header senza sfondo/bordo
-  separato dal corpo — vedi [Header, menu e icone](docs/fasi/header-menu-e-icone.md))
-- `events.createUser` di Auth.js scatta solo per utenti creati dall'**adapter** (flusso OAuth): la
-  registrazione Credentials crea l'utente direttamente con `prisma.user.create()` e notifica a
-  parte — nessun rischio di doppio invio per lo stesso utente
-
-### Gotcha tecnici noti
-
-- **Cascata CSS in `app/globals.css`**: regole "semplici" (fuori da `@layer`) battono sempre le
-  utility Tailwind di `@layer utilities`, indipendentemente dall'ordine nel markup. Se una utility
-  Tailwind sembra "non applicarsi", controllare prima le regole non-layered in globals.css
-- **FontAwesome** (`fontawesome-svg-core/styles.css`) è anch'esso non-layered e ignora le classi
-  `h-*`/`w-*` di Tailwind sulle icone: serve il prefisso `!` (es. `!h-6 !w-6`) per vincere sempre,
-  indipendentemente da ordine/duplicazioni della regola
-- **SWC/Turbopack** tronca lo spazio iniziale della prima riga di un nodo di testo JSX multi-riga
-  dopo un elemento inline (`</span>`, `</Link>`, ecc.) — usare sempre `{" "}` esplicito, mai contare
-  su uno spazio letterale a inizio riga
-- Regola eslint **`react-hooks/purity`**: vieta `Date.now()` e `setState` sincrono dentro un effect
-  (anche in Server Component) — usare `new Date()` al posto di `Date.now()`, e
-  `useSyncExternalStore` invece di `useState`+`useEffect` per leggere `window`/`navigator`
-- **`prisma migrate dev`** (anche con `--create-only`) rifiuta di girare non-interattivo quando
-  rileva un cambiamento "distruttivo": per una migration che tocca colonne esistenti in questo
-  ambiente, usare `prisma migrate diff --from-schema-datasource <schema> --to-schema-datamodel
-  <schema> --script` per generare l'SQL, creare a mano la cartella in `prisma/migrations/`, poi
-  `prisma migrate deploy` per applicarla (nessun prompt interattivo)
-- **`npm install` di un pacchetto nuovo** può rimuovere `playwright` da `node_modules` (non è mai
-  stato un `devDependency` dichiarato, solo installato ad-hoc per i test E2E) — reinstallare con
-  `npm install playwright --no-save` se serve testare dopo
+- [`regole-di-prodotto.md`](.claude/rules/regole-di-prodotto.md) — sempre caricata
+- [`prisma-e-azioni-server.md`](.claude/rules/prisma-e-azioni-server.md) — `prisma/**`, `**/actions.ts`, `package.json`
+- [`html-e-immagini.md`](.claude/rules/html-e-immagini.md) — editor/rendering HTML, Cloudinary, upload
+- [`frontend-tailwind-e-icone.md`](.claude/rules/frontend-tailwind-e-icone.md) — `**/*.tsx`
+- [`auth-authjs.md`](.claude/rules/auth-authjs.md) — `lib/auth.ts`, `lib/auth.config.ts`, `app/community/**`
 
 ## Comandi principali
 
@@ -91,7 +33,7 @@ Owner: Dario. Vedi PLANNING.md per scope completo e data model, README.md per se
 - `npx prisma generate` — rigenera il client dopo modifiche a `schema.prisma` (già automatico via
   `postinstall`, utile in locale dopo un pull)
 - `npx prisma migrate dev --name <nome>` — migration standard in locale (interattivo)
-- Migration "distruttiva" non interattiva (vedi gotcha sopra): `npx prisma migrate diff
+- Migration "distruttiva" non interattiva (vedi [`prisma-e-azioni-server.md`](.claude/rules/prisma-e-azioni-server.md)): `npx prisma migrate diff
   --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --script
   > migration.sql`, creare a mano la cartella in `prisma/migrations/`, poi `npx prisma migrate deploy`
 - `npm run cloudinary:import` — import bulk di cartelle immagini da `materiale/`
@@ -180,4 +122,7 @@ il dettaglio va nei file di fase, qui resta solo indice)
 - Prima di aggiungere una feature non prevista in PLANNING.md, aggiornare PLANNING.md invece di procedere e basta
 - Se emergono decisioni sulle "Domande aperte" di PLANNING.md, riportarle qui e chiuderle nel planning doc
 - Dettaglio storico delle fasi (decisioni, schema, bug, verifica) va in `docs/fasi/<nome>.md`, non
-  qui — questo file resta stack, convenzioni, comandi e un indice sintetico linkato
+  qui — questo file resta stack, comandi e un indice sintetico linkato
+- Regole/convenzioni (di prodotto, pattern di codice, gotcha tecnici) vanno in `.claude/rules/`, un
+  file per argomento, con frontmatter `paths:` quando la regola riguarda solo certi file/cartelle —
+  non riscriverle qui né in `docs/fasi/`
