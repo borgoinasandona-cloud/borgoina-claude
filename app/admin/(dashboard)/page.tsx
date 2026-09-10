@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { getCloudinaryUsage, getNeonUsage, type ServiceUsage, type UsageMetric } from "@/lib/usage";
+import { getCloudinaryUsage, getNeonUsage, getResendUsage, type ServiceUsage, type UsageMetric } from "@/lib/usage";
 
 export const dynamic = "force-dynamic";
 
@@ -7,18 +7,27 @@ export default async function AdminDashboardPage() {
   const since24h = new Date();
   since24h.setHours(since24h.getHours() - 24);
 
-  const [userCount, newUsers24h, shopCount, newShops24h, pendingCommunityPosts, cloudinaryUsage, neonUsage] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.user.count({ where: { createdAt: { gte: since24h } } }),
-      prisma.shop.count(),
-      prisma.shop.count({ where: { createdAt: { gte: since24h } } }),
-      prisma.communityPost.count({ where: { visibility: "PENDING" } }),
-      getCloudinaryUsage(),
-      getNeonUsage(),
-    ]);
+  const [
+    userCount,
+    newUsers24h,
+    shopCount,
+    newShops24h,
+    pendingCommunityPosts,
+    cloudinaryUsage,
+    neonUsage,
+    resendUsage,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { createdAt: { gte: since24h } } }),
+    prisma.shop.count(),
+    prisma.shop.count({ where: { createdAt: { gte: since24h } } }),
+    prisma.communityPost.count({ where: { visibility: "PENDING" } }),
+    getCloudinaryUsage(),
+    getNeonUsage(),
+    getResendUsage(),
+  ]);
 
-  const usageCards = [cloudinaryUsage, neonUsage].filter((u): u is ServiceUsage => u !== null);
+  const usageCards = [cloudinaryUsage, neonUsage, resendUsage].filter((u): u is ServiceUsage => u !== null);
 
   return (
     <div>
@@ -36,7 +45,7 @@ export default async function AdminDashboardPage() {
           <h2 className="text-sm font-semibold tracking-wide text-neutral-500 uppercase">
             Utilizzo piani gratuiti
           </h2>
-          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {usageCards.map((usage) => (
               <UsageCard key={usage.service} usage={usage} />
             ))}

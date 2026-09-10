@@ -1,4 +1,4 @@
-// KPI di utilizzo dei piani gratuiti (Cloudinary, Neon), mostrati in /admin. Ogni funzione
+// KPI di utilizzo dei piani gratuiti (Cloudinary, Neon, Resend), mostrati in /admin. Ogni funzione
 // ritorna null se le credenziali non sono configurate o se la chiamata fallisce — la dashboard
 // semplicemente non mostra la card corrispondente, non deve mai rompere il resto della pagina per
 // un servizio esterno irraggiungibile.
@@ -146,6 +146,72 @@ export async function getNeonUsage(): Promise<ServiceUsage | null> {
           percent: (dataTransferBytes / NEON_FREE_DATA_TRANSFER_BYTES) * 100,
           detail: `${formatBytes(dataTransferBytes)} / ${formatBytes(NEON_FREE_DATA_TRANSFER_BYTES)}`,
           resetInfo: resetDateLabel,
+        },
+      ],
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Limiti del piano Free — vedi https://resend.com/docs/knowledge-base/account-quotas-and-limits.
+// A differenza di Neon, Resend NON espone via API (né documenta) quando si azzera esattamente il
+// conteggio mensile — solo quello giornaliero è documentato ("resets at midnight UTC", non una
+// finestra rolling 24h). Per il mese si mostra quindi "mese solare UTC a oggi" come approssimazione
+// onesta, dichiarata in resetInfo, invece di inventare una data di azzeramento non verificata.
+const RESEND_FREE_DAILY_LIMIT = 100;
+const RESEND_FREE_MONTHLY_LIMIT = 3000;
+
+async function fetchResendSentCount(apiKey: string, startDate: Date, endDate: Date): Promise<number | null> {
+  const params = new URLSearchParams({
+    start_date: startDate.toISOString(),
+    end_date: endDate.toISOString(),
+    metrics: "sent",
+  });
+  const res = await fetch(`https://api.resend.com/emails/metrics?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${apiKey}` },
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return typeof data.totals?.sent === "number" ? data.totals.sent : null;
+}
+
+// Richiede una chiave separata con permesso "full_access": le chiavi "sending_access" (come
+// RESEND_API_KEY, usata per l'invio reale) non possono leggere /emails/metrics — verificato con una
+// chiamata reale (401 "This API key is restricted to only send emails") prima di introdurre
+// RESEND_USAGE_API_KEY, per non allargare i permessi della chiave di produzione solo per una
+// statistica di sola lettura.
+export async function getResendUsage(): Promise<ServiceUsage | null> {
+  const apiKey = process.env.RESEND_USAGE_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const now = new Date();
+    const startOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+
+    const [sentToday, sentThisMonth] = await Promise.all([
+      fetchResendSentCount(apiKey, startOfDay, now),
+      fetchResendSentCount(apiKey, startOfMonth, now),
+    ]);
+    if (sentToday === null || sentThisMonth === null) return null;
+
+    return {
+      service: "Resend",
+      planLabel: "Free",
+      metrics: [
+        {
+          label: "Invii oggi",
+          percent: (sentToday / RESEND_FREE_DAILY_LIMIT) * 100,
+          detail: `${sentToday} / ${RESEND_FREE_DAILY_LIMIT} email`,
+          resetInfo: "Si azzera a mezzanotte UTC",
+        },
+        {
+          label: "Invii questo mese",
+          percent: (sentThisMonth / RESEND_FREE_MONTHLY_LIMIT) * 100,
+          detail: `${sentThisMonth} / ${RESEND_FREE_MONTHLY_LIMIT} email`,
+          resetInfo: "Mese solare UTC a oggi — Resend non documenta una data di azzeramento fissa",
         },
       ],
     };

@@ -115,3 +115,37 @@
           Storage, come su Neon, non si azzera mai
       - Verificato con Playwright che il testo compaia per entrambi i servizi (`"Si azzera il"`,
         `"finestra mobile"`, `"istantanea"`), screenshot per la leggibilità. Dati di test ripuliti
+- [x] **Terza card "Utilizzo piani gratuiti": Resend (2026-09-10)**: `getResendUsage()` aggiunta a
+      `lib/usage.ts`, stesso pattern/contratto delle altre due (mai un'eccezione che rompe la
+      pagina, `null` pulito se manca la chiave o la chiamata fallisce)
+      - **Verificato prima di scrivere codice**: Resend espone `GET /emails/metrics` (conteggio
+        email inviate su un intervallo di date, documentazione ufficiale
+        resend.com/docs/api-reference/emails/get-metrics) e il piano Free ha limiti documentati —
+        **100 email/giorno** (si azzera a mezzanotte UTC, non una finestra rolling 24h) e **3.000
+        email/mese**
+      - **Blocco reale trovato testando con la chiave di produzione**: `RESEND_API_KEY` esistente
+        risponde `401 "This API key is restricted to only send emails"` su `/emails/metrics`.
+        Resend ha solo due permessi possibili per una chiave (`sending_access`/`full_access`,
+        nessun livello "solo lettura" intermedio) — **deciso di non allargare i permessi della
+        chiave di produzione** solo per leggere una statistica, stesso principio già applicato a
+        `NEON_API_KEY`. Dario ha creato una **chiave separata** con permesso `full_access`,
+        salvata come nuova variabile `RESEND_USAGE_API_KEY` (non sostituisce `RESEND_API_KEY`, che
+        resta invariata per l'invio reale)
+      - **Il mese non ha una data di azzeramento documentata**, a differenza di Neon (che espone
+        `consumption_period_end`): Resend documenta solo l'azzeramento giornaliero (mezzanotte
+        UTC). La card mostra quindi "mese solare UTC a oggi" come approssimazione dichiarata
+        esplicitamente in `resetInfo`, invece di inventare una data non verificata
+      - Due chiamate in parallelo allo stesso endpoint (`fetchResendSentCount`, intervallo
+        oggi/da inizio mese, solo metrica `sent`) — la quota conta anche le email in arrivo
+        (inbound), ma il progetto usa Resend solo per invii transazionali, quindi `sent` da solo è
+        una proxy accurata per questo caso d'uso specifico (non generalizzabile ad account che
+        ricevono email)
+      - Griglia delle card passata da `sm:grid-cols-2` a `sm:grid-cols-2 lg:grid-cols-3` per un
+        allineamento pulito su 3 colonne da desktop in su, invece di un 2+1 sbilanciato
+      - Verificato con Playwright e un admin reale: card "Resend" presente con le due barre
+        ("Invii oggi", "Invii questo mese"), valori (8/3000 questo mese, 0/100 oggi al momento
+        della verifica) coincidenti esattamente con una chiamata `curl` diretta fatta prima di
+        scrivere il componente
+      - **Promemoria lasciato a Dario, non ancora fatto**: `RESEND_USAGE_API_KEY` va aggiunta anche
+        su Vercel (Environment Variables, Production), stesso discorso già fatto per
+        `NEON_API_KEY`/`CLOUDINARY_*` — la dashboard gira anche in produzione
