@@ -343,3 +343,13 @@
         di produzione (bottega "TeroTero", un solo token attivo 5/5 → titolo "Offerte disponibili
         - (5 di 5)", badge con bordo visibile sia in griglia sia nel dettaglio). `tsc`/`eslint`
         puliti, file temporanei ripuliti
+      - **Badge reso rotondo, 65px, senza margine sopra "token" (2026-09-11)**:
+        `components/DiscountBadge.tsx` — da rettangolo `rounded-md` con padding (`px-3 py-1.5`) a
+        cerchio fisso `h-[65px] w-[65px] rounded-full`, contenuto centrato con
+        `items-center justify-center` invece che affidarsi al padding per il posizionamento;
+        rimosso `mt-1` dalla scritta "token" (ora `justify-content` centra verticalmente l'intero
+        blocco numero+etichetta, lo spazio esplicito non serve più). Stesso componente riusato in
+        griglia `/botteghe` e nel dettaglio bottega, nessuna modifica separata nei due punti.
+        Verificato visivamente con Playwright su dati reali di produzione (bottega "TeroTero", "4"
+        sopra "TOKEN" in un cerchio in entrambe le pagine). `tsc`/`eslint` puliti, file temporanei
+        ripuliti
