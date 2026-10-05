@@ -121,20 +121,21 @@ export function ScanClient() {
       ) : (
         <ul className="mt-4 space-y-2">
           {tokens.map((token) => (
-            <li key={token.id}>
+            <li key={token.id} className="flex items-center justify-between gap-3 rounded border border-ink/15 px-4 py-2.5 text-sm">
+              <span className="min-w-0">
+                <span className="block font-semibold text-ink">{token.title}</span>
+                {token.description && (
+                  <span className="mt-0.5 block text-xs font-normal text-ink-soft">{token.description}</span>
+                )}
+                <span className="font-mono mt-1 block text-xs text-ink-soft">{token.remaining} rimasti</span>
+              </span>
               <button
                 type="button"
                 disabled={redeemingId !== null}
                 onClick={() => handleRedeem(token.id, token.title, customerId, customerName)}
-                className="flex w-full items-start justify-between gap-3 rounded border border-ink/15 px-4 py-2.5 text-left text-sm transition-colors hover:border-brick hover:text-brick disabled:opacity-60"
+                className="shrink-0 rounded bg-brick px-3 py-2 text-xs font-semibold text-cream transition-colors hover:bg-brick-dark disabled:opacity-60"
               >
-                <span className="min-w-0">
-                  <span className="block font-semibold text-ink">{token.title}</span>
-                  {token.description && (
-                    <span className="mt-0.5 block text-xs font-normal text-ink-soft">{token.description}</span>
-                  )}
-                </span>
-                <span className="font-mono shrink-0 text-xs text-ink-soft">{token.remaining} rimasti</span>
+                {redeemingId === token.id ? "Attivazione…" : "Attiva token"}
               </button>
             </li>
           ))}

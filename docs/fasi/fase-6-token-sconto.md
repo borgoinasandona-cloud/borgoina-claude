@@ -360,3 +360,11 @@
         non si vedeva con i dati attuali (titolo corto) ma compariva con testi più lunghi, come
         confermato forzando il testo più largo nel DOM: 34px senza `shrink-0`, 65px con. Verificato
         che il cerchio sia 65×65 a 400px e 1400px sulla pagina reale
+      - **Bottone esplicito "Attiva token" nello step di scansione (2026-10-05)**: in
+        `components/ScanClient.tsx` la riga di ogni offerta era un unico `<button>` che sembrava
+        una card informativa, quindi la bottega non capiva che bisognava cliccare per attivare.
+        Ora la riga è un `<li>` non cliccabile (niente `<button>` annidato) con a destra un bottone
+        brick "Attiva token", che mostra "Attivazione…" durante la richiesta. I "N rimasti" sono
+        spostati sotto il titolo per lasciare la colonna destra al solo bottone. Verificato con
+        `tsc`/`eslint` puliti, ma non nel browser: lo step richiede la scansione di un QR reale
+        dalla camera, non riproducibile con Playwright senza un video di test
