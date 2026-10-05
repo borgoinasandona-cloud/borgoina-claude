@@ -353,3 +353,10 @@
         Verificato visivamente con Playwright su dati reali di produzione (bottega "TeroTero", "4"
         sopra "TOKEN" in un cerchio in entrambe le pagine). `tsc`/`eslint` puliti, file temporanei
         ripuliti
+      - **Cerchio schiacciato in larghezza nel dettaglio bottega con testo lungo (2026-10-05)**:
+        il badge è un figlio flex della riga offerta, e il suo `flex-shrink` di default (1) lo
+        restringeva quando il titolo/descrizione dell'offerta occupava lo spazio. Aggiunto
+        `shrink-0` a `components/DiscountBadge.tsx`, così mantiene 65×65 in ogni contesto. Il bug
+        non si vedeva con i dati attuali (titolo corto) ma compariva con testi più lunghi, come
+        confermato forzando il testo più largo nel DOM: 34px senza `shrink-0`, 65px con. Verificato
+        che il cerchio sia 65×65 a 400px e 1400px sulla pagina reale
