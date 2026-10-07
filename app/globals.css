@@ -18,6 +18,11 @@
   --color-ink-soft: #5c5148;
   --color-sage: #6e7b4f;
   --color-sage-dark: #55603c;
+  /* Colore dedicato ai token/offerte: distinto da brick (Botteghe), sage (Mercatino) e sky
+     (Soci/Iscritti) già allocati — un oro/ambra richiama il "premio" del token senza confondersi
+     con gli altri accenti della palette. */
+  --color-gold: #b8872b;
+  --color-gold-dark: #8c6620;
 }
 
 @theme inline {
@@ -32,6 +37,8 @@
   --color-ink-soft: var(--color-ink-soft);
   --color-sage: var(--color-sage);
   --color-sage-dark: var(--color-sage-dark);
+  --color-gold: var(--color-gold);
+  --color-gold-dark: var(--color-gold-dark);
   --font-sans: var(--font-sans);
   /* Breakpoint extra per monitor larghi: contenitori e testo crescono ancora oltre md/lg. */
   --breakpoint-wide: 1570px;

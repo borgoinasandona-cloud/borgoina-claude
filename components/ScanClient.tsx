@@ -133,7 +133,7 @@ export function ScanClient() {
                 type="button"
                 disabled={redeemingId !== null}
                 onClick={() => handleRedeem(token.id, token.title, customerId, customerName)}
-                className="shrink-0 rounded bg-brick px-3 py-2 text-xs font-semibold text-cream transition-colors hover:bg-brick-dark disabled:opacity-60"
+                className="shrink-0 rounded bg-gold px-3 py-2 text-xs font-semibold text-cream transition-colors hover:bg-gold-dark disabled:opacity-60"
               >
                 {redeemingId === token.id ? "Attivazione…" : "Attiva token"}
               </button>

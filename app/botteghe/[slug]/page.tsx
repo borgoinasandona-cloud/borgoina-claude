@@ -183,8 +183,8 @@ export default async function ShopDetailPage({
         )}
 
         {activeTokens.length > 0 && (
-          <div className="mb-8 rounded-xl border border-brick/20 bg-brick/5 p-5">
-            <p className="eyebrow inline-flex items-center gap-1.5 text-brick">
+          <div className="mb-8 rounded-xl border border-gold/20 bg-gold/5 p-5">
+            <p className="eyebrow inline-flex items-center gap-1.5 text-gold-dark">
               <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
               Offerte disponibili - ({tokensRemaining} di {tokensIssued})
             </p>
@@ -192,7 +192,7 @@ export default async function ShopDetailPage({
               {activeTokens.map((token) => (
                 <li
                   key={token.id}
-                  className="flex items-start justify-between gap-3 rounded border border-brick/15 bg-white px-4 py-2.5"
+                  className="flex items-start justify-between gap-3 rounded border border-gold/15 bg-white px-4 py-2.5"
                 >
                   <span className="min-w-0">
                     <span className="block font-semibold text-ink">{token.title}</span>

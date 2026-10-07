@@ -399,3 +399,24 @@
         i 3 soci che l'hanno riscattata (nome/email/data coincidenti con la query diretta al DB),
         le altre due campagne (0 riscatti) mostrano "Nessun riscatto ancora". `tsc`/`eslint` puliti,
         file temporanei ripuliti
+      - **Colore dedicato "gold" per tutto ciò che è token/offerta (2026-10-07)**: finora il
+        badge/riquadro token riusava `brick`, lo stesso colore già impiegato per Botteghe in
+        generale (CTA, categoria, link) — niente lo distingueva visivamente come "token" a colpo
+        d'occhio. Aggiunta una nuova coppia di colori in `app/globals.css` (`--color-gold: #b8872b`,
+        `--color-gold-dark: #8c6620`, sia in `:root` sia in `@theme inline`, stesso schema di
+        brick/sage/sky) — un'ambra scelta per richiamare il "premio" del token restando nella
+        palette calda del progetto, distinta dai tre accenti già allocati (`brick`=Botteghe,
+        `sage`=Mercatino, `sky`=Soci/Iscritti). Sostituito `brick`→`gold` solo negli elementi
+        **specifici del token**, non nello stile generale di Botteghe: `components/
+        DiscountBadge.tsx` (cerchio `bg-gold`), `components/ShopCard.tsx` (bordo/alone evidenziato
+        `border-gold/50 ring-gold/20` quando la bottega ha token attivi), il riquadro "Offerte
+        disponibili" in `app/botteghe/[slug]/page.tsx`, il riquadro "Offerte attivate" e il
+        bottone "Scansiona QR" in `app/community/bottega/page.tsx`, il bottone "Attiva token" in
+        `components/ScanClient.tsx`. Non toccati: badge categoria, CTA "Crea la tua pagina",
+        titolo/slogan bottega e tutto il resto che è branding generale di Botteghe, non del token.
+        Verificato con Playwright su dati reali di produzione: badge e bordo card gold ben distinti
+        dal brick del badge categoria/pulsante filtro nella griglia `/botteghe`, riquadro "Offerte
+        disponibili" gold nel dettaglio bottega. Non verificata visivamente la vista gestore
+        `/community/bottega` (nessun account di test con bottega collegata disponibile senza
+        creare dati in produzione) — le classi Tailwind usate sono le stesse già verificate altrove,
+        quindi il colore è atteso identico. `tsc`/`eslint` puliti, file temporanei ripuliti

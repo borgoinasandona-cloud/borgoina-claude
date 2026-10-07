@@ -14,7 +14,7 @@ export function ShopCard({ shop }: { shop: CardShop }) {
       href={`/botteghe/${shop.slug}`}
       className={`group block overflow-hidden rounded-xl border bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
         hasActiveTokens
-          ? "border-brick/50 ring-2 ring-brick/20 hover:border-brick"
+          ? "border-gold/50 ring-2 ring-gold/20 hover:border-gold"
           : "border-ink/10 hover:border-ink/20"
       }`}
     >
