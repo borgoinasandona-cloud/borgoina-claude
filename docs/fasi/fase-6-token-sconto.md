@@ -446,3 +446,22 @@
         fossero davvero su tonalità diverse (sky vs sage) nonostante sembrassero uguali a occhio —
         il problema era la bassa opacità, non un bug; portata a `/15`+`/30` bordo, chiaramente
         distinguibili nello screenshot ravvicinato. `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **CTA a fine sezione "Mostra il tuo QR in bottega" verso il listino Botteghe (2026-10-07)**:
+        in `app/come-funzionano-gli-sconti/page.tsx`, dopo i tre `StepCard` della sezione "Per chi
+        è socio". **Primo tentativo, rivisto su richiesta**: un unico link testuale colorato
+        ("Scopri quali sono le botteghe con campagne INA Token attive" + freccia) — poco visibile.
+        Sostituito con paragrafo descrittivo (`text-sm text-ink-soft`) seguito da un vero bottone
+        "Vai alle botteghe" (`bg-gold`, stesso stile pieno già usato per "Scansiona QR" in
+        `/community/bottega`) → `/botteghe`, icona `faArrowRight`. Non aggiunta alla sezione "Per
+        chi ha una bottega": non richiesto, e lì il CTA naturale sarebbe un altro (iscriversi), non
+        il listino pubblico. Verificato con Playwright che il link sia presente con l'href corretto
+        e screenshot per la resa visiva. `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Voce "INA Token" nel menù, tra Botteghe e Iscritti (2026-10-07)**: `lib/site-config.ts`,
+        nuova entry in `navLinks` → `/come-funzionano-gli-sconti`, `accent: "gold"` (nuovo valore
+        aggiunto all'union type e a `navLinkAccentClasses`, stesso schema di sky/sage/brick). Non
+        serve nessuna modifica a `Header.tsx`/`Footer.tsx`: entrambi già iterano su `navLinks`
+        filtrando per `accent` e usano `navLinkAccentClasses[link.accent]` genericamente, quindi la
+        nuova pillola compare automaticamente nel punto giusto dell'array, in entrambi i posti.
+        Verificato con Playwright: pillola gold "INA TOKEN" presente tra "BOTTEGHE" e "ISCRITTI"
+        sia nel menù mobile sia nel footer, href corretto. `tsc`/`eslint` puliti, file temporanei
+        ripuliti

@@ -8,7 +8,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 };
 
-export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | "brick" }[] = [
+export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | "brick" | "gold" }[] = [
   // Pagine del sito
   { href: "/il-borgo", label: "Il Borgo" },
   { href: "/chi-siamo", label: "Chi siamo" },
@@ -19,12 +19,14 @@ export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | 
   // funzionalità di prima (route /community invariata, solo l'etichetta nel menù è cambiata).
   { href: "/community", label: "Mercatino", accent: "sage" },
   { href: "/botteghe", label: "Botteghe", accent: "brick" },
+  { href: "/come-funzionano-gli-sconti", label: "INA Token", accent: "gold" },
   { href: "/soci", label: "Iscritti", accent: "sky" },
 ];
 
-/** Classi Tailwind per il fondino colorato dei link "servizio" (Mercatino/Botteghe/Iscritti) nel menù. */
-export const navLinkAccentClasses: Record<"sky" | "sage" | "brick", string> = {
+/** Classi Tailwind per il fondino colorato dei link "servizio" (Mercatino/Botteghe/INA Token/Iscritti) nel menù. */
+export const navLinkAccentClasses: Record<"sky" | "sage" | "brick" | "gold", string> = {
   sky: "bg-sky text-white hover:bg-sky-dark",
   sage: "bg-sage text-white hover:bg-sage-dark",
   brick: "bg-brick text-white hover:bg-brick-dark",
+  gold: "bg-gold text-white hover:bg-gold-dark",
 };

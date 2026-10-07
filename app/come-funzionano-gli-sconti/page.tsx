@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faQrcode, faStore, faCamera, faTag, faUserGroup, faGear } from "@fortawesome/free-solid-svg-icons";
+import {
+  faQrcode,
+  faStore,
+  faCamera,
+  faTag,
+  faUserGroup,
+  faGear,
+  faArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
   title: "Come funzionano i Token",
@@ -96,6 +105,18 @@ export default function ComeFunzionanoGliScontiPage() {
               sola volta a testa — se l&apos;attività la ripete in futuro, sarà un nuovo token da
               riscattare di nuovo.
             </StepCard>
+          </div>
+          <div className="mt-6">
+            <p className="text-sm text-ink-soft">
+              Scopri quali sono le botteghe con campagne INA Token attive.
+            </p>
+            <Link
+              href="/botteghe"
+              className="mt-3 inline-flex items-center gap-1.5 rounded bg-gold px-4 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-gold-dark"
+            >
+              Vai alle botteghe
+              <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
+            </Link>
           </div>
         </section>
 
