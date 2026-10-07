@@ -29,6 +29,25 @@ export async function getActiveTokensForShop(shopId: string, excludeRedeemedByUs
   return withRemaining;
 }
 
+// Offerte attive trasversali a tutte le botteghe pubbliche, per la pagina "Come funzionano i
+// Token" (app/come-funzionano-gli-sconti/page.tsx) — stesso calcolo di getActiveTokensForShop ma
+// senza filtro shopId, limitato alle botteghe con visibility: PUBLIC (non deve comparire
+// un'offerta di una bottega nascosta dall'admin o non ancora pubblicata).
+export async function getActiveTokensAcrossShops() {
+  const tokens = await prisma.discountToken.findMany({
+    where: { active: true, shop: { visibility: "PUBLIC" } },
+    include: {
+      shop: { select: { slug: true, name: true } },
+      _count: { select: { redemptions: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return tokens
+    .map((token) => ({ ...token, remaining: token.totalIssued - token._count.redemptions }))
+    .filter((token) => token.remaining > 0);
+}
+
 export function getTokensForShopAdmin(shopId: string) {
   return prisma.discountToken.findMany({
     where: { shopId },

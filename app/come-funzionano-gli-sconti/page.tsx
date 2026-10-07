@@ -3,15 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import {
-  faQrcode,
-  faStore,
-  faCamera,
-  faTag,
-  faUserGroup,
-  faGear,
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faQrcode, faStore, faCamera, faTag, faUserGroup, faGear } from "@fortawesome/free-solid-svg-icons";
+import { getActiveTokensAcrossShops } from "@/lib/discounts";
+import { DiscountBadge } from "@/components/DiscountBadge";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Come funzionano i Token",
@@ -39,7 +35,9 @@ function StepCard({
   );
 }
 
-export default function ComeFunzionanoGliScontiPage() {
+export default async function ComeFunzionanoGliScontiPage() {
+  const activeTokens = await getActiveTokensAcrossShops();
+
   return (
     <div>
       <div className="relative -mt-[76px] flex h-[360px] items-center justify-center overflow-hidden bg-ink px-4 pt-[76px] text-cream md:-mt-[88px] md:h-[460px] md:pt-[88px] wide:-mt-[96px] wide:pt-[96px]">
@@ -106,18 +104,36 @@ export default function ComeFunzionanoGliScontiPage() {
               riscattare di nuovo.
             </StepCard>
           </div>
-          <div className="mt-6">
-            <p className="text-sm text-ink-soft">
-              Scopri quali sono le botteghe con campagne INA Token attive.
-            </p>
-            <Link
-              href="/botteghe"
-              className="mt-3 inline-flex items-center gap-1.5 rounded bg-gold px-4 py-2.5 text-sm font-semibold text-cream shadow-md transition-colors hover:bg-gold-dark"
-            >
-              Vai alle botteghe
-              <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
-            </Link>
-          </div>
+          {activeTokens.length > 0 && (
+            <div className="mt-6 rounded-xl border border-gold/30 bg-gold/15 p-5">
+              <p className="eyebrow inline-flex items-center gap-1.5 text-gold-dark">
+                <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
+                Offerte attive ora
+              </p>
+              <ul className="mt-3 space-y-2">
+                {activeTokens.map((token) => (
+                  <li
+                    key={token.id}
+                    className="flex items-start justify-between gap-3 rounded border border-gold/20 bg-white px-4 py-2.5"
+                  >
+                    <span className="min-w-0">
+                      <Link
+                        href={`/botteghe/${token.shop.slug}`}
+                        className="font-mono block text-xs font-semibold tracking-wide text-ink-soft uppercase hover:text-gold-dark"
+                      >
+                        {token.shop.name}
+                      </Link>
+                      <span className="block font-semibold text-ink">{token.title}</span>
+                      {token.description && (
+                        <span className="mt-0.5 block text-sm text-ink-soft">{token.description}</span>
+                      )}
+                    </span>
+                    <DiscountBadge remaining={token.remaining} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
 
         <section className="mt-12">

@@ -465,3 +465,20 @@
         Verificato con Playwright: pillola gold "INA TOKEN" presente tra "BOTTEGHE" e "ISCRITTI"
         sia nel menù mobile sia nel footer, href corretto. `tsc`/`eslint` puliti, file temporanei
         ripuliti
+      - **CTA "Vai alle botteghe" sostituita con la lista offerte attive reali (2026-10-07)**: su
+        richiesta esplicita, tolto il bottone/testo introdotto poco prima e rimpiazzato con l'elenco
+        vero delle offerte attive, direttamente in fondo alla sezione "Mostra il tuo QR in
+        bottega". Nuova `getActiveTokensAcrossShops()` in `lib/discounts.ts`: stesso calcolo di
+        `getActiveTokensForShop()` (remaining = totalIssued - redemptions, filtrate le sole con
+        `remaining > 0`) ma senza filtro `shopId` e **con `shop.visibility: "PUBLIC"` nel `where`**
+        — un'offerta di una bottega nascosta dall'admin o non ancora pubblicata non deve comparire
+        qui anche se tecnicamente attiva. La pagina diventa `async` (prima statica) con
+        `export const dynamic = "force-dynamic"`, aggiunto qui per la prima volta in questo file.
+        Stesso stile a riquadro gold già usato per "Offerte disponibili" nel dettaglio bottega:
+        ogni riga mostra nome bottega (link a `/botteghe/[slug]`), titolo/descrizione dell'offerta
+        e `<DiscountBadge>` col numero residuo — **se l'array è vuoto il blocco intero non viene
+        renderizzato** (nessun messaggio placeholder, come richiesto esplicitamente: "lascia
+        vuoto"). Verificato con Playwright su dati reali di produzione: le 3 offerte attive al
+        momento (MB Pizza, Soffia e Vola, TeroTero) compaiono con nome/titolo/descrizione/residuo
+        coincidenti coi dati reali, nessuna traccia residua del vecchio bottone "Vai alle
+        botteghe". `tsc`/`eslint` puliti, file temporanei ripuliti
