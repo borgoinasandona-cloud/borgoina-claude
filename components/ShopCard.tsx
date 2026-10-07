@@ -7,10 +7,16 @@ import type { Shop, ShopImage } from "@prisma/client";
 type CardShop = Shop & { images: ShopImage[]; discountSlotsRemaining: number };
 
 export function ShopCard({ shop }: { shop: CardShop }) {
+  const hasActiveTokens = shop.discountSlotsRemaining > 0;
+
   return (
     <Link
       href={`/botteghe/${shop.slug}`}
-      className="group block overflow-hidden rounded-xl border border-ink/10 bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-xl"
+      className={`group block overflow-hidden rounded-xl border bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+        hasActiveTokens
+          ? "border-brick/50 ring-2 ring-brick/20 hover:border-brick"
+          : "border-ink/10 hover:border-ink/20"
+      }`}
     >
       <div className="relative aspect-video w-full overflow-hidden bg-cream-deep">
         {shop.coverImage && (
@@ -26,7 +32,7 @@ export function ShopCard({ shop }: { shop: CardShop }) {
             {shopCategoryLabels[shop.category]}
           </span>
         </div>
-        {shop.discountSlotsRemaining > 0 && (
+        {hasActiveTokens && (
           <div className="absolute top-2 right-2">
             <DiscountBadge remaining={shop.discountSlotsRemaining} />
           </div>

@@ -33,13 +33,19 @@ export async function getPublicShops({ category }: { category?: ShopCategory } =
     },
   });
 
-  return shops.map(({ discountTokens, ...shop }) => ({
+  const withDiscountSlots = shops.map(({ discountTokens, ...shop }) => ({
     ...shop,
     discountSlotsRemaining: discountTokens.reduce(
       (sum, token) => sum + Math.max(0, token.totalIssued - token._count.redemptions),
       0,
     ),
   }));
+
+  // Botteghe con token attivi in cima al listino, pur restando ordinate per data di creazione
+  // all'interno di ciascun gruppo — sort è stabile in V8, non serve un secondo criterio esplicito.
+  return withDiscountSlots.sort(
+    (a, b) => Number(b.discountSlotsRemaining > 0) - Number(a.discountSlotsRemaining > 0),
+  );
 }
 
 export function getShopBySlug(slug: string) {

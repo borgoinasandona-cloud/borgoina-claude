@@ -368,3 +368,17 @@
         spostati sotto il titolo per lasciare la colonna destra al solo bottone. Verificato con
         `tsc`/`eslint` puliti, ma non nel browser: lo step richiede la scansione di un QR reale
         dalla camera, non riproducibile con Playwright senza un video di test
+      - **Botteghe con token attivi in cima al listino e card più evidenti (2026-10-07)**:
+        `getPublicShops()` in `lib/shops.ts` ora ordina l'array risultante mettendo prima le
+        botteghe con `discountSlotsRemaining > 0` (sort stabile su V8, l'ordine per data di
+        creazione dentro ciascun gruppo resta quello della query) — il calcolo di
+        `discountSlotsRemaining` avviene dopo la query Prisma, quindi l'ordinamento non può essere
+        delegato a `orderBy` del DB e va fatto in JS sull'array già mappato. `components/
+        ShopCard.tsx`: bordo e alone (`ring`) della card passano da neutro (`border-ink/10`) a
+        brick (`border-brick/50 ring-2 ring-brick/20`, più pieno in hover) quando la bottega ha
+        token attivi — spessore del bordo invariato (resta `border`, 1px) per non alterare le
+        dimensioni della card nella griglia, solo colore e `ring` (box-shadow, non influisce sul
+        box model) cambiano. Verificato con dati reali di produzione: le 3 botteghe con token
+        attivi al momento della verifica (MB Pizza 5/5, Soffia e Vola 5/5, TeroTero 2/5) compaiono
+        per prime nella griglia, con bordo/alone brick visibilmente distinto dalle altre 9 card.
+        `tsc`/`eslint` puliti, file temporanei ripuliti
