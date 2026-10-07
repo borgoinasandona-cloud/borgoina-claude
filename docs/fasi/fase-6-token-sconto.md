@@ -435,3 +435,14 @@
         il testo, entrambi centrati; da `md` in su la moneta passa a sinistra del testo,
         allineamento a sinistra. Verificato con screenshot a 1400px e 390px. `tsc`/`eslint` puliti,
         file temporanei ripuliti
+      - **Titoli delle due sezioni "Per chi è socio"/"Per chi ha una bottega" enfatizzati con un
+        fondino (2026-10-07)**: in `app/come-funzionano-gli-sconti/page.tsx`, eyebrow+h2 di ogni
+        sezione avvolti in un `div` con sfondo tenue e bordo arrotondato nel colore già usato per
+        quell'eyebrow (`bg-sky/15 border-sky/30` per "socio", `bg-sage/15 border-sage/30` per
+        "bottega") — stessi due colori già scelti nella versione precedente del testo, qui solo resi
+        più evidenti con un contenitore invece di lasciarli come testo nudo. **Prima prova a `/10`
+        di opacità scartata**: visivamente indistinguibile da un grigio neutro nello screenshot,
+        verificato misurando i colori calcolati (`getComputedStyle`) per confermare che i due box
+        fossero davvero su tonalità diverse (sky vs sage) nonostante sembrassero uguali a occhio —
+        il problema era la bassa opacità, non un bug; portata a `/15`+`/30` bordo, chiaramente
+        distinguibili nello screenshot ravvicinato. `tsc`/`eslint` puliti, file temporanei ripuliti

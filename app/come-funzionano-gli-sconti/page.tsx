@@ -46,10 +46,10 @@ export default function ComeFunzionanoGliScontiPage() {
         <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center wide:max-w-4xl">
           <p className="eyebrow text-brick-light wide:text-sm">Guida ai token</p>
           <h1 className="font-display text-4xl font-extrabold tracking-tight leading-[0.95] drop-shadow-md md:text-5xl wide:text-6xl">
-            Come funzionano i Token
+            Sono arrivati gli INA Token
           </h1>
           <p className="mx-auto max-w-3xl px-4 text-lg leading-relaxed text-cream/85 md:text-xl">
-            Token e offerte per i soci del Borgo, senza carte fedeltà o app da scaricare.
+            Token e offerte per i soci del Borgo: come funzionano.
           </p>
         </div>
       </div>
@@ -73,8 +73,10 @@ export default function ComeFunzionanoGliScontiPage() {
         </div>
 
         <section className="mt-12">
-          <p className="eyebrow text-sky-dark">Per chi è socio</p>
-          <h2 className="font-display mt-2 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
+          <div className="rounded-xl border border-sky/30 bg-sky/15 px-5 py-4">
+            <p className="eyebrow text-sky-dark">Per chi è socio</p>
+            <h2 className="font-display mt-2 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
+          </div>
           <div className="mt-6 space-y-4">
             <StepCard icon={faQrcode} title="1. Apri il tuo QR personale">
               Tocca l&apos;icona del QR in alto nell&apos;header (accanto al tuo nome): si apre un
@@ -98,8 +100,12 @@ export default function ComeFunzionanoGliScontiPage() {
         </section>
 
         <section className="mt-12">
-          <p className="eyebrow text-sage-dark">Per chi ha una bottega</p>
-          <h2 className="font-display mt-2 text-2xl font-bold text-ink">Assegna le offerte ai tuoi clienti soci</h2>
+          <div className="rounded-xl border border-sage/30 bg-sage/15 px-5 py-4">
+            <p className="eyebrow text-sage-dark">Per chi ha una bottega</p>
+            <h2 className="font-display mt-2 text-2xl font-bold text-ink">
+              Assegna le offerte ai tuoi clienti soci
+            </h2>
+          </div>
           <div className="mt-6 space-y-4">
             <StepCard icon={faUserGroup} title="1. Iscriviti e crea la tua pagina Bottega">
               Registrati alla community del Borgo INA e crea la pagina della tua attività da{" "}
