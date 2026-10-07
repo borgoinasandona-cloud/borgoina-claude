@@ -382,3 +382,20 @@
         attivi al momento della verifica (MB Pizza 5/5, Soffia e Vola 5/5, TeroTero 2/5) compaiono
         per prime nella griglia, con bordo/alone brick visibilmente distinto dalle altre 9 card.
         `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Pagina admin "Report token" trasversale a tutte le botteghe (2026-10-07)**:
+        `/admin/token` (`app/admin/(dashboard)/token/page.tsx`), nuova voce nel gruppo "Community"
+        del nav admin tra "Botteghe" ed "Eventi". A differenza della lista per-bottega già esistente
+        in `/admin/botteghe/[id]/tokens` (che mostra solo il conteggio dei riscatti), questa pagina
+        mostra **ogni campagna di ogni bottega** con sotto una tabella di **chi l'ha riscattata**
+        (nome socio, email, data/ora) — risponde a "chi ha beneficiato del token", non solo "quanti".
+        Nuova funzione `getTokenReportForAdmin()` in `lib/discounts.ts`: stessa query di
+        `getTokensForShopAdmin()` ma senza filtro `shopId`, con `redemptions` incluse per intero
+        (non solo `_count`) e il nome bottega, ordinate per `usedAt` desc. Ogni card di campagna
+        riusa esattamente la stessa logica di badge stato (Attivo/Esaurito/Disattivato) già in
+        `/admin/botteghe/[id]/tokens`, con link al nome bottega che porta alla sua pagina token.
+        Nessuna azione (attiva/disattiva) qui: è un report in sola lettura, la gestione resta nella
+        pagina per-bottega. Verificato con Playwright e admin reale contro dati di produzione: 3
+        campagne, 3 riscatti totali, la card "PEC gratis 1° anno" di TeroTero mostra la tabella con
+        i 3 soci che l'hanno riscattata (nome/email/data coincidenti con la query diretta al DB),
+        le altre due campagne (0 riscatti) mostrano "Nessun riscatto ancora". `tsc`/`eslint` puliti,
+        file temporanei ripuliti

@@ -37,6 +37,21 @@ export function getTokensForShopAdmin(shopId: string) {
   });
 }
 
+// Report admin trasversale a tutte le botteghe: ogni campagna con i riscatti effettivi (non solo
+// il conteggio) e chi socio li ha fatti, per /admin/token.
+export function getTokenReportForAdmin() {
+  return prisma.discountToken.findMany({
+    include: {
+      shop: { select: { id: true, name: true } },
+      redemptions: {
+        include: { user: { select: { name: true, email: true } } },
+        orderBy: { usedAt: "desc" },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 /**
  * Riscatta un token per un utente. Il limite totale (totalIssued) è garantito con un row lock
  * esplicito (SELECT ... FOR UPDATE) sulla riga DiscountToken: sotto l'isolamento di default di

@@ -28,6 +28,7 @@ const adminNav: AdminNavItem[] = [
     items: [
       { href: "/admin/community", label: "Mercatino" },
       { href: "/admin/botteghe", label: "Botteghe" },
+      { href: "/admin/token", label: "Token" },
       { href: "/admin/eventi", label: "Eventi" },
     ],
   },
