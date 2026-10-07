@@ -47,7 +47,7 @@ export function VerdePopolare() {
         >
           <div className="relative aspect-[4/3] w-full overflow-hidden">
             <Image
-              src="/images/come-funzionano-gli-sconti/comefunziona.jpg"
+              src="/images/home/token-sanpiox.jpg"
               alt="Token del Borgo"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

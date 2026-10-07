@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faQrcode, faStore, faCamera, faTag, faUserGroup, faGear } from "@fortawesome/free-solid-svg-icons";
@@ -54,13 +55,22 @@ export default function ComeFunzionanoGliScontiPage() {
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-12 wide:max-w-4xl">
-        <p className="text-lg leading-relaxed text-ink-soft wide:text-xl">
-          Un modo semplice per le Botteghe del Borgo di premiare i soci della community con
-          offerte dedicate — sconti, omaggi, promozioni speciali — senza carte fedeltà o app da
-          scaricare: basta il QR personale, sempre a portata di tocco dall&apos;icona in alto
-          nell&apos;header. Dietro le quinte, ogni offerta è un token digitale collegato alla
-          bottega che la propone, con un titolo chiaro e, se serve, le condizioni per usarla.
-        </p>
+        <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-start md:text-left">
+          <Image
+            src="/images/come-funzionano-gli-sconti/borgoina-1token.png"
+            alt="Moneta Token del Borgo INA San Donà"
+            width={200}
+            height={200}
+            className="h-36 w-36 shrink-0 md:h-44 md:w-44"
+          />
+          <p className="text-lg leading-relaxed text-ink-soft wide:text-xl">
+            Un modo semplice per le Botteghe del Borgo di premiare i soci della community con
+            offerte dedicate — sconti, omaggi, promozioni speciali — senza carte fedeltà o app da
+            scaricare: basta il QR personale, sempre a portata di tocco dall&apos;icona in alto
+            nell&apos;header. Dietro le quinte, ogni offerta è un token digitale collegato alla
+            bottega che la propone, con un titolo chiaro e, se serve, le condizioni per usarla.
+          </p>
+        </div>
 
         <section className="mt-12">
           <p className="eyebrow text-sky-dark">Per chi è socio</p>

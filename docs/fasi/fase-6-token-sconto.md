@@ -420,3 +420,18 @@
         `/community/bottega` (nessun account di test con bottega collegata disponibile senza
         creare dati in produzione) — le classi Tailwind usate sono le stesse già verificate altrove,
         quindi il colore è atteso identico. `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Foto della card home "Token del Borgo" sostituita (2026-10-07)**: `components/home/
+        VerdePopolare.tsx`, da `/images/come-funzionano-gli-sconti/comefunziona.jpg` (condivisa
+        con l'hero della pagina guida, non toccata) a `/images/home/token-sanpiox.jpg` (fornita da
+        Dario, già in `public/`) — foto di una via del Borgo con una moneta "1 TOKEN" dorata in
+        sovrimpressione. Solo la card home, non l'hero di `/come-funzionano-gli-sconti`: sono due
+        `<Image>` distinte anche se prima puntavano allo stesso file. Verificato con Playwright che
+        il nuovo file venga effettivamente servito e screenshot della card. `tsc`/`eslint` puliti,
+        file temporanei ripuliti
+      - **Moneta "1 TOKEN" nel paragrafo intro di `/come-funzionano-gli-sconti` (2026-10-07)**:
+        `public/images/come-funzionano-gli-sconti/borgoina-1token.png` (fornita da Dario, 600×600)
+        affiancata al paragrafo "Un modo semplice..." con `next/image` — contenitore
+        `flex flex-col items-center ... md:flex-row md:items-start`: su mobile la moneta sta sopra
+        il testo, entrambi centrati; da `md` in su la moneta passa a sinistra del testo,
+        allineamento a sinistra. Verificato con screenshot a 1400px e 390px. `tsc`/`eslint` puliti,
+        file temporanei ripuliti
