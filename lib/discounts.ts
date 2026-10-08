@@ -30,7 +30,7 @@ export async function getActiveTokensForShop(shopId: string, excludeRedeemedByUs
 }
 
 // Offerte attive trasversali a tutte le botteghe pubbliche, per la pagina "Come funzionano i
-// Token" (app/come-funzionano-gli-sconti/page.tsx) — stesso calcolo di getActiveTokensForShop ma
+// Token" (app/come-funzionano-i-token/page.tsx) — stesso calcolo di getActiveTokensForShop ma
 // senza filtro shopId, limitato alle botteghe con visibility: PUBLIC (non deve comparire
 // un'offerta di una bottega nascosta dall'admin o non ancora pubblicata).
 export async function getActiveTokensAcrossShops() {

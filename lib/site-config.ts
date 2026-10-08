@@ -19,7 +19,7 @@ export const navLinks: { href: string; label: string; accent?: "sky" | "sage" | 
   // funzionalità di prima (route /community invariata, solo l'etichetta nel menù è cambiata).
   { href: "/community", label: "Mercatino", accent: "sage" },
   { href: "/botteghe", label: "Botteghe", accent: "brick" },
-  { href: "/come-funzionano-gli-sconti", label: "INA Token", accent: "gold" },
+  { href: "/come-funzionano-i-token", label: "INA Token", accent: "gold" },
   { href: "/soci", label: "Iscritti", accent: "sky" },
 ];
 

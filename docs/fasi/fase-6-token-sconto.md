@@ -482,3 +482,27 @@
         momento (MB Pizza, Soffia e Vola, TeroTero) compaiono con nome/titolo/descrizione/residuo
         coincidenti coi dati reali, nessuna traccia residua del vecchio bottone "Vai alle
         botteghe". `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Pagina rinominata `/come-funzionano-gli-sconti` → `/come-funzionano-i-token`, con
+        redirect permanente (2026-10-08)**: cartella rotta rinominata con `git mv` (preserva la
+        history). Redirect aggiunto in `next.config.ts` via `redirects()` (`permanent: true`) —
+        **nota per chi legge**: Next.js risponde con status **308**, non 301, per i redirect
+        permanenti configurati così (comportamento di default del framework, non configurabile
+        diversamente tramite `redirects()` — per un 301 letterale servirebbe un middleware
+        custom). Ai fini SEO i due codici sono equivalenti (Google li tratta allo stesso modo),
+        comunicato esplicitamente a Dario prima di procedere dato che aveva chiesto "301" per
+        nome. **La regola di progetto "niente redirect da URL legacy"** (`.claude/rules/
+        regole-di-prodotto.md`) non si applica qui: riguardava la migrazione una tantum dal vecchio
+        sito, non un redirect interno per una rotta propria del progetto — chiarito esplicitamente
+        prima di implementare. Aggiornati i 3 riferimenti interni alla vecchia rotta per puntare
+        già alla nuova (non affidarsi al redirect per i link interni, solo per chi ha il vecchio
+        link salvato/indicizzato): `lib/site-config.ts` (voce menù "INA Token"),
+        `components/home/VerdePopolare.tsx` (card home), `components/Header.tsx`
+        (`HERO_IMAGE_PATHS`, l'insieme di rotte con header trasparente su hero-foto). **Non
+        rinominata** la cartella immagini `public/images/come-funzionano-gli-sconti/`: è un path di
+        asset statico, indipendente dalla rotta, fuori scope della richiesta. Verificato con
+        Playwright: nuova rotta 200 con contenuto corretto, vecchia rotta risponde 308 con
+        `Location: /come-funzionano-i-token` e la navigazione arriva effettivamente alla pagina
+        nuova, link di menù/card home già aggiornati alla nuova rotta. Fatta anche una build di
+        produzione pulita (`next build`) per verificare l'assenza di errori reali oltre al normale
+        rumore di cache `.next/` locale (gitignored, Vercel farà comunque una build pulita).
+        `tsc`/`eslint` puliti, file temporanei ripuliti

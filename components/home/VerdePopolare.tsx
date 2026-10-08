@@ -42,7 +42,7 @@ export function VerdePopolare() {
         ))}
 
         <Link
-          href="/come-funzionano-gli-sconti"
+          href="/come-funzionano-i-token"
           className="group overflow-hidden rounded-xl border border-ink/10 bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:shadow-xl"
         >
           <div className="relative aspect-[4/3] w-full overflow-hidden">

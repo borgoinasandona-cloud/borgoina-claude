@@ -21,7 +21,7 @@ import { InstallAppButton } from "@/components/InstallAppButton";
 // struttura attesa (vedi le rispettive app/*/page.tsx) — se in futuro vanno in fallback
 // su StaticPageView, l'header si comporterebbe comunque come se ci fosse un hero foto
 // per quell'istante iniziale.
-const HERO_IMAGE_PATHS = new Set(["/", "/il-borgo", "/chi-siamo", "/come-funzionano-gli-sconti"]);
+const HERO_IMAGE_PATHS = new Set(["/", "/il-borgo", "/chi-siamo", "/come-funzionano-i-token"]);
 
 // Il portale del menu mobile richiede document.body, non disponibile durante il render
 // server: useSyncExternalStore rileva il mount lato client senza ricorrere a un
