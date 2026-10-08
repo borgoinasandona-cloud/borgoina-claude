@@ -116,19 +116,24 @@ export default async function ComeFunzionanoGliScontiPage() {
           </span>
           <h2 className="font-display mt-3 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
           <div className="mt-6 space-y-4">
-            <StepCard icon={faQrcode} title="1. Apri il tuo QR personale">
+            <StepCard icon={faUserGroup} title="1. Iscriviti e accedi">
+              Se non l&apos;hai ancora fatto, registrati alla community del Borgo INA e accedi con
+              le tue credenziali (o con Google). Una volta effettuato l&apos;accesso, comparirà
+              l&apos;icona del QR in alto nell&apos;header.
+            </StepCard>
+            <StepCard icon={faQrcode} title="2. Apri il tuo QR personale">
               Tocca l&apos;icona del QR in alto nell&apos;header (accanto al tuo nome): si apre un
               codice che identifica solo te. Non serve stamparlo: basta averlo a portata sullo
               schermo del telefono quando entri in una bottega che aderisce.
             </StepCard>
-            <StepCard icon={faTag} title="2. Chiedi se c'è un'offerta attiva">
+            <StepCard icon={faTag} title="3. Chiedi se c'è un'offerta attiva">
               Sul listino pubblico di{" "}
               <span className="font-semibold text-ink">Botteghe</span>{" "}
               le attività con un&apos;offerta disponibile hanno un&apos;etichetta ben visibile con
               il numero di token ancora disponibili — non tutte le botteghe ne hanno una attiva in
               ogni momento.
             </StepCard>
-            <StepCard icon={faStore} title="3. Fatti scansionare il QR">
+            <StepCard icon={faStore} title="4. Fatti scansionare il QR">
               Il gestore della bottega inquadra il tuo codice con il proprio telefono: se c&apos;è
               un&apos;offerta disponibile, te la assegna sul momento. Ogni offerta si riscatta una
               sola volta a testa — se l&apos;attività la ripete in futuro, sarà un nuovo token da

@@ -538,3 +538,11 @@
         varianti `-dark` usate altrove in questa pagina) accoppiato al relativo `/10` di sfondo.
         Verificato visivamente che il contrasto resti leggibile a questa dimensione ridotta (0.7rem)
         per entrambi i colori. `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Nuovo step "Iscriviti e accedi" in cima alla sezione "Per chi è socio" (2026-10-08)**: su
+        richiesta esplicita, la sequenza dava per scontato che il socio avesse già un account
+        (partiva direttamente da "Apri il tuo QR personale"). Aggiunto un nuovo `StepCard` "1.
+        Iscriviti e accedi" (icona `faUserGroup`, stessa già usata per l'analogo primo passo della
+        sezione "Per chi ha una bottega") che spiega che l'icona del QR compare in header solo dopo
+        il login — i tre step esistenti rinumerati 2/3/4 di conseguenza, testo invariato. Verificato
+        con Playwright che i quattro titoli siano nell'ordine corretto e screenshot per la
+        leggibilità. `tsc`/`eslint` puliti, file temporanei ripuliti
