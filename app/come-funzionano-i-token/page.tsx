@@ -61,7 +61,7 @@ export default async function ComeFunzionanoGliScontiPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl px-4 py-12 wide:max-w-4xl">
+      <div className="mx-auto max-w-5xl px-4 py-12 wide:max-w-6xl">
         <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-start md:text-left">
           <Image
             src="/images/come-funzionano-gli-sconti/borgoina-1token.png"
@@ -79,11 +79,42 @@ export default async function ComeFunzionanoGliScontiPage() {
           </p>
         </div>
 
-        <section className="mt-12">
-          <div className="rounded-xl border border-sky/30 bg-sky/15 px-5 py-4">
-            <p className="eyebrow text-sky-dark">Per chi è socio</p>
-            <h2 className="font-display mt-2 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
+        {activeTokens.length > 0 && (
+          <div className="mt-12 rounded-xl border border-gold/30 bg-gold/15 p-5">
+            <p className="eyebrow inline-flex items-center gap-1.5 text-gold-dark">
+              <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
+              Offerte attive ora
+            </p>
+            <ul className="mt-3 space-y-2">
+              {activeTokens.map((token) => (
+                <li
+                  key={token.id}
+                  className="flex items-start justify-between gap-3 rounded border border-gold/20 bg-white px-4 py-2.5"
+                >
+                  <span className="min-w-0">
+                    <Link
+                      href={`/botteghe/${token.shop.slug}`}
+                      className="font-mono block text-xs font-semibold tracking-wide text-ink-soft uppercase hover:text-gold-dark"
+                    >
+                      {token.shop.name}
+                    </Link>
+                    <span className="block font-semibold text-ink">{token.title}</span>
+                    {token.description && (
+                      <span className="mt-0.5 block text-sm text-ink-soft">{token.description}</span>
+                    )}
+                  </span>
+                  <DiscountBadge remaining={token.remaining} />
+                </li>
+              ))}
+            </ul>
           </div>
+        )}
+
+        <section className="mt-12">
+          <span className="font-mono inline-block rounded-sm bg-sky/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-sky uppercase">
+            Per chi è socio
+          </span>
+          <h2 className="font-display mt-3 text-2xl font-bold text-ink">Mostra il tuo QR in bottega</h2>
           <div className="mt-6 space-y-4">
             <StepCard icon={faQrcode} title="1. Apri il tuo QR personale">
               Tocca l&apos;icona del QR in alto nell&apos;header (accanto al tuo nome): si apre un
@@ -104,45 +135,15 @@ export default async function ComeFunzionanoGliScontiPage() {
               riscattare di nuovo.
             </StepCard>
           </div>
-          {activeTokens.length > 0 && (
-            <div className="mt-6 rounded-xl border border-gold/30 bg-gold/15 p-5">
-              <p className="eyebrow inline-flex items-center gap-1.5 text-gold-dark">
-                <FontAwesomeIcon icon={faTag} className="!h-3.5 !w-3.5" aria-hidden="true" />
-                Offerte attive ora
-              </p>
-              <ul className="mt-3 space-y-2">
-                {activeTokens.map((token) => (
-                  <li
-                    key={token.id}
-                    className="flex items-start justify-between gap-3 rounded border border-gold/20 bg-white px-4 py-2.5"
-                  >
-                    <span className="min-w-0">
-                      <Link
-                        href={`/botteghe/${token.shop.slug}`}
-                        className="font-mono block text-xs font-semibold tracking-wide text-ink-soft uppercase hover:text-gold-dark"
-                      >
-                        {token.shop.name}
-                      </Link>
-                      <span className="block font-semibold text-ink">{token.title}</span>
-                      {token.description && (
-                        <span className="mt-0.5 block text-sm text-ink-soft">{token.description}</span>
-                      )}
-                    </span>
-                    <DiscountBadge remaining={token.remaining} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </section>
 
         <section className="mt-12">
-          <div className="rounded-xl border border-sage/30 bg-sage/15 px-5 py-4">
-            <p className="eyebrow text-sage-dark">Per chi ha una bottega</p>
-            <h2 className="font-display mt-2 text-2xl font-bold text-ink">
-              Assegna le offerte ai tuoi clienti soci
-            </h2>
-          </div>
+          <span className="font-mono inline-block rounded-sm bg-sage/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-sage uppercase">
+            Per chi ha una bottega
+          </span>
+          <h2 className="font-display mt-3 text-2xl font-bold text-ink">
+            Assegna le offerte ai tuoi clienti soci
+          </h2>
           <div className="mt-6 space-y-4">
             <StepCard icon={faUserGroup} title="1. Iscriviti e crea la tua pagina Bottega">
               Registrati alla community del Borgo INA e crea la pagina della tua attività da{" "}

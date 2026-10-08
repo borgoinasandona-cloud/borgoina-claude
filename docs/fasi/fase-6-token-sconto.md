@@ -506,3 +506,35 @@
         produzione pulita (`next build`) per verificare l'assenza di errori reali oltre al normale
         rumore di cache `.next/` locale (gitignored, Vercel farà comunque una build pulita).
         `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Container allargato e blocco "Offerte attive ora" spostato prima della sezione socio
+        (2026-10-08)**: in `app/come-funzionano-i-token/page.tsx`, il contenitore del corpo pagina
+        passa da `max-w-3xl wide:max-w-4xl` a `max-w-5xl wide:max-w-6xl` — stessa coppia di
+        breakpoint già usata in `/botteghe` per coerenza, non solo il valore base richiesto
+        esplicitamente (`var(--container-5xl)`, token Tailwind di default, non da definire in
+        `globals.css`). Il blocco "Offerte attive ora" non è più annidato dentro la `<section>`
+        "Per chi è socio" (dove stava come ultimo elemento) ma diventato un blocco a sé, posizionato
+        **prima** di quella sezione — stesso markup interno invariato, solo lo spacing esterno da
+        `mt-6` a `mt-12` per allinearsi al ritmo verticale delle altre sezioni ora che è un sibling
+        e non più un figlio. Verificato con Playwright: ordine dei blocchi nel DOM (intro → Offerte
+        attive ora → Per chi è socio → Per chi ha una bottega → Un paio di cose da sapere) e
+        `max-width` calcolato 1024px (`max-w-5xl`, breakpoint `wide` a 1570px non ancora attivo a
+        1400px di viewport). `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Fondino tolto da titolo+eyebrow, spostato sulla sola eyebrow come pillola (2026-10-08)**:
+        su richiesta esplicita ("voglio far risaltare che uno è per il SOCIO e l'altro è per la
+        BOTTEGA"), il `div` con bordo/sfondo tenue che avvolgeva eyebrow+h2 di entrambe le sezioni
+        è stato rimosso. Il colore (sky per "socio", sage per "bottega") resta solo sull'eyebrow,
+        ora una pillola compatta (`inline-block rounded-full bg-sky/20|sage/20 px-3 py-1`) invece
+        di un riquadro largo quanto la sezione — il titolo h2 torna a essere testo semplice sotto,
+        senza fondino. Verificato visivamente con screenshot: le due pillole si leggono a colpo
+        d'occhio come etichette distinte, coerenti con lo stile pillola già usato altrove nel sito
+        (menù/footer). `tsc`/`eslint` puliti, file temporanei ripuliti
+      - **Pillole dell'eyebrow uniformate esattamente allo stile dei tag categoria dei blocchi home
+        (2026-10-08)**: su richiesta esplicita, sostituita la pillola `rounded-full` improvvisata
+        del punto precedente con la classe esatta già usata per i tag categoria in
+        `components/PostCard.tsx`/`components/home/BachecaHighlight.tsx` (`font-mono rounded-sm
+        bg-{colore}/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-{colore}
+        uppercase`, `<span>` invece di `<p className="eyebrow">`) — stesso `rounded-sm` squadrato,
+        stessa dimensione/peso/tracking, stesso schema colore base (`text-sky`/`text-sage`, non le
+        varianti `-dark` usate altrove in questa pagina) accoppiato al relativo `/10` di sfondo.
+        Verificato visivamente che il contrasto resti leggibile a questa dimensione ridotta (0.7rem)
+        per entrambi i colori. `tsc`/`eslint` puliti, file temporanei ripuliti
