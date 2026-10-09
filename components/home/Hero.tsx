@@ -27,10 +27,10 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              href="/news"
+              href="/come-funzionano-i-token"
               className="rounded bg-brick px-6 py-3 text-base font-semibold text-cream shadow-md transition-colors hover:bg-brick-dark wide:px-7 wide:py-3.5 wide:text-lg"
             >
-              Vai alla Bacheca
+              Scopri INA Token
             </Link>
             <Link
               href="/chi-siamo"
