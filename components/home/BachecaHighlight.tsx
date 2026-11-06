@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbtack, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { cloudinaryUrl } from "@/lib/cloudinary";
 import { hasGallery } from "@/lib/posts";
 import { GalleryBadge } from "@/components/GalleryBadge";
@@ -19,7 +21,12 @@ export function BachecaHighlight({ post }: { post: FeaturedPost | null }) {
             href={`/news/${post.slug}`}
             className="group mt-8 flex flex-col overflow-hidden rounded-xl border border-ink/10 bg-white shadow-md transition duration-300 hover:border-ink/20 hover:shadow-xl sm:flex-row"
           >
-            <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-cream sm:w-[400px]">
+            {/* Nessun'altezza forzata da sm in su: la box si stira all'altezza della colonna di
+                testo (flex row, stretch di default) invece di un aspect-video fisso, così una
+                foto verticale viene tagliata molto meno da object-cover. Sotto sm (stack
+                verticale) resta aspect-video, altrimenti l'immagine non avrebbe un'altezza
+                definita. */}
+            <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-cream sm:aspect-auto sm:w-[400px]">
               {post.coverImage && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -34,23 +41,44 @@ export function BachecaHighlight({ post }: { post: FeaturedPost | null }) {
                 </div>
               )}
             </div>
-            <div className="flex flex-col justify-center p-6 sm:py-8 sm:pr-8">
-              <div className="flex flex-wrap gap-1.5">
-                {post.categories.map((category) => (
-                  <span
-                    key={category.id}
-                    className="font-mono rounded-sm bg-brick/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-brick uppercase"
-                  >
-                    {category.name}
-                  </span>
-                ))}
+            <div className="relative flex flex-1 flex-col p-6 sm:p-8 md:p-10 wide:p-12">
+              <div className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-brick text-cream shadow-sm">
+                <FontAwesomeIcon icon={faThumbtack} aria-hidden="true" className="!h-3.5 !w-3.5" />
               </div>
-              <h3 className="font-display mt-3 text-2xl font-extrabold tracking-tight text-ink transition-colors duration-200 group-hover:text-brick wide:text-3xl">
-                {post.title}
-              </h3>
-              {post.excerpt && (
-                <p className="mt-3 text-base leading-relaxed text-ink-soft wide:text-lg">{post.excerpt}</p>
-              )}
+              <div className="flex flex-wrap items-center gap-3 pr-12">
+                <div className="flex flex-wrap gap-1.5">
+                  {post.categories.map((category) => (
+                    <span
+                      key={category.id}
+                      className="font-mono rounded-sm bg-brick/10 px-2 py-0.5 text-[0.7rem] font-semibold tracking-wide text-brick uppercase"
+                    >
+                      {category.name}
+                    </span>
+                  ))}
+                </div>
+                {post.publishedAt && (
+                  <p className="font-mono shrink-0 text-xs text-ink-soft wide:text-sm">
+                    {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
+                  </p>
+                )}
+              </div>
+              <div className="mx-auto flex max-w-[600px] flex-1 flex-col justify-center">
+                <h3 className="font-display text-2xl font-extrabold tracking-tight text-ink transition-colors duration-200 group-hover:text-brick wide:text-3xl">
+                  {post.title}
+                </h3>
+                {post.subtitle && (
+                  <p className="mt-1 text-base text-ink-soft italic wide:text-lg">{post.subtitle}</p>
+                )}
+                {post.excerpt && (
+                  <p className="mt-3 text-base leading-relaxed text-ink-soft wide:text-lg">{post.excerpt}</p>
+                )}
+              </div>
+              <div className="mt-4 flex items-center justify-end">
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-brick">
+                  Leggi di più
+                  <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" className="!h-3 !w-3" />
+                </span>
+              </div>
             </div>
           </Link>
         ) : (

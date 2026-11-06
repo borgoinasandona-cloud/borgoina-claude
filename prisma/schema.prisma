@@ -117,6 +117,7 @@ model Post {
   id           String      @id @default(cuid())
   slug         String      @unique
   title        String
+  subtitle     String? // mostrato sotto il titolo nella pagina articolo, non nelle card/anteprime
   excerpt      String?
   content      String      @db.Text // HTML (editor WYSIWYG)
   coverImage   String? // Cloudinary public_id

@@ -40,8 +40,13 @@
   --color-gold: var(--color-gold);
   --color-gold-dark: var(--color-gold-dark);
   --font-sans: var(--font-sans);
-  /* Breakpoint extra per monitor larghi: contenitori e testo crescono ancora oltre md/lg. */
-  --breakpoint-wide: 1570px;
+  /* Breakpoint extra per monitor larghi: contenitori e testo crescono ancora oltre md/lg.
+     In rem (98.125rem = 1570px), non px: Tailwind richiede la stessa unità dei breakpoint di
+     default (anch'essi in rem) per ordinare correttamente le varianti responsive — un valore in
+     px qui faceva perdere sistematicamente "wide:" contro "md:"/"lg:" ogni volta che competevano
+     sulla stessa proprietà a viewport >=1570px, in tutto il sito, da quando il breakpoint è stato
+     introdotto (bug scoperto e corretto il 2026-11-06, vedi docs/fasi/). */
+  --breakpoint-wide: 98.125rem;
   --container-6xl: 84rem;
 }
 

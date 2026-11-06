@@ -41,6 +41,7 @@ export const postSchema = z.object({
     .max(160)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug non valido (usa minuscole e trattini)"),
   title: z.string().trim().min(1).max(200),
+  subtitle: z.string().trim().max(240).optional().or(z.literal("")),
   excerpt: z.string().trim().max(500).optional().or(z.literal("")),
   content: z.string().trim().min(1),
   coverImage: z.string().trim().optional().or(z.literal("")),

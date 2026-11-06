@@ -87,6 +87,21 @@ export function PostForm({
       </div>
 
       <div>
+        <label htmlFor="subtitle" className="block text-sm font-medium text-neutral-700">
+          Sottotitolo <span className="font-normal text-neutral-400">(facoltativo)</span>
+        </label>
+        <input
+          id="subtitle"
+          name="subtitle"
+          defaultValue={post?.subtitle ?? ""}
+          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
+        />
+        <p className="mt-1 text-xs text-neutral-500">
+          Mostrato sotto il titolo nella pagina dell&apos;articolo (non nelle anteprime).
+        </p>
+      </div>
+
+      <div>
         <label htmlFor="excerpt" className="block text-sm font-medium text-neutral-700">
           Estratto
         </label>

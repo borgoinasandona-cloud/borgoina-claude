@@ -32,6 +32,7 @@ function parsePostFormData(formData: FormData) {
   return postSchema.safeParse({
     slug: formData.get("slug"),
     title: formData.get("title"),
+    subtitle: formData.get("subtitle") || "",
     excerpt: formData.get("excerpt") || "",
     content: formData.get("content"),
     coverImage: formData.get("coverImage") || "",

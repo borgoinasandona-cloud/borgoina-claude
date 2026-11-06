@@ -19,3 +19,10 @@ paths:
   `useSyncExternalStore` invece di `useState`+`useEffect` per leggere `window`/`navigator`
 - Le pagine di dettaglio pubbliche condividono lo stile "scheda unica" (header senza sfondo/bordo
   separato dal corpo — vedi [Header, menu e icone](../../docs/fasi/header-menu-e-icone.md))
+- **Il breakpoint custom `wide`** (`--breakpoint-wide` in `app/globals.css`, soglia 1570px per i
+  monitor larghi) va dichiarato **in `rem`, mai in `px`**: Tailwind ordina le varianti responsive
+  assumendo la stessa unità di misura dei breakpoint di default (`sm/md/lg/xl/2xl`, tutti in rem) —
+  un valore in px rompe silenziosamente l'ordinamento e `wide:` perde sistematicamente contro
+  `md:`/`lg:`/`xl:` quando competono sulla stessa proprietà, senza errori in console (bug reale
+  trovato e corretto il 2026-11-06, era così da quando il breakpoint esiste). Se un giorno serve
+  un altro breakpoint custom, stessa regola: sempre rem, mai px

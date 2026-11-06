@@ -70,6 +70,9 @@ export default async function NewsDetailPage({
           <h1 className="font-display mt-4 text-4xl font-extrabold tracking-tight text-ink leading-tight md:text-5xl wide:text-6xl">
             {post.title}
           </h1>
+          {post.subtitle && (
+            <p className="mt-2 max-w-2xl text-lg text-ink-soft italic wide:text-xl">{post.subtitle}</p>
+          )}
           {post.publishedAt && (
             <p className="font-mono mt-3 text-sm text-ink-soft">
               {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(post.publishedAt)}
