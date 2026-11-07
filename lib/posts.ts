@@ -16,17 +16,26 @@ export function getPublishedPosts({ categorySlug }: { categorySlug?: string } = 
   });
 }
 
-export function getLatestPublishedPosts(take: number) {
+// excludeFeatured: usato dalla home (vedi app/page.tsx) per non ripetere negli "Ultimi articoli"
+// quelli già mostrati per intero nel blocco "Il Borgo utile" (getFeaturedPosts) — altrove
+// (se mai servisse) il default false restituisce semplicemente gli ultimi pubblicati senza filtri.
+export function getLatestPublishedPosts(take: number, { excludeFeatured = false } = {}) {
   return prisma.post.findMany({
-    where: { visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() } },
+    where: {
+      visibility: "PUBLIC",
+      publishedAt: { not: null, lte: new Date() },
+      ...(excludeFeatured ? { featured: false } : {}),
+    },
     orderBy: { publishedAt: "desc" },
     take,
     include: { categories: true, _count: { select: { images: true } } },
   });
 }
 
-export function getFeaturedPost() {
-  return prisma.post.findFirst({
+// Tutti gli articoli in evidenza (non solo il più recente): la home li mostra per intero nel
+// blocco "Il Borgo utile" invece di sceglierne uno solo.
+export function getFeaturedPosts() {
+  return prisma.post.findMany({
     where: { visibility: "PUBLIC", publishedAt: { not: null, lte: new Date() }, featured: true },
     orderBy: { publishedAt: "desc" },
     include: { categories: true, _count: { select: { images: true } } },

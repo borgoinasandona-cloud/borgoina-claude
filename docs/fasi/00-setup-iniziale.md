@@ -158,3 +158,41 @@
         nessun effetto), esattamente 600px e centrato a 1700px di viewport (sopra, il vincolo
         scatta). Screenshot per la resa visiva a entrambe le larghezze. `tsc`/`eslint` puliti, file
         temporanei ripuliti
+      - **"Il Borgo utile" mostra tutti gli articoli in evidenza, non solo il più recente
+        (2026-11-07)**: prima `getFeaturedPost()` (`findFirst`) sceglieva un solo articolo
+        `featured: true`; su richiesta esplicita diventa `getFeaturedPosts()` (`findMany`,
+        `lib/posts.ts`) e il blocco mostra **tutti** quelli in evidenza, impilati verticalmente
+        (`components/home/BachecaHighlight.tsx`: la card del singolo articolo estratta in un
+        componente interno `FeaturedPostCard`, `BachecaHighlight` ora accetta `posts: FeaturedPost[]`
+        invece di `post: FeaturedPost | null` e ne fa il `.map()` con `space-y-6` tra una e l'altra
+        — stesso identico markup/stile di card già rifinito nelle voci precedenti, nessuna modifica
+        visiva alla singola card). **Richiesto anche di non ripeterli in "Ultime dalla Bacheca"**:
+        `getLatestPublishedPosts()` guadagna un secondo parametro opzionale `{ excludeFeatured }`
+        (where `featured: false` lato query, non un filtro post-fetch — così il conteggio richiesto
+        resta sempre pieno invece di accorciarsi quando uno degli ultimi N è anche in evidenza).
+        `app/page.tsx`: richiede 5 "ultimi non in evidenza" invece di 4, non per mostrarne 5 ma come
+        riserva per il caso limite **nessun articolo in evidenza** (mai successo finora in
+        produzione, ma gestito comunque) — in quel caso il blocco "Il Borgo utile" ripiega sul più
+        recente tra quei 5 (così non resta mai vuoto, comportamento invariato rispetto a prima) e
+        "Ultime dalla Bacheca" ne mostra gli altri 4, **saltando** quello già usato come ripiego —
+        evita di reintrodurre la duplicazione che esisteva di fatto nel codice precedente anche in
+        quel caso limite (il post di fallback non era mai escluso dalla lista "ultimi" prima d'ora).
+        Verificato con Playwright sui 2 articoli in evidenza reali di produzione: entrambi compaiono
+        impilati in "Il Borgo utile" nell'ordine atteso (per data di pubblicazione decrescente),
+        nessuno dei due compare in "Ultime dalla Bacheca" (che mostra i successivi 4 articoli
+        diversi). Controllato anche il mobile: le card si impilano correttamente. `tsc`/`eslint`
+        puliti, file temporanei ripuliti
+      - **Immagini degli articoli in evidenza non più tagliate su mobile (2026-11-07)**: sotto `sm`
+        la box immagine aveva ancora `aspect-video` fisso (lasciato apposta invariato nella voce
+        sul taglio minimo per desktop, "non richiesto toccare mobile" — ora richiesto). Tolto
+        `aspect-video`/`sm:aspect-auto` dal contenitore (nessuna proporzione forzata a nessun
+        breakpoint) e l'`<img>` passa da `h-full w-full object-cover` a `h-auto w-full
+        object-contain` come base, con `sm:h-full sm:object-cover` che restituisce da `sm` in su
+        esattamente il comportamento già fissato in precedenza (si stira all'altezza della colonna
+        di testo). Sotto `sm` l'immagine renderizza quindi alla sua proporzione naturale, niente
+        taglio in nessun caso — non solo "tagliata meno" come nel fix desktop, ma a larghezza piena
+        senza alcun ritaglio. Verificato con Playwright misurando le dimensioni renderizzate vs
+        quelle naturali dell'immagine sulla locandina verticale reale ("Andrea Pennacchi"): 356×444
+        renderizzato contro 800×999 naturale, stesso identico rapporto (0.801), conferma che non
+        c'è taglio. Controllato anche il desktop: nessuna regressione, identico a prima. `tsc`/
+        `eslint` puliti, file temporanei ripuliti

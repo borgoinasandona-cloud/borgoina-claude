@@ -3,24 +3,30 @@ import { VerdePopolare } from "@/components/home/VerdePopolare";
 import { BachecaHighlight } from "@/components/home/BachecaHighlight";
 import { CommunityHighlight } from "@/components/home/CommunityHighlight";
 import { BachecaPreview } from "@/components/home/BachecaPreview";
-import { getFeaturedPost, getLatestPublishedPosts } from "@/lib/posts";
+import { getFeaturedPosts, getLatestPublishedPosts } from "@/lib/posts";
 import { getFeaturedCommunityPost } from "@/lib/community";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featuredPost, latestPosts, featuredCommunityPost] = await Promise.all([
-    getFeaturedPost(),
-    getLatestPublishedPosts(4),
+  const [featuredPosts, latestNonFeatured, featuredCommunityPost] = await Promise.all([
+    getFeaturedPosts(),
+    // 5 invece di 4: se nessun articolo è in evidenza, uno finisce nel blocco "Il Borgo utile"
+    // come ripiego (vedi sotto) e ne restano comunque 4 per "Ultime dalla Bacheca".
+    getLatestPublishedPosts(5, { excludeFeatured: true }),
     getFeaturedCommunityPost(),
   ]);
+
+  const hasFeatured = featuredPosts.length > 0;
+  const highlightPosts = hasFeatured ? featuredPosts : latestNonFeatured.slice(0, 1);
+  const previewPosts = hasFeatured ? latestNonFeatured.slice(0, 4) : latestNonFeatured.slice(1, 5);
 
   return (
     <div>
       <Hero />
       <VerdePopolare />
-      <BachecaHighlight post={featuredPost ?? latestPosts[0] ?? null} />
-      <BachecaPreview posts={latestPosts} />
+      <BachecaHighlight posts={highlightPosts} />
+      <BachecaPreview posts={previewPosts} />
       <CommunityHighlight post={featuredCommunityPost} />
     </div>
   );
